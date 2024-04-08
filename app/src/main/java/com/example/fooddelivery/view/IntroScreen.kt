@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.example.fooddelivery.R
 
 @Composable
-fun BeginScreen() {
+fun IntroScreen() {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -126,6 +126,6 @@ fun BeginScreen() {
     showSystemUi = true
 )
 @Composable
-fun BeginScreenPreview() {
-    BeginScreen()
+fun IntroScreenPreview() {
+    IntroScreen()
 }
