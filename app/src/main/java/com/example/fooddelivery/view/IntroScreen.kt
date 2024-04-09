@@ -24,10 +24,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
+import com.example.fooddelivery.navigation.Screen
 
 @Composable
-fun IntroScreen() {
+fun IntroScreen(
+    navController: NavController
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -98,10 +103,11 @@ fun IntroScreen() {
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier
-                        .padding(start = 24.dp, bottom = 24.dp)
                         .clickable {
-
-                        },
+                            navController.navigate(Screen.SignUp.route)
+                        }
+                        .padding(start = 24.dp, bottom = 24.dp)
+                        ,
                     textAlign = TextAlign.Start
                 )
                 Text(
@@ -114,7 +120,7 @@ fun IntroScreen() {
                     modifier = Modifier
                         .padding(end = 24.dp, bottom = 24.dp)
                         .clickable {
-
+                            navController.navigate(Screen.Login.route)
                         }
                 )
             }
@@ -127,5 +133,5 @@ fun IntroScreen() {
 )
 @Composable
 fun IntroScreenPreview() {
-    IntroScreen()
+    IntroScreen(navController = rememberNavController())
 }

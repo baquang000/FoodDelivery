@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -37,11 +39,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
+import com.example.fooddelivery.navigation.Screen
 
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    navController: NavController
+) {
 
     var textSDT by remember {
         mutableStateOf("")
@@ -49,7 +56,14 @@ fun SignUpScreen() {
     var textPassWord by remember {
         mutableStateOf("")
     }
-
+    var passWordVisibility by remember {
+        mutableStateOf(false)
+    }
+    val iconVisibility = if (passWordVisibility) {
+        painterResource(id = R.drawable.visibility)
+    } else {
+        painterResource(id = R.drawable.unvisible)
+    }
     val localFocusManager = LocalFocusManager.current
 
     Column(
@@ -147,8 +161,17 @@ fun SignUpScreen() {
                     localFocusManager.clearFocus()
                 }
             ),
-
-            )
+            trailingIcon = {
+                IconButton(onClick = {
+                    passWordVisibility = !passWordVisibility
+                }) {
+                    Icon(
+                        painter = iconVisibility, contentDescription = "visibility",
+                        modifier = Modifier.width(30.dp)
+                    )
+                }
+            }
+        )
 
         Button(
             modifier = Modifier
@@ -185,7 +208,7 @@ fun SignUpScreen() {
                     color = Color.Red
                 ),
                 modifier = Modifier.clickable {
-
+                    navController.navigate(Screen.Login.route)
                 }
             )
         }
@@ -198,5 +221,5 @@ fun SignUpScreen() {
 )
 @Composable
 fun SignUpScreenPreview() {
-    SignUpScreen()
+    SignUpScreen(navController = rememberNavController())
 }
