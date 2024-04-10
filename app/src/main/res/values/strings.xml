@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">FoodDelivery</string>
+    <string name="Welcome_To_Food_App">Welcome To Food App</string>
+    <string name="Sign_Up">SignUp</string>
+    <string name="Login">Login</string>
+    <string name="SDT">SĐT</string>
+    <string name="Pass_Word">Password</string>
+    <string name="Hide_pass_word">Hide password</string>
+    <string name="Show_password">Show password</string>
+    <string name="Shared_and_delightful_for_an_easy_and_enjoyable_food_ordering_experience">Shared and delightful, for an easy and enjoyable food ordering experience</string>
+    <string name="Dang_Ky">Đăng ký</string>
+    <string name="Ban_co_tai_khoan">Bạn có tài khoản?</string>
+    <string name="Dang_nhap">Đăng nhập</string>
+    <string name="food_sign_up_login">Food</string>
+    <string name="App_sign_up_login">App</string>
+    <string name="or">OR</string>
+    <string name="ban_quen_mat_khau">Bạn quên mật khẩu?</string>
+    <string name="ban_khong_co_tai_khoan">Bạn không có tài khoản?</string>
+
 </resources>

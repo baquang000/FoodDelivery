@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.navigation.nav_graph.SetupNavGraph
 import com.example.fooddelivery.ui.theme.FoodDeliveryTheme
 
@@ -31,6 +30,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp() {
-    val navController = rememberNavController()
-    SetupNavGraph(navController = navController)
+    SetupNavGraph()
 }
