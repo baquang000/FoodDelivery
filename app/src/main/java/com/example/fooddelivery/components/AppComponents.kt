@@ -64,7 +64,9 @@ fun NormalTextComponents(
 
 @Composable
 fun MyTextFieldComponents(
-    lableText: String
+    lableText: String,
+    errorStatus: Boolean = false,
+    onTextSelected: (String) -> Unit
 ) {
     var textValue by remember {
         mutableStateOf("")
@@ -72,6 +74,7 @@ fun MyTextFieldComponents(
     OutlinedTextField(
         value = textValue, onValueChange = {
             textValue = it
+            onTextSelected(it)
         },
         shape = RoundedCornerShape(50.dp),
         modifier = Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp),
@@ -79,15 +82,18 @@ fun MyTextFieldComponents(
             Text(text = lableText)
         },
         colors = TextFieldDefaults.colors(
-            disabledContainerColor = Color.White,
+            disabledContainerColor = Color.LightGray,
             unfocusedContainerColor = Color.White,
             focusedContainerColor = Color.White,
-            unfocusedLabelColor = Color.Red,
+            unfocusedIndicatorColor = Color.Blue,
+            focusedIndicatorColor = Color.Blue,
+            disabledIndicatorColor = Color.Red,
+            disabledLeadingIconColor = Color.Red,
+            focusedLeadingIconColor = Color.Black,
+            unfocusedLeadingIconColor = Color.Black,
             disabledLabelColor = Color.Red,
-            focusedLabelColor = Color.Red,
-            unfocusedIndicatorColor = Color.Red,
-            focusedIndicatorColor = Color.Red,
-            unfocusedLeadingIconColor = Color.Red
+            focusedLabelColor = Color.Black,
+            unfocusedLabelColor = Color.Black
         ),
         singleLine = true,
         leadingIcon = {
@@ -96,13 +102,16 @@ fun MyTextFieldComponents(
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Phone,
             imeAction = ImeAction.Next
-        )
+        ),
+        isError = !errorStatus
     )
 }
 
 @Composable
 fun MyPasswordTextFieldComponents(
-    lableText: String
+    lableText: String,
+    errorStatus: Boolean = false,
+    onTextSelected: (String) -> Unit
 ) {
     var textPassWord by remember {
         mutableStateOf("")
@@ -125,6 +134,7 @@ fun MyPasswordTextFieldComponents(
         value = textPassWord,
         onValueChange = {
             textPassWord = it
+            onTextSelected(it)
         },
         shape = RoundedCornerShape(50.dp),
         modifier = Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp),
@@ -134,17 +144,18 @@ fun MyPasswordTextFieldComponents(
             )
         },
         colors = TextFieldDefaults.colors(
-            disabledContainerColor = Color.White,
+            disabledContainerColor = Color.LightGray,
             unfocusedContainerColor = Color.White,
             focusedContainerColor = Color.White,
-            unfocusedLabelColor = Color.Red,
-            disabledLabelColor = Color.Red,
-            focusedLabelColor = Color.Red,
-            unfocusedIndicatorColor = Color.Red,
-            focusedIndicatorColor = Color.Red,
+            unfocusedIndicatorColor = Color.Blue,
+            focusedIndicatorColor = Color.Blue,
+            disabledIndicatorColor = Color.Red,
             disabledTrailingIconColor = Color.Red,
-            unfocusedTrailingIconColor = Color.Red,
-            focusedTrailingIconColor = Color.Red
+            focusedTrailingIconColor = Color.Black,
+            unfocusedTrailingIconColor = Color.Black,
+            disabledLabelColor = Color.Red,
+            focusedLabelColor = Color.Black,
+            unfocusedLabelColor = Color.Black
         ),
         singleLine = true,
         trailingIcon = {
@@ -166,12 +177,16 @@ fun MyPasswordTextFieldComponents(
             onDone = {
                 localFocusManager.clearFocus()
             }
-        )
+        ),
+        isError = !errorStatus
     )
 }
 
 @Composable
-fun ButtonComponents(value: String, modifier: Modifier = Modifier) {
+fun ButtonComponents(
+    value: String, modifier: Modifier = Modifier,
+    onButtonClicked: () -> Unit
+) {
     Button(
         modifier = modifier
             .fillMaxWidth()
@@ -180,7 +195,7 @@ fun ButtonComponents(value: String, modifier: Modifier = Modifier) {
             containerColor = Color.Red
         ),
         onClick = {
-
+            onButtonClicked.invoke()
         }) {
         Text(
             text = value,

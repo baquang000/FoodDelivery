@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
@@ -26,12 +27,15 @@ import com.example.fooddelivery.components.ButtonComponents
 import com.example.fooddelivery.components.MyPasswordTextFieldComponents
 import com.example.fooddelivery.components.MyTextFieldComponents
 import com.example.fooddelivery.components.NormalTextComponents
+import com.example.fooddelivery.model.UIEvent
 import com.example.fooddelivery.navigation.Screen
+import com.example.fooddelivery.viewmodel.LoginViewModel
 
 
 @Composable
 fun SignUpScreen(
-    navController: NavController
+    navController: NavController,
+    loginViewModel: LoginViewModel = viewModel()
 ) {
 
     Column(
@@ -63,9 +67,21 @@ fun SignUpScreen(
                 nomalColor = Color.Black,
             )
         }
-        MyTextFieldComponents(lableText = stringResource(id = R.string.SDT))
-        MyPasswordTextFieldComponents(lableText = stringResource(id = R.string.Pass_Word))
-        ButtonComponents(value = stringResource(id = R.string.Dang_Ky))
+        MyTextFieldComponents(
+            lableText = stringResource(id = R.string.SDT),
+            errorStatus = loginViewModel.registrationUIState.value.sdtError
+        ) {
+            loginViewModel.onEvent(UIEvent.SdtChange(it))
+        }
+        MyPasswordTextFieldComponents(
+            lableText = stringResource(id = R.string.Pass_Word),
+            errorStatus = loginViewModel.registrationUIState.value.passwordError
+        ) {
+            loginViewModel.onEvent(UIEvent.PasswordChange(it))
+        }
+        ButtonComponents(value = stringResource(id = R.string.Dang_Ky)) {
+            loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+        }
 
         Row(
             modifier = Modifier.fillMaxSize(),

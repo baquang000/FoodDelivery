@@ -63,8 +63,12 @@ fun LoginScreen(
                 nomalColor = Color.Black,
             )
         }
-        MyTextFieldComponents(lableText = stringResource(id = R.string.SDT))
-        MyPasswordTextFieldComponents(lableText = stringResource(id = R.string.Pass_Word))
+        MyTextFieldComponents(lableText = stringResource(id = R.string.SDT)){
+
+        }
+        MyPasswordTextFieldComponents(lableText = stringResource(id = R.string.Pass_Word)){
+
+        }
         NormalTextComponents(
             value = stringResource(R.string.ban_quen_mat_khau),
             nomalFontsize = 16.sp,
@@ -72,7 +76,9 @@ fun LoginScreen(
             nomalColor = Color.Black,
             modifier = Modifier.padding(top = 32.dp)
         )
-        ButtonComponents(value = stringResource(id = R.string.Dang_nhap))
+        ButtonComponents(value = stringResource(id = R.string.Dang_nhap)){
+
+        }
 
         DrawLineAndTextComponents()
         Row(
