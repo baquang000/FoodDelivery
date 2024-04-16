@@ -16,5 +16,8 @@
     <string name="or">OR</string>
     <string name="ban_quen_mat_khau">Bạn quên mật khẩu?</string>
     <string name="ban_khong_co_tai_khoan">Bạn không có tài khoản?</string>
+    <string name="home">Home</string>
+    <string name="log_out">Log out</string>
+    <string name="email">Email</string>
 
 </resources>

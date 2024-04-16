@@ -9,10 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -97,7 +97,7 @@ fun MyTextFieldComponents(
         ),
         singleLine = true,
         leadingIcon = {
-            Icon(imageVector = Icons.Default.Phone, contentDescription = "Phone_login")
+            Icon(imageVector = Icons.Default.Email, contentDescription = "Phone_login")
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Phone,
@@ -185,6 +185,7 @@ fun MyPasswordTextFieldComponents(
 @Composable
 fun ButtonComponents(
     value: String, modifier: Modifier = Modifier,
+    isEnable: Boolean = false,
     onButtonClicked: () -> Unit
 ) {
     Button(
@@ -194,6 +195,7 @@ fun ButtonComponents(
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Red
         ),
+        enabled = isEnable,
         onClick = {
             onButtonClicked.invoke()
         }) {
@@ -216,12 +218,12 @@ fun DrawLineAndTextComponents() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            color = Color.Red,
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = Color.Red
         )
         NormalTextComponents(
             value = stringResource(id = R.string.or),
@@ -229,12 +231,12 @@ fun DrawLineAndTextComponents() {
             nomalFontWeight = FontWeight.Normal,
             nomalColor = Color.Black
         )
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            color = Color.Red,
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = Color.Red
         )
     }
 }

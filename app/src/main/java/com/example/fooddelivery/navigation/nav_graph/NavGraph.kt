@@ -11,8 +11,10 @@ import com.example.fooddelivery.view.LoginScreen
 import com.example.fooddelivery.view.SignUpScreen
 
 @Composable
-fun SetupNavGraph() {
+fun SetupNavGraph(
+) {
     val navController = rememberNavController()
+    
     NavHost(navController = navController, startDestination = Screen.Intro.route) {
         composable(route = Screen.Intro.route) {
             IntroScreen(navController = navController)
@@ -23,8 +25,9 @@ fun SetupNavGraph() {
         composable(route = Screen.SignUp.route) {
             SignUpScreen(navController = navController)
         }
-        composable(route = Screen.Home.route){
-            HomeScreen()
+        composable(route = Screen.Home.route) {
+            HomeScreen(navController = navController)
         }
     }
+
 }
