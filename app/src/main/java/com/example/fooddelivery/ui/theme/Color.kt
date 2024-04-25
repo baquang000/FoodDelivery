@@ -10,3 +10,12 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+val category_btn_0 = Color(0xFFA38FEC)
+val category_btn_1 = Color(0xFF7BC3D5)
+val category_btn_2 = Color(0xFFFC9D8B)
+val category_btn_3 = Color(0xFF5DCC92)
+val category_btn_4 = Color(0xFFEE71A8)
+val category_btn_5 = Color(0xFF92CEA4)
+val category_btn_6 = Color(0xFFDE70E0)
+val category_btn_7 = Color(0xFF9EAADD)
+

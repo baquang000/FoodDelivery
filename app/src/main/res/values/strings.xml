@@ -19,5 +19,28 @@
     <string name="home">Home</string>
     <string name="log_out">Log out</string>
     <string name="email">Email</string>
-
+    <string name="welcome">Chào mừng</string>
+    <string name="logout_icon">logout_icon</string>
+    <string name="setting_logo">Setting_logo</string>
+    <string name="basket_logo">basket_logo</string>
+    <string name="search_icon">Search_icon</string>
+    <string name="search_food">Search Food...</string>
+    <string name="location_icon">Location_icon</string>
+    <string name="location">Địa điểm</string>
+    <string name="time">Thời gian</string>
+    <string name="price">Giá</string>
+    <string name="today_best_food">Món ăn tốt nhất hôm nay</string>
+    <string name="view_all">Xem tất cả</string>
+    <string name="star_icon">star_icon</string>
+    <string name="error_loading_data">Error loading data</string>
+    <string name="choose_category">Chọn danh mục</string>
+    <string name="Pizza">Pizza</string>
+    <string name="Burger">Burger</string>
+    <string name="Chicken">Gà</string>
+    <string name="Sushi">Sushi</string>
+    <string name="Meat">Thịt</string>
+    <string name="hot_dog">Xúc xích</string>
+    <string name="drink">Đồ uống</string>
+    <string name="more">Thêm nữa</string>
+    <string name="arrow">arrow</string>
 </resources>
