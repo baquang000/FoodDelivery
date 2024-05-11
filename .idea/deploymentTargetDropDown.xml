@@ -2,16 +2,16 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="CardFoodIemWithCartPreview">
+        <State />
+      </entry>
+      <entry key="FoodDetailsPreview">
+        <State />
+      </entry>
       <entry key="FoodItemsPreview">
         <State />
       </entry>
       <entry key="HomeScreenPreview">
-        <State />
-      </entry>
-      <entry key="IntroScreenPreview">
-        <State />
-      </entry>
-      <entry key="LoginScreenPreview">
         <State />
       </entry>
       <entry key="SignUpScreenPreview">
