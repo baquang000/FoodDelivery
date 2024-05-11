@@ -1,4 +1,4 @@
-package com.example.fooddelivery.view.categoryScreen
+package com.example.fooddelivery.view.home.categoryScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +19,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
-import com.example.fooddelivery.data.viewmodel.categoryviewmodel.DrinkViewModel
+import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.categoryviewmodel.ShushiViewModel
 
 @Composable
-fun DrinkScreen(navController: NavController, drinkViewModel: DrinkViewModel = viewModel()) {
+fun ShushiScreen(
+    navController: NavController,
+    shushiViewModel: ShushiViewModel = viewModel(),
+    sharedViewModel: SharedViewModel
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -38,14 +43,22 @@ fun DrinkScreen(navController: NavController, drinkViewModel: DrinkViewModel = v
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SetMoreItem(drinkViewModel = drinkViewModel)
+            SetMoreItem(
+                shushiViewModel = shushiViewModel,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }
 
 @Composable
-fun SetMoreItem(drinkViewModel: DrinkViewModel) {
-    when (val result = drinkViewModel.drinkFood.value) {
+fun SetMoreItem(
+    shushiViewModel: ShushiViewModel,
+    navController: NavController,
+    sharedViewModel: SharedViewModel
+) {
+    when (val result = shushiViewModel.shushiFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -53,7 +66,11 @@ fun SetMoreItem(drinkViewModel: DrinkViewModel) {
         }
 
         is FoodState.Success -> {
-            ListCategoryFood(result.data)
+            ListCategoryFood(
+                result.data,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
 
         is FoodState.Failure -> {

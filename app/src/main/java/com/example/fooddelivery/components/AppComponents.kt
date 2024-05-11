@@ -1,22 +1,37 @@
 package com.example.fooddelivery.components
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.StarHalf
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,7 +46,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,8 +65,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.fooddelivery.R
+import com.example.fooddelivery.data.model.Food
+import com.example.fooddelivery.data.model.FoodDetails
+import com.example.fooddelivery.data.model.Location
+import com.example.fooddelivery.data.model.Price
+import com.example.fooddelivery.data.model.Time
+import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.navigation.Screen
 import com.example.fooddelivery.ui.theme.category_btn_0
+import java.net.URLEncoder
 
 @Composable
 fun NormalTextComponents(
@@ -284,10 +314,343 @@ fun IconButtonWithText(
     }
 }
 
+@Composable
+fun FoodItem(
+    modifier: Modifier = Modifier,
+    buttonSize: TextUnit = 30.sp,
+    spacerbuttonModifier: Modifier = Modifier.padding(start = 0.dp),
+    food: Food, navController: NavController,
+    sharedViewModel: SharedViewModel = viewModel(),
+) {
+    val context = LocalContext.current
+    val encodeURL = URLEncoder.encode(food.ImagePath, "UTF-8")
+    Card(
+        modifier = modifier
+            .size(width = 260.dp, height = 295.dp)
+            .background(Color.LightGray.copy(alpha = 0.3f))
+            .clip(shape = RoundedCornerShape(15.dp))
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .clickable {
+                navController.navigate(
+                    Screen.FoodDetails.sendFood(
+                        title = food.Title.toString(),
+                        price = food.Price,
+                        star = food.Star,
+                        timevalue = food.TimeValue,
+                        description = food.Description.toString(),
+                        imagepath = encodeURL
+                    )
+                )
+            }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            AsyncImage(
+                model = food.ImagePath,
+                contentDescription = food.Title,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 180.dp)
+            )
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    NormalTextComponents(
+                        value = food.Title.toString(),
+                        nomalColor = Color.Black,
+                        nomalFontsize = 18.sp,
+                        nomalFontWeight = FontWeight.Bold,
+                        nomalTextAlign = TextAlign.Center
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    NormalTextComponents(
+                        value = "${food.Price}đ",
+                        nomalColor = Color.Black,
+                        nomalFontWeight = FontWeight.Bold,
+                        nomalFontsize = 18.sp,
+                    )
+                }
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Bottom,
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
+                        ) {
+                            NormalTextComponents(
+                                value = food.Star.toString(),
+                                nomalColor = Color.Black,
+                                nomalFontsize = 18.sp,
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.star),
+                                contentDescription = stringResource(
+                                    R.string.star_icon
+                                ),
+                                tint = Color.Yellow,
+                                modifier = Modifier.scale(1.8f)
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            NormalTextComponents(
+                                value = "${food.TimeValue}p",
+                                nomalFontsize = 18.sp,
+                                nomalColor = Color.Black,
+                                modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.time),
+                                contentDescription = stringResource(
+                                    id = R.string.time
+                                ),
+                                modifier = Modifier
+                                    .scale(1.8f)
+                                    .padding(start = 8.dp, bottom = 8.dp),
+                                tint = Color.Red
+                            )
+                        }
+                        Spacer(modifier = spacerbuttonModifier)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            Button(colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Red
+                            ), shape = RectangleShape, modifier = Modifier.clip(
+                                shape = RoundedCornerShape(
+                                    topStart = 15.dp, bottomEnd = 16.dp
+                                )
+                            ), onClick = {
+                                val fooddetails = FoodDetails(
+                                    title = food.Title.toString(),
+                                    imagePath = food.ImagePath.toString(),
+                                    price = food.Price.toFloat(),
+                                    quantity = 1
+                                )
+                                sharedViewModel.addFoodDetail(foodDetails = fooddetails)
+                                Toast.makeText(
+                                    context, "Thêm vào giỏ hàng thành công",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }) {
+                                Text(
+                                    text = "+", style = TextStyle(
+                                        fontSize = buttonSize, textAlign = TextAlign.Center
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDropdownMenuWithLoc(modifier: Modifier = Modifier, location: MutableList<Location>) {
+    val selected = remember {
+        mutableStateOf(location[0].loc)
+    }
+    val expand = remember {
+        mutableStateOf(false)
+    }
+    Box(modifier = modifier) {
+        ExposedDropdownMenuBox(expanded = expand.value, onExpandedChange = {
+            expand.value = !expand.value
+        }) {
+            OutlinedTextField(
+                value = selected.value.toString(), onValueChange = {},
+                readOnly = true,
+                singleLine = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
+                },
+                modifier = Modifier.menuAnchor(),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.location),
+                        contentDescription = stringResource(
+                            id = R.string.location_icon
+                        ), modifier = Modifier.scale(1.5f)
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                expanded = expand.value,
+                onDismissRequest = { expand.value = false }) {
+                location.forEach {
+                    DropdownMenuItem(text = {
+                        Text(text = it.loc.toString())
+                    }, onClick = {
+                        selected.value = it.loc
+                        expand.value = false
+                    })
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDropdownMenuWithTime(modifier: Modifier = Modifier, time: MutableList<Time>) {
+    val selected = remember {
+        mutableStateOf(time[0].Value)
+    }
+    val expand = remember {
+        mutableStateOf(false)
+    }
+    Box(modifier = modifier) {
+        ExposedDropdownMenuBox(expanded = expand.value, onExpandedChange = {
+            expand.value = !expand.value
+        }) {
+            OutlinedTextField(
+                value = selected.value.toString(), onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
+                },
+                singleLine = true,
+                modifier = Modifier.menuAnchor(),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.time),
+                        contentDescription = stringResource(
+                            id = R.string.time
+                        ),
+                        modifier = Modifier.scale(1.5f)
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                expanded = expand.value,
+                onDismissRequest = { expand.value = false }) {
+                time.forEach {
+                    DropdownMenuItem(text = {
+                        Text(text = it.Value.toString())
+                    }, onClick = {
+                        selected.value = it.Value
+                        expand.value = false
+                    })
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDropdownMenuWithPrice(modifier: Modifier = Modifier, price: MutableList<Price>) {
+    val selected = remember {
+        mutableStateOf(price[0].Value)
+    }
+    val expand = remember {
+        mutableStateOf(false)
+    }
+    Box(modifier = modifier) {
+        ExposedDropdownMenuBox(expanded = expand.value, onExpandedChange = {
+            expand.value = !expand.value
+        }) {
+            OutlinedTextField(
+                value = selected.value.toString(), onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
+                },
+                modifier = Modifier.menuAnchor(),
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.dollar),
+                        contentDescription = stringResource(
+                            id = R.string.price
+                        ),
+                        modifier = Modifier.scale(1.5f),
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                expanded = expand.value,
+                onDismissRequest = { expand.value = false }) {
+                price.forEach {
+                    DropdownMenuItem(text = {
+                        Text(text = it.Value.toString())
+                    }, onClick = {
+                        selected.value = it.Value
+                        expand.value = false
+                    })
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun RatingBar(
+    modifier: Modifier = Modifier,
+    rating: Float = 0.0f,
+    star: Int = 5,
+    starColor: Color = Color.Yellow,
+    onRatingChange: (Float) -> Unit
+) {
+    var isHalfStar = (rating % 1) != 0.0f
+    Row {
+        for (index in 1..star) {
+            Icon(
+                modifier = modifier.clickable { onRatingChange(index.toFloat()) },
+                contentDescription = null,
+                tint = starColor,
+                imageVector = if (index <= rating) {
+                    Icons.Rounded.Star
+                } else {
+                    if (isHalfStar) {
+                        isHalfStar = false
+                        Icons.AutoMirrored.Rounded.StarHalf
+                    } else {
+                        Icons.Rounded.StarOutline
+                    }
+                }
+            )
+        }
+    }
+}
+
 @Preview(
     showSystemUi = true
 )
 @Composable
 fun ComponentPreview() {
-    IconButtonWithText {}
+    RatingBar {
+
+    }
 }

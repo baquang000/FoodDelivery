@@ -1,4 +1,4 @@
-package com.example.fooddelivery.view.categoryScreen
+package com.example.fooddelivery.view.home.categoryScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +19,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
+import com.example.fooddelivery.data.viewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.categoryviewmodel.MoreViewModel
 
 @Composable
-fun MoreScreen(navController: NavController, moreViewModel: MoreViewModel = viewModel()) {
+fun MoreScreen(
+    navController: NavController,
+    moreViewModel: MoreViewModel = viewModel(),
+    sharedViewModel: SharedViewModel
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -38,13 +43,21 @@ fun MoreScreen(navController: NavController, moreViewModel: MoreViewModel = view
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SetMoreItem(moreViewModel = moreViewModel)
+            SetMoreItem(
+                moreViewModel = moreViewModel,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }
 
 @Composable
-fun SetMoreItem(moreViewModel: MoreViewModel) {
+fun SetMoreItem(
+    moreViewModel: MoreViewModel,
+    navController: NavController,
+    sharedViewModel: SharedViewModel
+) {
     when (val result = moreViewModel.moreFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -53,7 +66,11 @@ fun SetMoreItem(moreViewModel: MoreViewModel) {
         }
 
         is FoodState.Success -> {
-            ListCategoryFood(result.data)
+            ListCategoryFood(
+                result.data,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
 
         is FoodState.Failure -> {

@@ -1,10 +1,8 @@
-package com.example.fooddelivery.view.categoryScreen
+package com.example.fooddelivery.view.home.categoryScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,13 +18,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
-import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodState
-import com.example.fooddelivery.data.viewmodel.categoryviewmodel.PizzaViewModel
-import com.example.fooddelivery.view.FoodItem
+import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.categoryviewmodel.HotDogViewModel
 
 @Composable
-fun PizzaScreen(navController: NavController, pizzaViewModel: PizzaViewModel = viewModel()) {
+fun HotDogScreen(
+    navController: NavController,
+    hotDogViewModel: HotDogViewModel = viewModel(),
+    sharedViewModel: SharedViewModel
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -42,14 +43,22 @@ fun PizzaScreen(navController: NavController, pizzaViewModel: PizzaViewModel = v
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SetMoreItem(pizzaViewModel = pizzaViewModel)
+            SetMoreItem(
+                hotDogViewModel = hotDogViewModel,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }
 
 @Composable
-fun SetMoreItem(pizzaViewModel: PizzaViewModel) {
-    when (val result = pizzaViewModel.pizzaFood.value) {
+fun SetMoreItem(
+    hotDogViewModel: HotDogViewModel,
+    navController: NavController,
+    sharedViewModel: SharedViewModel
+) {
+    when (val result = hotDogViewModel.hotdogFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -57,8 +66,11 @@ fun SetMoreItem(pizzaViewModel: PizzaViewModel) {
         }
 
         is FoodState.Success -> {
-            ListCategoryFood(result.data)
-
+            ListCategoryFood(
+                result.data,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
 
         is FoodState.Failure -> {
@@ -82,13 +94,3 @@ fun SetMoreItem(pizzaViewModel: PizzaViewModel) {
         }
     }
 }
-
-@Composable
-fun ListCategoryFood(foods: MutableList<Food>) {
-    LazyColumn {
-        items(foods) { food ->
-            FoodItem(food = food)
-        }
-    }
-}
-

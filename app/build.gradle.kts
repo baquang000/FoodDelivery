@@ -74,4 +74,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.material.icons.extended)
 }

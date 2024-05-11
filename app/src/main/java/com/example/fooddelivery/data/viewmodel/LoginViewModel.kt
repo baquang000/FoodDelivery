@@ -39,8 +39,6 @@ class LoginViewModel : ViewModel() {
         loginInProgress.value = true
         val email = loginUIState.value.email
         val password = loginUIState.value.password
-        Log.d(tag,email)
-        Log.d(tag,password)
         FirebaseAuth.getInstance()
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
