@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,7 +58,8 @@ import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 @Composable
 fun FoodDetailsScreen(
     navController: NavController, navBackStackEntry: NavBackStackEntry,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    innerPaddingValues: PaddingValues
 ) {
     val context = LocalContext.current
     val title = navBackStackEntry.arguments?.getString(TITLE_ARGUMENT_KEY)
@@ -75,7 +77,7 @@ fun FoodDetailsScreen(
     }
     val totalPrice = quantityFood * price.toFloat()
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
     ) {
         Box {
             AsyncImage(

@@ -2,7 +2,9 @@ package com.example.fooddelivery.view.home.categoryScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,10 +28,11 @@ import com.example.fooddelivery.data.viewmodel.categoryviewmodel.MoreViewModel
 fun MoreScreen(
     navController: NavController,
     moreViewModel: MoreViewModel = viewModel(),
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
     ) {
         IconButton(onClick = {
             navController.popBackStack()

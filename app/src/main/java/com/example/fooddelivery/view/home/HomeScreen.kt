@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.FoodItem
 import com.example.fooddelivery.components.IconButtonWithText
@@ -58,7 +61,7 @@ import com.example.fooddelivery.data.model.PriceState
 import com.example.fooddelivery.data.model.TimeState
 import com.example.fooddelivery.data.viewmodel.HomeViewModel
 import com.example.fooddelivery.data.viewmodel.SharedViewModel
-import com.example.fooddelivery.navigation.Screen
+import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.ui.theme.category_btn_1
 import com.example.fooddelivery.ui.theme.category_btn_2
 import com.example.fooddelivery.ui.theme.category_btn_3
@@ -67,45 +70,25 @@ import com.example.fooddelivery.ui.theme.category_btn_5
 import com.example.fooddelivery.ui.theme.category_btn_6
 import com.example.fooddelivery.ui.theme.category_btn_7
 
+
 @Composable
 fun HomeScreen(
-    navController: NavController, homeViewModel: HomeViewModel = viewModel(),
-    sharedViewModel : SharedViewModel
+    homeNavController: NavHostController = rememberNavController(),
+    innerPadding: PaddingValues,
+    homeViewModel: HomeViewModel = viewModel(),
+    sharedViewModel: SharedViewModel = viewModel()
 ) {
     var searchText by remember {
         mutableStateOf("")
     }
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(innerPadding)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                .padding(start = 16.dp, end = 16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier.heightIn(min = 48.dp)
-                ) {
-                    NormalTextComponents(
-                        value = stringResource(R.string.welcome),
-                        nomalColor = Color.Black,
-                    )
-                    NormalTextComponents(
-                        value = "Quảng", nomalColor = Color.Black, nomalFontWeight = FontWeight.Bold
-                    )
-                }
-                IconButton(modifier = Modifier.size(32.dp, 32.dp), onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.logout),
-                        contentDescription = stringResource(
-                            R.string.logout_icon
-                        ),
-                    )
-                }
-            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -133,7 +116,11 @@ fun HomeScreen(
                         ),
                         tint = Color.Red,
                         modifier = Modifier.clickable {
-                            navController.navigate(Screen.Search.sendText(searchText))
+                            homeNavController.navigate(
+                                HomeRouteScreen.Search.sendText(
+                                    searchText
+                                )
+                            )
                         }
                     )
                 }, placeholder = {
@@ -165,7 +152,7 @@ fun HomeScreen(
                     ),
                     keyboardActions = KeyboardActions(
                         onSearch = {
-                            navController.navigate(Screen.Search.sendText(searchText))
+                            homeNavController.navigate(HomeRouteScreen.Search.sendText(searchText))
                         }
                     )
                 )
@@ -173,7 +160,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .size(48.dp, 48.dp)
                         .weight(1f),
-                    onClick = { navController.navigate(route = Screen.CartScreen.route) }) {
+                    onClick = { homeNavController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.basket),
                         contentDescription = stringResource(
@@ -234,11 +221,15 @@ fun HomeScreen(
                     NormalTextComponents(
                         value = stringResource(R.string.view_all), nomalColor = Color.Red,
                         modifier = Modifier.clickable {
-                            navController.navigate(Screen.ViewAll.route)
+                            homeNavController.navigate(HomeRouteScreen.ViewAll.route)
                         }
                     )
                 }
-                SetFoodItems(homeViewModel = homeViewModel, navController = navController, sharedViewModel = sharedViewModel)
+                SetFoodItems(
+                    homeViewModel = homeViewModel,
+                    navController = homeNavController,
+                    sharedViewModel = sharedViewModel
+                )
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -259,28 +250,28 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             IconButtonWithText {
-                                navController.navigate(Screen.Pizza.route)
+                                homeNavController.navigate(HomeRouteScreen.Pizza.route)
                             }
                             IconButtonWithText(
                                 backgroundColor = category_btn_1,
                                 iconId = R.drawable.btn_2,
                                 textId = R.string.Burger
                             ) {
-                                navController.navigate(Screen.Burger.route)
+                                homeNavController.navigate(HomeRouteScreen.Burger.route)
                             }
                             IconButtonWithText(
                                 backgroundColor = category_btn_2,
                                 iconId = R.drawable.btn_3,
                                 textId = R.string.Chicken
                             ) {
-                                navController.navigate(Screen.Chicken.route)
+                                homeNavController.navigate(HomeRouteScreen.Chicken.route)
                             }
                             IconButtonWithText(
                                 backgroundColor = category_btn_3,
                                 iconId = R.drawable.btn_4,
                                 textId = R.string.Sushi
                             ) {
-                                navController.navigate(Screen.Shushi.route)
+                                homeNavController.navigate(HomeRouteScreen.Shushi.route)
                             }
                         }
                         Row(
@@ -292,28 +283,28 @@ fun HomeScreen(
                                 iconId = R.drawable.btn_5,
                                 textId = R.string.Meat
                             ) {
-                                navController.navigate(Screen.Meat.route)
+                                homeNavController.navigate(HomeRouteScreen.Meat.route)
                             }
                             IconButtonWithText(
                                 backgroundColor = category_btn_5,
                                 iconId = R.drawable.btn_6,
                                 textId = R.string.hot_dog
                             ) {
-                                navController.navigate(Screen.HotDog.route)
+                                homeNavController.navigate(HomeRouteScreen.HotDog.route)
                             }
                             IconButtonWithText(
                                 backgroundColor = category_btn_6,
                                 iconId = R.drawable.btn_7,
                                 textId = R.string.drink
                             ) {
-                                navController.navigate(Screen.Drink.route)
+                                homeNavController.navigate(HomeRouteScreen.Drink.route)
                             }
                             IconButtonWithText(
                                 backgroundColor = category_btn_7,
                                 iconId = R.drawable.btn_8,
                                 textId = R.string.more
                             ) {
-                                navController.navigate(Screen.More.route)
+                                homeNavController.navigate(HomeRouteScreen.More.route)
                             }
                         }
                     }
@@ -396,7 +387,11 @@ fun SetTimeIems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SetFoodItems(homeViewModel: HomeViewModel, navController: NavController,sharedViewModel: SharedViewModel) {
+fun SetFoodItems(
+    homeViewModel: HomeViewModel,
+    navController: NavController,
+    sharedViewModel: SharedViewModel
+) {
     when (val result = homeViewModel.responseBestFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -405,7 +400,11 @@ fun SetFoodItems(homeViewModel: HomeViewModel, navController: NavController,shar
         }
 
         is FoodState.Success -> {
-            ListItemFood(result.data, navController = navController, sharedViewModel = sharedViewModel)
+            ListItemFood(
+                result.data,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
 
         }
 
@@ -480,4 +479,3 @@ fun SetLocationItems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier
         }
     }
 }
-

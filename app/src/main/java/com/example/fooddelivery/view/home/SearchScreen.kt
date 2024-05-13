@@ -3,6 +3,7 @@ package com.example.fooddelivery.view.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -35,7 +36,8 @@ fun SearchScreen(
     navController: NavController,
     backStackEntry: NavBackStackEntry,
     searchViewModel: SearchViewModel = viewModel(),
-    sharedViewModel: SharedViewModel = viewModel()
+    sharedViewModel: SharedViewModel = viewModel(),
+    innerPaddingValues: PaddingValues
 ) {
     val text = backStackEntry.arguments?.getString(SEARCH_ARGUMENT_KEY)
     Column {
@@ -48,7 +50,7 @@ fun SearchScreen(
             )
         }
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(innerPaddingValues),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

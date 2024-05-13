@@ -33,7 +33,8 @@ import com.example.fooddelivery.components.MyTextFieldComponents
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.SignupUIEvent
 import com.example.fooddelivery.data.viewmodel.SignupViewModel
-import com.example.fooddelivery.navigation.Screen
+import com.example.fooddelivery.navigation.AuthRouteScreen
+import com.example.fooddelivery.navigation.Graph
 
 
 @Composable
@@ -94,7 +95,9 @@ fun SignUpScreen(
                 signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
             }
             if (flowNavigaionHome) {
-                navController.navigate(Screen.Home.route)
+                navController.navigate(route = Graph.HOMEGRAPH) {
+                    popUpTo(AuthRouteScreen.SignUp.route) { inclusive = true }
+                }
             }
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -113,7 +116,7 @@ fun SignUpScreen(
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Red,
                     modifier = Modifier.clickable {
-                        navController.navigate(Screen.Login.route)
+                        navController.navigate(AuthRouteScreen.Login.route)
                     }
                 )
             }

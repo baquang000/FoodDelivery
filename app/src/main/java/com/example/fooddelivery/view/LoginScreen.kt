@@ -34,7 +34,8 @@ import com.example.fooddelivery.components.MyTextFieldComponents
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.LoginUIEvent
 import com.example.fooddelivery.data.viewmodel.LoginViewModel
-import com.example.fooddelivery.navigation.Screen
+import com.example.fooddelivery.navigation.AuthRouteScreen
+import com.example.fooddelivery.navigation.Graph
 
 @Composable
 fun LoginScreen(
@@ -101,7 +102,9 @@ fun LoginScreen(
                 loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
             }
             if (flowNavigationHome) {
-                navController.navigate(route = Screen.Home.route)
+                navController.navigate(route = Graph.HOMEGRAPH) {
+                    popUpTo(AuthRouteScreen.Login.route) { inclusive = true }
+                }
             }
             DrawLineAndTextComponents()
             Row(
@@ -159,7 +162,7 @@ fun LoginScreen(
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Red,
                     modifier = Modifier.clickable {
-                        navController.navigate(Screen.SignUp.route)
+                        navController.navigate(AuthRouteScreen.SignUp.route)
                     }
                 )
             }

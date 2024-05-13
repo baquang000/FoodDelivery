@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,13 +48,15 @@ import com.example.fooddelivery.data.viewmodel.SharedViewModel
 @Composable
 fun CartScreen(
     navController: NavController,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    innerPaddingValues: PaddingValues
 ) {
     val foodDetailStateFlow = sharedViewModel.foodDetailStateFlow.collectAsState()
     val foodDetailsList = foodDetailStateFlow.value
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(innerPaddingValues)
     ) {
         Row(
             modifier = Modifier
@@ -89,7 +92,11 @@ fun CartScreen(
         {
             items(foodDetailStateFlow.value) { food ->
                 val index = foodDetailStateFlow.value.indexOf(food)
-                CardFoodIemWithCart(foodDetails = food,sharedViewModel = sharedViewModel,index = index)
+                CardFoodIemWithCart(
+                    foodDetails = food,
+                    sharedViewModel = sharedViewModel,
+                    index = index
+                )
             }
         }
         NormalTextComponents(
@@ -210,7 +217,7 @@ fun CartScreen(
 @Composable
 fun CardFoodIemWithCart(
     foodDetails: FoodDetails,
-    index :Int,
+    index: Int,
     sharedViewModel: SharedViewModel
 ) {
     var quantity by remember {
@@ -304,7 +311,7 @@ fun CardFoodIemWithCart(
                         horizontalArrangement = Arrangement.End
                     ) {
                         NormalTextComponents(
-                            value = "${quantity*foodDetails.price}đ",
+                            value = "${quantity * foodDetails.price}đ",
                             nomalFontWeight = FontWeight.Bold,
                             nomalFontsize = 18.sp,
                             nomalColor = Color.Red

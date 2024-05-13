@@ -3,6 +3,7 @@ package com.example.fooddelivery.view.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,10 +36,11 @@ import com.example.fooddelivery.data.viewmodel.ViewAllViewModel
 fun ViewAllScreen(
     navController: NavController,
     viewAllViewModel: ViewAllViewModel = viewModel(),
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

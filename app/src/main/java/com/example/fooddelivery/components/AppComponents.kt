@@ -75,7 +75,7 @@ import com.example.fooddelivery.data.model.Location
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
 import com.example.fooddelivery.data.viewmodel.SharedViewModel
-import com.example.fooddelivery.navigation.Screen
+import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.ui.theme.category_btn_0
 import java.net.URLEncoder
 
@@ -332,7 +332,7 @@ fun FoodItem(
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .clickable {
                 navController.navigate(
-                    Screen.FoodDetails.sendFood(
+                    HomeRouteScreen.FoodDetails.sendFood(
                         title = food.Title.toString(),
                         price = food.Price,
                         star = food.Star,

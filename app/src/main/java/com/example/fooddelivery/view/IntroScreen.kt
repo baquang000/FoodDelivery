@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.navigation.Screen
+import com.example.fooddelivery.navigation.AuthRouteScreen
 
 @Composable
 fun IntroScreen(
@@ -93,7 +93,7 @@ fun IntroScreen(
                     modifier = Modifier
                         .padding(start = 24.dp, bottom = 24.dp)
                         .clickable {
-                            navController.navigate(Screen.SignUp.route)
+                            navController.navigate(AuthRouteScreen.SignUp.route)
                         })
                 NormalTextComponents(value = stringResource(id = R.string.Login),
                     nomalFontsize = 16.sp,
@@ -102,7 +102,7 @@ fun IntroScreen(
                     modifier = Modifier
                         .padding(end = 24.dp, bottom = 24.dp)
                         .clickable {
-                            navController.navigate(Screen.Login.route)
+                            navController.navigate(AuthRouteScreen.Login.route)
                         })
             }
         }

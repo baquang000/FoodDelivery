@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.fooddelivery.navigation.nav_graph.SetupNavGraph
+import com.example.fooddelivery.navigation.nav_graph.RootNavGraph
 import com.example.fooddelivery.ui.theme.FoodDeliveryTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,5 +30,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp() {
-    SetupNavGraph()
+    RootNavGraph()
 }

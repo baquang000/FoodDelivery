@@ -2,6 +2,7 @@ package com.example.fooddelivery.view.home.categoryScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -33,10 +34,11 @@ import com.example.fooddelivery.data.viewmodel.categoryviewmodel.PizzaViewModel
 fun PizzaScreen(
     navController: NavController,
     pizzaViewModel: PizzaViewModel = viewModel(),
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
     ) {
         IconButton(onClick = {
             navController.popBackStack()
