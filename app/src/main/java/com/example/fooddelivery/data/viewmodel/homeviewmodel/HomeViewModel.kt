@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel
+package com.example.fooddelivery.data.viewmodel.homeviewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

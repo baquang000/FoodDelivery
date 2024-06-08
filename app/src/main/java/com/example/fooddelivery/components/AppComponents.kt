@@ -40,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,12 +70,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
+import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.Location
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.ui.theme.category_btn_0
 import java.net.URLEncoder
@@ -338,7 +340,8 @@ fun FoodItem(
                         star = food.Star,
                         timevalue = food.TimeValue,
                         description = food.Description.toString(),
-                        imagepath = encodeURL
+                        imagepath = encodeURL,
+                        id = food.Id
                     )
                 )
             }
@@ -614,6 +617,60 @@ fun MyDropdownMenuWithPrice(modifier: Modifier = Modifier, price: MutableList<Pr
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDropdownMenuWithDiscountCode(
+    modifier: Modifier = Modifier, discountcode: MutableList<DiscountCode>,
+    sharedViewModel: SharedViewModel
+) {
+    val valueDiscount = remember {
+        mutableFloatStateOf(discountcode.firstOrNull()?.value ?: 0f)
+    }
+    val selected = remember {
+        mutableStateOf(discountcode.firstOrNull()?.name ?: "")
+    }
+    val expand = remember {
+        mutableStateOf(false)
+    }
+    sharedViewModel.getDiscountCodeValue(value = valueDiscount.floatValue)
+    Box(modifier = modifier) {
+        ExposedDropdownMenuBox(expanded = expand.value, onExpandedChange = {
+            expand.value = !expand.value
+        }) {
+            OutlinedTextField(
+                value = selected.value, onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
+                },
+                modifier = Modifier.menuAnchor(),
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.dollar),
+                        contentDescription = stringResource(
+                            id = R.string.price
+                        ),
+                        modifier = Modifier.scale(1.5f),
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                expanded = expand.value,
+                onDismissRequest = { expand.value = false }) {
+                discountcode.forEach {
+                    DropdownMenuItem(text = {
+                        Text(text = it.name)
+                    }, onClick = {
+                        selected.value = it.name
+                        expand.value = false
+                        valueDiscount.floatValue = it.value
+                    })
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun RatingBar(

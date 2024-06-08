@@ -59,8 +59,8 @@ import com.example.fooddelivery.data.model.FoodState
 import com.example.fooddelivery.data.model.LocationState
 import com.example.fooddelivery.data.model.PriceState
 import com.example.fooddelivery.data.model.TimeState
-import com.example.fooddelivery.data.viewmodel.HomeViewModel
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.HomeViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.ui.theme.category_btn_1
 import com.example.fooddelivery.ui.theme.category_btn_2

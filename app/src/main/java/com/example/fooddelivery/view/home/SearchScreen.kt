@@ -27,8 +27,8 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.FoodItem
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodState
-import com.example.fooddelivery.data.viewmodel.SearchViewModel
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SearchViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.SEARCH_ARGUMENT_KEY
 
 @Composable

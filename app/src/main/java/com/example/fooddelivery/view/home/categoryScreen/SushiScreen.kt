@@ -21,8 +21,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.categoryviewmodel.ShushiViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel.ShushiViewModel
 
 @Composable
 fun ShushiScreen(

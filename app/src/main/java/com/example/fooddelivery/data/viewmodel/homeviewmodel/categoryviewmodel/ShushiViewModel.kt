@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel.categoryviewmodel
+package com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -10,19 +10,18 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-
-class PizzaViewModel : ViewModel() {
-    val pizzaFood: MutableState<FoodState> = mutableStateOf(FoodState.Empty)
+class ShushiViewModel:ViewModel() {
+    val shushiFood: MutableState<FoodState> = mutableStateOf(FoodState.Empty)
 
     init {
-        petchPizzFood()
+        fetchShushiFood()
     }
 
-    private fun petchPizzFood() {
+    private fun fetchShushiFood() {
         val emptyList = mutableListOf<Food>()
-        pizzaFood.value = FoodState.Loading
+        shushiFood.value = FoodState.Loading
         val query = FirebaseDatabase.getInstance().getReference("Foods").orderByChild("CategoryId")
-            .equalTo(0.0)
+            .equalTo(3.0)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (dataSnap in snapshot.children) {
@@ -31,14 +30,13 @@ class PizzaViewModel : ViewModel() {
                         emptyList.add(foodItem)
                     }
                 }
-                pizzaFood.value = FoodState.Success(emptyList)
+                shushiFood.value = FoodState.Success(emptyList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                pizzaFood.value = FoodState.Failure(error.message)
+                shushiFood.value = FoodState.Failure(error.message)
             }
 
         })
     }
 }
-

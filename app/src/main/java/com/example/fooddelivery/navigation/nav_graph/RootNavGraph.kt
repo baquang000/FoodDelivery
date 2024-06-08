@@ -19,8 +19,9 @@ fun RootNavGraph(
         route = Graph.ROOTGRAPH
     ) {
         authNavGraph(rootNavController = rootNavController)
-        composable(route = Graph.HOMEGRAPH){
+        composable(route = Graph.HOMEGRAPH) {
             MainScreen(rootNavHostController = rootNavController)
         }
+        profileNavGraph(rootNavController = rootNavController)
     }
 }

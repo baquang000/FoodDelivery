@@ -1,4 +1,4 @@
-package com.example.fooddelivery.view
+package com.example.fooddelivery.view.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -28,21 +28,21 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.ButtonComponents
-import com.example.fooddelivery.components.DrawLineAndTextComponents
 import com.example.fooddelivery.components.MyPasswordTextFieldComponents
 import com.example.fooddelivery.components.MyTextFieldComponents
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.model.LoginUIEvent
-import com.example.fooddelivery.data.viewmodel.LoginViewModel
+import com.example.fooddelivery.data.model.SignupUIEvent
+import com.example.fooddelivery.data.viewmodel.authviewmodel.SignupViewModel
 import com.example.fooddelivery.navigation.AuthRouteScreen
 import com.example.fooddelivery.navigation.Graph
 
+
 @Composable
-fun LoginScreen(
+fun SignUpScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel = viewModel()
+    signupViewModel: SignupViewModel = viewModel()
 ) {
-    val flowNavigationHome by loginViewModel.navigationHome.collectAsState()
+    val flowNavigaionHome by signupViewModel.navigationHome.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -78,106 +78,60 @@ fun LoginScreen(
             }
             MyTextFieldComponents(
                 lableText = stringResource(id = R.string.email),
-                errorStatus = loginViewModel.loginUIState.value.emailError,
+                errorStatus = signupViewModel.signUpUIState.value.emailError
             ) {
-                loginViewModel.onEvent(LoginUIEvent.EmailChange(it))
+                signupViewModel.onEvent(SignupUIEvent.emailChange(it))
             }
             MyPasswordTextFieldComponents(
                 lableText = stringResource(id = R.string.Pass_Word),
-                errorStatus = loginViewModel.loginUIState.value.passwordError
+                errorStatus = signupViewModel.signUpUIState.value.passwordError
             ) {
-                loginViewModel.onEvent(LoginUIEvent.PasswordChange(it))
+                signupViewModel.onEvent(SignupUIEvent.PasswordChange(it))
             }
-            NormalTextComponents(
-                value = stringResource(R.string.ban_quen_mat_khau),
-                nomalFontsize = 16.sp,
-                nomalFontWeight = FontWeight.Normal,
-                nomalColor = Color.Black,
-                modifier = Modifier.padding(top = 32.dp)
-            )
             ButtonComponents(
-                value = stringResource(id = R.string.Dang_nhap),
-                isEnable = loginViewModel.allValicationPass.value
+                value = stringResource(id = R.string.Dang_Ky),
+                isEnable = signupViewModel.allValicationPass.value
             ) {
-                loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
             }
-            if (flowNavigationHome) {
+            if (flowNavigaionHome) {
                 navController.navigate(route = Graph.HOMEGRAPH) {
-                    popUpTo(AuthRouteScreen.Login.route) { inclusive = true }
+                    popUpTo(AuthRouteScreen.SignUp.route) { inclusive = true }
                 }
-            }
-            DrawLineAndTextComponents()
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 32.dp),
-                horizontalArrangement = Arrangement.Center
-            )
-            {
-                Image(
-                    painter = painterResource(id = R.drawable.facebook),
-                    contentDescription = "logo_facebook",
-                    modifier = Modifier
-                        .clickable {
-
-                        }
-                        .weight(1f)
-                        .height(50.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.google),
-                    contentDescription = "logo_google",
-                    modifier = Modifier
-                        .clickable {
-
-                        }
-                        .weight(1f)
-                        .height(50.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.twitter),
-                    contentDescription = "logo_twitter",
-                    modifier = Modifier
-                        .clickable {
-
-                        }
-                        .weight(1f)
-                        .height(50.dp)
-                )
             }
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 NormalTextComponents(
-                    value = stringResource(R.string.ban_khong_co_tai_khoan),
+                    value = stringResource(R.string.Ban_co_tai_khoan),
                     nomalFontsize = 16.sp,
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Black,
                     modifier = Modifier.padding(end = 2.dp)
                 )
                 NormalTextComponents(
-                    value = stringResource(id = R.string.Dang_Ky),
+                    value = stringResource(R.string.Dang_nhap),
                     nomalFontsize = 16.sp,
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Red,
                     modifier = Modifier.clickable {
-                        navController.navigate(AuthRouteScreen.SignUp.route)
+                        navController.navigate(AuthRouteScreen.Login.route)
                     }
                 )
             }
         }
-        if (loginViewModel.loginInProgress.value) {
+        if (signupViewModel.signInProgress.value) {
             CircularProgressIndicator()
         }
     }
 }
 
-
 @Preview(
     showBackground = true
 )
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen(navController = rememberNavController())
+fun SignUpScreenPreview() {
+    SignUpScreen(navController = rememberNavController())
 }
+

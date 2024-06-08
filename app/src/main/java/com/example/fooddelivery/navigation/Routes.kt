@@ -7,6 +7,7 @@ const val STAR_ARGUMENT_KEY = "star"
 const val TIMEVALUE_ARGUMENT_KEY = "timevalue"
 const val DESCRIPTION_ARGUMENT_KEY = "description"
 const val IMAGEPATH_ARGUMENT_KEY = "imagepath"
+const val ID_ARGUMENT_KEY = "id"
 
 sealed class HomeRouteScreen(val route: String) {
     data object Home : HomeRouteScreen(route = "Home_Screen")
@@ -26,16 +27,17 @@ sealed class HomeRouteScreen(val route: String) {
 
     data object ViewAll : HomeRouteScreen(route = "ViewAll_Screen")
     data object FoodDetails :
-        HomeRouteScreen(route = "Food_Details_Screen?title={$TITLE_ARGUMENT_KEY}&price={$PRICE_ARGUMENT_KEY}&star={$STAR_ARGUMENT_KEY}&timevalue={$TIMEVALUE_ARGUMENT_KEY}&description={$DESCRIPTION_ARGUMENT_KEY}&imagepath={$IMAGEPATH_ARGUMENT_KEY}") {
+        HomeRouteScreen(route = "Food_Details_Screen?title={$TITLE_ARGUMENT_KEY}&price={$PRICE_ARGUMENT_KEY}&star={$STAR_ARGUMENT_KEY}&timevalue={$TIMEVALUE_ARGUMENT_KEY}&description={$DESCRIPTION_ARGUMENT_KEY}&imagepath={$IMAGEPATH_ARGUMENT_KEY}&id={$ID_ARGUMENT_KEY}") {
         fun sendFood(
             title: String = "",
             price: Double = 0.0,
             star: Double = 0.0,
             timevalue: Int = 0,
             description: String = "",
-            imagepath: String = ""
+            imagepath: String = "",
+            id: Int = 0
         ): String {
-            return "Food_Details_Screen?title=$title&price=$price&star=$star&timevalue=$timevalue&description=$description&imagepath=$imagepath"
+            return "Food_Details_Screen?title=$title&price=$price&star=$star&timevalue=$timevalue&description=$description&imagepath=$imagepath&id=$id"
         }
     }
 
@@ -52,8 +54,13 @@ object Graph {
     const val PROFILEGRAPH = "profileGraph"
 }
 
-sealed class AuthRouteScreen(val route: String){
+sealed class AuthRouteScreen(val route: String) {
     data object Intro : AuthRouteScreen(route = "Intro_screen")
     data object Login : AuthRouteScreen(route = "Login_screen")
     data object SignUp : AuthRouteScreen(route = "SignUp_screen")
+}
+
+sealed class ProfileRouteScreen(val route: String) {
+    data object UserInfor : ProfileRouteScreen(route = "UserInfor_screen")
+    data object HisFood : ProfileRouteScreen(route = "HisFood_screen")
 }

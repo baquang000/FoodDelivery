@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel.categoryviewmodel
+package com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -10,18 +10,18 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class MoreViewModel:ViewModel() {
-    val moreFood: MutableState<FoodState> = mutableStateOf(FoodState.Empty)
+class MeatViewModel:ViewModel() {
+    val meatFood: MutableState<FoodState> = mutableStateOf(FoodState.Empty)
 
     init {
-        fetchMoreFood()
+        fetchMeatFood()
     }
 
-    private fun fetchMoreFood() {
+    private fun fetchMeatFood() {
         val emptyList = mutableListOf<Food>()
-        moreFood.value = FoodState.Loading
+        meatFood.value = FoodState.Loading
         val query = FirebaseDatabase.getInstance().getReference("Foods").orderByChild("CategoryId")
-            .equalTo(7.0)
+            .equalTo(4.0)
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (dataSnap in snapshot.children) {
@@ -30,11 +30,11 @@ class MoreViewModel:ViewModel() {
                         emptyList.add(foodItem)
                     }
                 }
-                moreFood.value = FoodState.Success(emptyList)
+                meatFood.value = FoodState.Success(emptyList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                moreFood.value = FoodState.Failure(error.message)
+                meatFood.value = FoodState.Failure(error.message)
             }
 
         })

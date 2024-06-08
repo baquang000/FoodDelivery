@@ -1,6 +1,5 @@
 package com.example.fooddelivery.navigation.nav_graph
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -9,10 +8,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.HomeRouteScreen
+import com.example.fooddelivery.navigation.ID_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.IMAGEPATH_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.PRICE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.SEARCH_ARGUMENT_KEY
@@ -124,11 +124,12 @@ fun HomeNavGraph(
                 },
                 navArgument(IMAGEPATH_ARGUMENT_KEY) {
                     type = NavType.StringType
+                },
+                navArgument(ID_ARGUMENT_KEY){
+                    type = NavType.IntType
                 }
             )
         ) { navBackStackEntry ->
-            val imagepath = navBackStackEntry.arguments?.getString(IMAGEPATH_ARGUMENT_KEY)
-            Log.e("image", "$imagepath")
             FoodDetailsScreen(
                 navController = homeNavController,
                 navBackStackEntry = navBackStackEntry,

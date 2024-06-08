@@ -22,9 +22,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -47,8 +50,10 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
+import com.example.fooddelivery.navigation.ID_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.IMAGEPATH_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.PRICE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
@@ -59,7 +64,8 @@ import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 fun FoodDetailsScreen(
     navController: NavController, navBackStackEntry: NavBackStackEntry,
     sharedViewModel: SharedViewModel,
-    innerPaddingValues: PaddingValues
+    innerPaddingValues: PaddingValues,
+    favoriteViewModel: FavoriteViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val title = navBackStackEntry.arguments?.getString(TITLE_ARGUMENT_KEY)
@@ -68,16 +74,23 @@ fun FoodDetailsScreen(
     val timevalue = navBackStackEntry.arguments?.getInt(TIMEVALUE_ARGUMENT_KEY)
     val description = navBackStackEntry.arguments?.getString(DESCRIPTION_ARGUMENT_KEY)
     val imagepath = navBackStackEntry.arguments?.getString(IMAGEPATH_ARGUMENT_KEY)
+    val id = navBackStackEntry.arguments?.getInt(ID_ARGUMENT_KEY) ?: -1
     val rating by remember {
         mutableFloatStateOf(star.toFloat())
     }
-
     var quantityFood by remember {
         mutableIntStateOf(0)
     }
     val totalPrice = quantityFood * price.toFloat()
+    LaunchedEffect(key1 = id) {
+        favoriteViewModel.loadFavoriteStatus(id)
+    }
+    var isFavorited by remember { mutableStateOf(false) }
+    isFavorited = favoriteViewModel.favoriteStatus[id] ?: false
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPaddingValues)
     ) {
         Box {
             AsyncImage(
@@ -110,11 +123,21 @@ fun FoodDetailsScreen(
             verticalAlignment = Alignment.Top
         ) {
             Image(
-                painter = painterResource(id = R.drawable.favorite_white),
+                painter = if (isFavorited) painterResource(id = R.drawable.favourite) else painterResource(
+                    id = R.drawable.favorite_white
+                ),
                 contentDescription = stringResource(
                     id = R.string.favorite_white_icon
                 ),
-                modifier = Modifier.scale(2.2f)
+                modifier = Modifier
+                    .size(32.dp, 32.dp)
+                    .scale(2.2f)
+                    .clickable {
+                        favoriteViewModel.saveFavoriteFood(
+                            id = id,
+                            isFavorited = !isFavorited
+                        )
+                    }
             )
         }
         Row(

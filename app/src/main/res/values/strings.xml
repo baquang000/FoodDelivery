@@ -55,4 +55,15 @@
     <string name="cart_title">Giỏ hàng</string>
     <string name="order_summary">Chi tiết đơn hàng</string>
     <string name="place_order">Đặt hàng</string>
+    <string name="private_info_user">Thông tin cá nhân</string>
+    <string name="favorite_user">Yêu thích</string>
+    <string name="history_user">Lịch sử</string>
+    <string name="change_pass_user">Thay đổi mật khẩu</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="name_user">Họ tên</string>
+    <string name="address_user">địa chỉ</string>
+    <string name="save">Lưu</string>
+    <string name="is_saving">Đang lưu</string>
+    <string name="save_failed">Lưu thất bại</string>
+    <string name="save_success">Lưu thành công</string>
 </resources>

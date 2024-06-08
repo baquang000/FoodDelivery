@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel
+package com.example.fooddelivery.data.viewmodel.authviewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf

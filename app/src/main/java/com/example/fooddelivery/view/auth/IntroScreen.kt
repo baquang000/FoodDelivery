@@ -1,4 +1,4 @@
-package com.example.fooddelivery.view
+package com.example.fooddelivery.view.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

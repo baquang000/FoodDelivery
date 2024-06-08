@@ -1,5 +1,6 @@
 package com.example.fooddelivery.view.home
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,9 +19,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,17 +36,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
+import com.example.fooddelivery.components.MyDropdownMenuWithDiscountCode
 import com.example.fooddelivery.components.NormalTextComponents
+import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 
 @Composable
 fun CartScreen(
@@ -51,8 +58,10 @@ fun CartScreen(
     sharedViewModel: SharedViewModel,
     innerPaddingValues: PaddingValues
 ) {
+    val context = LocalContext.current
     val foodDetailStateFlow = sharedViewModel.foodDetailStateFlow.collectAsState()
     val foodDetailsList = foodDetailStateFlow.value
+    val sumPrice = sharedViewModel.sumPrice.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,12 +108,11 @@ fun CartScreen(
                 )
             }
         }
-        NormalTextComponents(
-            value = "Mã giảm giá",
-            nomalColor = Color.Black,
-            nomalFontsize = 24.sp,
-            nomalFontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+        SetDiscountCodeItems(
+            sharedViewModel = sharedViewModel,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp)
         )
         NormalTextComponents(
             value = stringResource(R.string.order_summary),
@@ -182,7 +190,7 @@ fun CartScreen(
                         nomalFontWeight = FontWeight.Bold
                     )
                     NormalTextComponents(
-                        value = "${sharedViewModel.caculatorPrice() + 15000}đ",
+                        value = "${sumPrice.value}đ",
                         nomalColor = Color.Black,
                         nomalFontsize = 18.sp,
                         nomalFontWeight = FontWeight.Bold
@@ -198,7 +206,10 @@ fun CartScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    sharedViewModel.addFoodHistoryAndDelete()
+                    Toast.makeText(context, "Đặt hàng thành công", Toast.LENGTH_SHORT).show()
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red
@@ -318,6 +329,45 @@ fun CardFoodIemWithCart(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun SetDiscountCodeItems(sharedViewModel: SharedViewModel, modifier: Modifier = Modifier) {
+    when (val result = sharedViewModel.discountCode.value) {
+        is DiscountCodeState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is DiscountCodeState.Success -> {
+            MyDropdownMenuWithDiscountCode(
+                discountcode = result.data,
+                modifier = modifier,
+                sharedViewModel = sharedViewModel
+            )
+        }
+
+        is DiscountCodeState.Failure -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = result.message, style = TextStyle(
+                        fontSize = 20.sp,
+                    )
+                )
+            }
+        }
+
+        else -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = stringResource(R.string.error_loading_data), style = TextStyle(
+                        fontSize = 20.sp, color = Color.Red
+                    )
+                )
             }
         }
     }

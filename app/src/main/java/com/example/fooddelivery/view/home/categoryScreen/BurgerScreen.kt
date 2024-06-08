@@ -21,14 +21,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
-import com.example.fooddelivery.data.viewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.categoryviewmodel.BurgerViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel.BurgerViewModel
 
 
 
 @Composable
 fun BurgerScreen(navController: NavController, burgerViewModel: BurgerViewModel = viewModel(),
-                 sharedViewModel: SharedViewModel,innerPaddingValues: PaddingValues
+                 sharedViewModel: SharedViewModel, innerPaddingValues: PaddingValues
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
@@ -51,7 +51,7 @@ fun BurgerScreen(navController: NavController, burgerViewModel: BurgerViewModel 
 }
 
 @Composable
-fun SetMoreItem(burgerViewModel: BurgerViewModel,navController: NavController,sharedViewModel: SharedViewModel) {
+fun SetMoreItem(burgerViewModel: BurgerViewModel, navController: NavController, sharedViewModel: SharedViewModel) {
     when (val result = burgerViewModel.burgerFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

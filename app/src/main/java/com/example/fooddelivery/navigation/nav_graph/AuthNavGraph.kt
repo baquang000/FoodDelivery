@@ -6,9 +6,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.fooddelivery.navigation.AuthRouteScreen
 import com.example.fooddelivery.navigation.Graph
-import com.example.fooddelivery.view.IntroScreen
-import com.example.fooddelivery.view.LoginScreen
-import com.example.fooddelivery.view.SignUpScreen
+import com.example.fooddelivery.view.auth.IntroScreen
+import com.example.fooddelivery.view.auth.LoginScreen
+import com.example.fooddelivery.view.auth.SignUpScreen
 
 fun NavGraphBuilder.authNavGraph(
     rootNavController: NavHostController
