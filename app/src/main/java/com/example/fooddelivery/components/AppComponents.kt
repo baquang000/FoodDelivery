@@ -137,7 +137,7 @@ fun MyTextFieldComponents(
         ),
         singleLine = true,
         leadingIcon = {
-            Icon(imageVector = Icons.Default.Email, contentDescription = "Phone_login")
+            Icon(imageVector = Icons.Default.Email, contentDescription = "Email_login")
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,

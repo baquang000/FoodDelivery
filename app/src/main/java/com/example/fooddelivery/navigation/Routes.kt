@@ -63,4 +63,5 @@ sealed class AuthRouteScreen(val route: String) {
 sealed class ProfileRouteScreen(val route: String) {
     data object UserInfor : ProfileRouteScreen(route = "UserInfor_screen")
     data object HisFood : ProfileRouteScreen(route = "HisFood_screen")
+    data object ChangePass : ProfileRouteScreen(route = "ChangePass_screen")
 }

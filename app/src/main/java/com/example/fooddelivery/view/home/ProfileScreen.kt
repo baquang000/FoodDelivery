@@ -25,14 +25,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
+import com.example.fooddelivery.data.viewmodel.profileviewmodel.ProfileViewModel
+import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.ProfileRouteScreen
 
 @Composable
 fun ProfileScreen(
     innerPadding: PaddingValues,
-    navController: NavController
+    navController: NavController,
+    profileViewModel: ProfileViewModel = viewModel()
 ) {
     Surface(
         modifier = Modifier
@@ -98,7 +102,9 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 50.dp)
-                    .clickable { },
+                    .clickable {
+                               navController.navigate(route = ProfileRouteScreen.ChangePass.route)
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
@@ -120,7 +126,14 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 50.dp)
-                    .clickable { },
+                    .clickable {
+                        profileViewModel.logout()
+                        navController.navigate(route = Graph.AUTHGRAPH){
+                            popUpTo(Graph.AUTHGRAPH){
+                                inclusive = true
+                            }
+                        }
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {

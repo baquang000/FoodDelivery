@@ -89,10 +89,4 @@ class SignupViewModel : ViewModel() {
                 signInProgress.value = false
             }
     }
-
-    fun logout() {
-        val firebaseAuth = FirebaseAuth.getInstance()
-        firebaseAuth.signOut()
-    }
-
 }
