@@ -100,7 +100,7 @@ fun ChangePassScreen(
             .padding(horizontal = 8.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        IconButton(onClick = { navController.popBackStack() }) {
+        IconButton(onClick = { navController.navigateUp() }) {
             Icon(
                 painter = painterResource(id = R.drawable.arrow),
                 contentDescription = stringResource(

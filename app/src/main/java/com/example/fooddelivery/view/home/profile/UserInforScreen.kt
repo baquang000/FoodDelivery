@@ -50,7 +50,7 @@ fun UserInforScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(15.dp),
         ) {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = { navController.navigateUp() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow),
                     contentDescription = stringResource(

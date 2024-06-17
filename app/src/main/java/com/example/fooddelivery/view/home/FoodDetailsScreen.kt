@@ -101,7 +101,7 @@ fun FoodDetailsScreen(
                     .fillMaxWidth()
                     .heightIn(max = 400.dp)
             )
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = { navController.navigateUp() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow),
                     contentDescription = stringResource(

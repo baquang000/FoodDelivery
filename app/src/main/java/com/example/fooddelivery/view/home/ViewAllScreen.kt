@@ -40,7 +40,9 @@ fun ViewAllScreen(
     innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPaddingValues)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -48,7 +50,7 @@ fun ViewAllScreen(
             horizontalArrangement = Arrangement.Start
         ) {
             IconButton(onClick = {
-                navController.popBackStack()
+                navController.navigateUp()
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow),

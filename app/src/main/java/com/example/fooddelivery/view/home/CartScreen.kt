@@ -74,7 +74,7 @@ fun CartScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = { navController.navigateUp() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow),
                     contentDescription = stringResource(
@@ -108,12 +108,13 @@ fun CartScreen(
                 )
             }
         }
+
         SetDiscountCodeItems(
             sharedViewModel = sharedViewModel,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 8.dp)
         )
+
         NormalTextComponents(
             value = stringResource(R.string.order_summary),
             nomalColor = Color.Black,

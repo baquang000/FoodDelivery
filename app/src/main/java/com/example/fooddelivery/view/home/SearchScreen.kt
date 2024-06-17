@@ -42,7 +42,7 @@ fun SearchScreen(
     val text = backStackEntry.arguments?.getString(SEARCH_ARGUMENT_KEY)
     Column {
         IconButton(onClick = {
-            navController.popBackStack()
+            navController.navigateUp()
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.arrow),

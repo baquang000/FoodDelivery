@@ -10,8 +10,7 @@ import com.example.fooddelivery.view.home.MainScreen
 
 
 @Composable
-fun RootNavGraph(
-) {
+fun RootNavGraph() {
     val rootNavController: NavHostController = rememberNavController()
     NavHost(
         navController = rootNavController,

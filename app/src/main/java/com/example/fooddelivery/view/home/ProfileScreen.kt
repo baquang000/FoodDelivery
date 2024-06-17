@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,31 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .heightIn(min = 50.dp)
                     .clickable {
-                               navController.navigate(route = ProfileRouteScreen.ChangePass.route)
+                        navController.navigate(route = ProfileRouteScreen.OrderFood.route)
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.basket),
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+                Text(
+                    text = stringResource(R.string.order_screen),
+                    modifier = Modifier.padding(start = 8.dp),
+                    style = TextStyle(
+                        fontSize = 22.sp,
+                        color = Color.Black
+                    )
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 50.dp)
+                    .clickable {
+                        navController.navigate(route = ProfileRouteScreen.ChangePass.route)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -128,8 +153,8 @@ fun ProfileScreen(
                     .heightIn(min = 50.dp)
                     .clickable {
                         profileViewModel.logout()
-                        navController.navigate(route = Graph.AUTHGRAPH){
-                            popUpTo(Graph.AUTHGRAPH){
+                        navController.navigate(route = Graph.AUTHGRAPH) {
+                            popUpTo(Graph.AUTHGRAPH) {
                                 inclusive = true
                             }
                         }

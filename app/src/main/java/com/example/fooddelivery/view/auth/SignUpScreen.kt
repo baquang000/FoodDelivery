@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +32,6 @@ import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.SignupUIEvent
 import com.example.fooddelivery.data.viewmodel.authviewmodel.SignupViewModel
 import com.example.fooddelivery.navigation.AuthRouteScreen
-import com.example.fooddelivery.navigation.Graph
 
 
 @Composable
@@ -42,7 +39,6 @@ fun SignUpScreen(
     navController: NavController,
     signupViewModel: SignupViewModel = viewModel()
 ) {
-    val flowNavigaionHome by signupViewModel.navigationHome.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -94,11 +90,7 @@ fun SignUpScreen(
             ) {
                 signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
             }
-            if (flowNavigaionHome) {
-                navController.navigate(route = Graph.HOMEGRAPH) {
-                    popUpTo(AuthRouteScreen.SignUp.route) { inclusive = true }
-                }
-            }
+
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center

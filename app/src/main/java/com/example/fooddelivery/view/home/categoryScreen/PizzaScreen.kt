@@ -41,7 +41,7 @@ fun PizzaScreen(
         modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
     ) {
         IconButton(onClick = {
-            navController.popBackStack()
+            navController.navigateUp()
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.arrow),

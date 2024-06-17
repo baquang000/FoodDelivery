@@ -8,6 +8,7 @@ import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.ProfileRouteScreen
 import com.example.fooddelivery.view.home.profile.ChangePassScreen
 import com.example.fooddelivery.view.home.profile.HistoryFoodScreen
+import com.example.fooddelivery.view.home.profile.OrderFoodScreen
 import com.example.fooddelivery.view.home.profile.UserInforScreen
 
 fun NavGraphBuilder.profileNavGraph(
@@ -25,6 +26,9 @@ fun NavGraphBuilder.profileNavGraph(
         }
         composable(route = ProfileRouteScreen.ChangePass.route) {
             ChangePassScreen(navController = rootNavController)
+        }
+        composable(route = ProfileRouteScreen.OrderFood.route){
+            OrderFoodScreen(navController = rootNavController)
         }
     }
 }

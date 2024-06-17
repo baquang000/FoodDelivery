@@ -326,148 +326,150 @@ fun FoodItem(
 ) {
     val context = LocalContext.current
     val encodeURL = URLEncoder.encode(food.ImagePath, "UTF-8")
-    Card(
-        modifier = modifier
-            .size(width = 260.dp, height = 295.dp)
-            .background(Color.LightGray.copy(alpha = 0.3f))
-            .clip(shape = RoundedCornerShape(15.dp))
-            .padding(horizontal = 8.dp, vertical = 8.dp)
-            .clickable {
-                navController.navigate(
-                    HomeRouteScreen.FoodDetails.sendFood(
-                        title = food.Title.toString(),
-                        price = food.Price,
-                        star = food.Star,
-                        timevalue = food.TimeValue,
-                        description = food.Description.toString(),
-                        imagepath = encodeURL,
-                        id = food.Id
+    if (food.isShow) {
+        Card(
+            modifier = modifier
+                .size(width = 260.dp, height = 295.dp)
+                .background(Color.LightGray.copy(alpha = 0.3f))
+                .clip(shape = RoundedCornerShape(15.dp))
+                .padding(horizontal = 8.dp, vertical = 8.dp)
+                .clickable {
+                    navController.navigate(
+                        HomeRouteScreen.FoodDetails.sendFood(
+                            title = food.Title.toString(),
+                            price = food.Price,
+                            star = food.Star,
+                            timevalue = food.TimeValue,
+                            description = food.Description.toString(),
+                            imagepath = encodeURL,
+                            id = food.Id
+                        )
                     )
-                )
-            }
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
+                }
         ) {
-            AsyncImage(
-                model = food.ImagePath,
-                contentDescription = food.Title,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 180.dp)
-            )
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
-                Row(
+                AsyncImage(
+                    model = food.ImagePath,
+                    contentDescription = food.Title,
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    NormalTextComponents(
-                        value = food.Title.toString(),
-                        nomalColor = Color.Black,
-                        nomalFontsize = 18.sp,
-                        nomalFontWeight = FontWeight.Bold,
-                        nomalTextAlign = TextAlign.Center
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    NormalTextComponents(
-                        value = "${food.Price}đ",
-                        nomalColor = Color.Black,
-                        nomalFontWeight = FontWeight.Bold,
-                        nomalFontsize = 18.sp,
-                    )
-                }
+                        .heightIn(max = 180.dp)
+                )
                 Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.Bottom,
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        NormalTextComponents(
+                            value = food.Title.toString(),
+                            nomalColor = Color.Black,
+                            nomalFontsize = 18.sp,
+                            nomalFontWeight = FontWeight.Bold,
+                            nomalTextAlign = TextAlign.Center
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        NormalTextComponents(
+                            value = "${food.Price}đ",
+                            nomalColor = Color.Black,
+                            nomalFontWeight = FontWeight.Bold,
+                            nomalFontsize = 18.sp,
+                        )
+                    }
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.Bottom,
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            NormalTextComponents(
-                                value = food.Star.toString(),
-                                nomalColor = Color.Black,
-                                nomalFontsize = 18.sp,
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.star),
-                                contentDescription = stringResource(
-                                    R.string.star_icon
-                                ),
-                                tint = Color.Yellow,
-                                modifier = Modifier.scale(1.8f)
-                            )
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        ) {
-                            NormalTextComponents(
-                                value = "${food.TimeValue}p",
-                                nomalFontsize = 18.sp,
-                                nomalColor = Color.Black,
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.time),
-                                contentDescription = stringResource(
-                                    id = R.string.time
-                                ),
-                                modifier = Modifier
-                                    .scale(1.8f)
-                                    .padding(start = 8.dp, bottom = 8.dp),
-                                tint = Color.Red
-                            )
-                        }
-                        Spacer(modifier = spacerbuttonModifier)
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            Button(colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Red
-                            ), shape = RectangleShape, modifier = Modifier.clip(
-                                shape = RoundedCornerShape(
-                                    topStart = 15.dp, bottomEnd = 16.dp
+                            ) {
+                                NormalTextComponents(
+                                    value = food.Star.toString(),
+                                    nomalColor = Color.Black,
+                                    nomalFontsize = 18.sp,
                                 )
-                            ), onClick = {
-                                val fooddetails = FoodDetails(
-                                    title = food.Title.toString(),
-                                    imagePath = food.ImagePath.toString(),
-                                    price = food.Price.toFloat(),
-                                    quantity = 1
+                                Icon(
+                                    painter = painterResource(id = R.drawable.star),
+                                    contentDescription = stringResource(
+                                        R.string.star_icon
+                                    ),
+                                    tint = Color.Yellow,
+                                    modifier = Modifier.scale(1.8f)
                                 )
-                                sharedViewModel.addFoodDetail(foodDetails = fooddetails)
-                                Toast.makeText(
-                                    context, "Thêm vào giỏ hàng thành công",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }) {
-                                Text(
-                                    text = "+", style = TextStyle(
-                                        fontSize = buttonSize, textAlign = TextAlign.Center
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                NormalTextComponents(
+                                    value = "${food.TimeValue}p",
+                                    nomalFontsize = 18.sp,
+                                    nomalColor = Color.Black,
+                                    modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
+                                )
+                                Icon(
+                                    painter = painterResource(id = R.drawable.time),
+                                    contentDescription = stringResource(
+                                        id = R.string.time
+                                    ),
+                                    modifier = Modifier
+                                        .scale(1.8f)
+                                        .padding(start = 8.dp, bottom = 8.dp),
+                                    tint = Color.Red
+                                )
+                            }
+                            Spacer(modifier = spacerbuttonModifier)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                Button(colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Red
+                                ), shape = RectangleShape, modifier = Modifier.clip(
+                                    shape = RoundedCornerShape(
+                                        topStart = 15.dp, bottomEnd = 16.dp
                                     )
-                                )
+                                ), onClick = {
+                                    val fooddetails = FoodDetails(
+                                        title = food.Title.toString(),
+                                        imagePath = food.ImagePath.toString(),
+                                        price = food.Price.toFloat(),
+                                        quantity = 1
+                                    )
+                                    sharedViewModel.addFoodDetail(foodDetails = fooddetails)
+                                    Toast.makeText(
+                                        context, "Thêm vào giỏ hàng thành công",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }) {
+                                    Text(
+                                        text = "+", style = TextStyle(
+                                            fontSize = buttonSize, textAlign = TextAlign.Center
+                                        )
+                                    )
+                                }
                             }
                         }
                     }

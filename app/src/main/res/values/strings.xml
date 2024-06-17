@@ -66,4 +66,5 @@
     <string name="is_saving">Đang lưu</string>
     <string name="save_failed">Lưu thất bại</string>
     <string name="save_success">Lưu thành công</string>
+    <string name="order_screen">Đơn hàng</string>
 </resources>
