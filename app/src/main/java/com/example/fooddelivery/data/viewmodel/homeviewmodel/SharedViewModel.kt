@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
+import com.example.fooddelivery.data.model.OrderFood
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -103,10 +104,11 @@ class SharedViewModel : ViewModel() {
 
     fun addFoodHistoryAndDelete() {
         val foodList = _foodDetailStateFlow.value
+        val orderlist = OrderFood(listFood = foodList, sumPrice = _sumPrice.value)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            FirebaseDatabase.getInstance().getReference("historyFood").child(userId).push()
-                .setValue(foodList).addOnCompleteListener { task ->
+            FirebaseDatabase.getInstance().getReference("orderFood").child(userId).push()
+                .setValue(orderlist).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("Firebase", "Save success")
                         _foodDetailStateFlow.value = emptyList()
