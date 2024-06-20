@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -105,13 +106,22 @@ fun OrderFoodScreen(
             if (index == 0) {
                 ConfirmOrder(orderViewModel = orderViewModel)
             }
+            if (index == 1) {
+                DeliveringOrder(orderViewModel = orderViewModel)
+            }
+            if (index == 2) {
+                DeliveredOrder(orderViewModel = orderViewModel)
+            }
+            if (index == 3) {
+                CanceledOrder(orderViewModel = orderViewModel)
+            }
         }
     }
 }
 
 @Composable
 fun ConfirmOrder(orderViewModel: OrderFoodViewModel) {
-    val orderList by orderViewModel.orderConfirmStateFlow.collectAsState()
+    val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -120,87 +130,398 @@ fun ConfirmOrder(orderViewModel: OrderFoodViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(orderList) { order ->
-            Column(
-                modifier = Modifier
-                    .background(color = colorResource(id = R.color.white))
-                    .padding(top = 2.dp, end = 4.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.End
-            ) {
-                Row(
+            if (!order.comfirm && !order.cancelled) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 4.dp, bottom = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
+                        .background(color = colorResource(id = R.color.white)),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.End
                 ) {
-                    NormalTextComponents(
-                        value = stringResource(id = R.string.order_comfirm),
-                        nomalColor = colorResource(id = R.color.red),
-                        nomalFontsize = 16.sp
-                    )
-                }
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    items(order.listFood) { food ->
-                        Column(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .padding(end = 2.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.Start
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        NormalTextComponents(
+                            value = stringResource(id = R.string.order_comfirm),
+                            nomalColor = colorResource(id = R.color.red),
+                            nomalFontsize = 16.sp
+                        )
+                    }
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        items(order.listFood) { food ->
+                            Column(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(end = 2.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                AsyncImage(
+                                    model = food.imagePath, contentDescription = food.title,
+                                    modifier = Modifier.size(60.dp),
+                                    contentScale = ContentScale.FillHeight
+                                )
+                                Text(
+                                    text = food.title.toString(),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = colorResource(id = R.color.black),
+                                    ),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        NormalTextComponents(
+                            value = "Tổng: ${order.sumPrice}đ",
+                            nomalColor = colorResource(id = R.color.black),
+                            nomalFontsize = 14.sp
+                        )
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                orderViewModel.canceledOrder(order)
+                            },
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.red),
+                            ),
+                            modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
                         ) {
-                            AsyncImage(
-                                model = food.imagePath, contentDescription = food.title,
-                                modifier = Modifier.size(60.dp),
-                                contentScale = ContentScale.FillHeight
-                            )
-                            Text(
-                                text = food.title.toString(),
-                                style = TextStyle(
-                                    fontSize = 12.sp,
-                                    color = colorResource(id = R.color.black),
-                                ),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            NormalTextComponents(value = stringResource(R.string.cancel_order))
                         }
                     }
                 }
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                Row(
+                Spacer(modifier = Modifier.padding(8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun DeliveringOrder(orderViewModel: OrderFoodViewModel) {
+    val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = colorResource(id = R.color.gray_background)),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(orderList) { order ->
+            if (order.comfirm && !order.delivered && !order.cancelled) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 4.dp, bottom = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
+                        .background(color = colorResource(id = R.color.white)),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.End
                 ) {
-                    NormalTextComponents(
-                        value = "Tổng: ${order.sumPrice}đ",
-                        nomalColor = colorResource(id = R.color.black),
-                        nomalFontsize = 14.sp
-                    )
-                }
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(id = R.color.red),
-                        ),
-                        modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        NormalTextComponents(value = stringResource(R.string.cancel_order))
+                        NormalTextComponents(
+                            value = stringResource(id = R.string.delevering_order),
+                            nomalColor = colorResource(id = R.color.red),
+                            nomalFontsize = 16.sp
+                        )
+                    }
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        items(order.listFood) { food ->
+                            Column(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(end = 2.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                AsyncImage(
+                                    model = food.imagePath, contentDescription = food.title,
+                                    modifier = Modifier.size(60.dp),
+                                    contentScale = ContentScale.FillHeight
+                                )
+                                Text(
+                                    text = food.title.toString(),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = colorResource(id = R.color.black),
+                                    ),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        NormalTextComponents(
+                            value = "Tổng: ${order.sumPrice}đ",
+                            nomalColor = colorResource(id = R.color.black),
+                            nomalFontsize = 14.sp
+                        )
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = { /*TODO*/ },
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.red),
+                            ),
+                            modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
+                        ) {
+                            NormalTextComponents(value = stringResource(R.string.delivered_order))
+                        }
                     }
                 }
+                Spacer(modifier = Modifier.padding(8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun DeliveredOrder(orderViewModel: OrderFoodViewModel) {
+    val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = colorResource(id = R.color.gray_background)),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(orderList) { order ->
+            if (order.comfirm && order.delivered && !order.cancelled) {
+                Column(
+                    modifier = Modifier
+                        .background(color = colorResource(id = R.color.white)),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        NormalTextComponents(
+                            value = stringResource(id = R.string.delivered_order),
+                            nomalColor = colorResource(id = R.color.red),
+                            nomalFontsize = 16.sp
+                        )
+                    }
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        items(order.listFood) { food ->
+                            Column(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(end = 2.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                AsyncImage(
+                                    model = food.imagePath, contentDescription = food.title,
+                                    modifier = Modifier.size(60.dp),
+                                    contentScale = ContentScale.FillHeight
+                                )
+                                Text(
+                                    text = food.title.toString(),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = colorResource(id = R.color.black),
+                                    ),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        NormalTextComponents(
+                            value = "Tổng: ${order.sumPrice}đ",
+                            nomalColor = colorResource(id = R.color.black),
+                            nomalFontsize = 14.sp
+                        )
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = { /*TODO*/ },
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.red),
+                            ),
+                            modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
+                        ) {
+                            NormalTextComponents(value = stringResource(R.string.comment_order))
+                        }
+                        Button(
+                            onClick = { /*TODO*/ },
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.red),
+                            ),
+                            modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
+                        ) {
+                            NormalTextComponents(value = stringResource(R.string.re_order))
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun CanceledOrder(orderViewModel: OrderFoodViewModel) {
+    val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = colorResource(id = R.color.gray_background)),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(orderList) { order ->
+            if (order.cancelled) {
+                Column(
+                    modifier = Modifier
+                        .background(color = colorResource(id = R.color.white)),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        NormalTextComponents(
+                            value = stringResource(id = R.string.cancel_order),
+                            nomalColor = colorResource(id = R.color.red),
+                            nomalFontsize = 16.sp
+                        )
+                    }
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        items(order.listFood) { food ->
+                            Column(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(end = 2.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                AsyncImage(
+                                    model = food.imagePath, contentDescription = food.title,
+                                    modifier = Modifier.size(60.dp),
+                                    contentScale = ContentScale.FillHeight
+                                )
+                                Text(
+                                    text = food.title.toString(),
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = colorResource(id = R.color.black),
+                                    ),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        NormalTextComponents(
+                            value = "Tổng: ${order.sumPrice}đ",
+                            nomalColor = colorResource(id = R.color.black),
+                            nomalFontsize = 14.sp
+                        )
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = { /*TODO*/ },
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.red),
+                            ),
+                            modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
+                        ) {
+                            NormalTextComponents(value = stringResource(R.string.re_order))
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
             }
         }
     }

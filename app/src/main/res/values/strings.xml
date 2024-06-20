@@ -69,4 +69,8 @@
     <string name="order_screen">Đơn hàng</string>
     <string name="order_comfirm">Chờ xác nhận</string>
     <string name="cancel_order">Hủy đơn</string>
+    <string name="re_order">Đặt lại</string>
+    <string name="comment_order">Đánh giá</string>
+    <string name="delivered_order">Đã giao</string>"
+    <string name="delevering_order">Đang giao</string>
 </resources>

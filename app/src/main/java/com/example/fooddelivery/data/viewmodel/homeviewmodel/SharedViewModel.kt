@@ -107,15 +107,17 @@ class SharedViewModel : ViewModel() {
         val orderlist = OrderFood(listFood = foodList, sumPrice = _sumPrice.value)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            FirebaseDatabase.getInstance().getReference("orderFood").child(userId).push()
-                .setValue(orderlist).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d("Firebase", "Save success")
-                        _foodDetailStateFlow.value = emptyList()
-                    } else {
-                        Log.e("Firebase", "Save failed", task.exception)
-                    }
+            val orderRef =
+                FirebaseDatabase.getInstance().getReference("orderFood").child(userId).push()
+            orderlist.id = orderRef.key
+            orderRef.setValue(orderlist).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("Firebase", "Save success")
+                    _foodDetailStateFlow.value = emptyList()
+                } else {
+                    Log.e("Firebase", "Save failed", task.exception)
                 }
+            }
         }
     }
 }

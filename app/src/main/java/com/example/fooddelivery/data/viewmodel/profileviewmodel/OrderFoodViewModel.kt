@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class OrderFoodViewModel : ViewModel() {
-    private val _orderConfirmStateFlow = MutableStateFlow<List<OrderFood>>(emptyList())
-    val orderConfirmStateFlow = _orderConfirmStateFlow.asStateFlow()
+    private val _orderFoodStateFlow = MutableStateFlow<List<OrderFood>>(emptyList())
+    val orderFoodStateFlow = _orderFoodStateFlow.asStateFlow()
 
     init {
         fetchOrderFood()
@@ -35,7 +35,7 @@ class OrderFoodViewModel : ViewModel() {
                             }
                         }
                         viewModelScope.launch {
-                            _orderConfirmStateFlow.value = orderList
+                            _orderFoodStateFlow.value = orderList
                         }
                     }
 
@@ -47,6 +47,24 @@ class OrderFoodViewModel : ViewModel() {
                         )
                     }
                 })
+        }
+    }
+
+    fun canceledOrder(orderFood: OrderFood) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null && orderFood.id != null) {
+            val cancel = mapOf(
+                "cancelled" to true
+            )
+            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
+                .child(orderFood.id!!).updateChildren(cancel).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Firebase", "cancel order success")
+                        fetchOrderFood()
+                    } else {
+                        Log.e("Firebase", "cancel order failed", task.exception)
+                    }
+                }
         }
     }
 }
