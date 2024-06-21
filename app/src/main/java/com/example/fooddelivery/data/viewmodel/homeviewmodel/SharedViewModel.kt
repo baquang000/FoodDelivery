@@ -38,14 +38,11 @@ class SharedViewModel : ViewModel() {
         val totalPrice =
             _foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }.toFloat()
         val discountvalue = _discountCodeValue.value
-        Log.d("valu", "$totalPrice")
-        Log.d("valu", "$discountvalue")
         _sumPrice.value = if (discountvalue == 15000f) {
             totalPrice + 15000 - discountvalue
         } else {
             totalPrice - totalPrice * discountvalue + 15000
         }
-        Log.d("valu", "${_sumPrice.value}")
     }
 
     fun getDiscountCodeValue(value: Float) {

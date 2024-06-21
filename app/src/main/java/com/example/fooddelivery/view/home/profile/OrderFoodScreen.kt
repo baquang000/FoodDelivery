@@ -1,5 +1,6 @@
 package com.example.fooddelivery.view.home.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
@@ -26,11 +28,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +51,7 @@ import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.tabItemOrder
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.profileviewmodel.OrderFoodViewModel
 import kotlinx.coroutines.launch
 
@@ -52,7 +59,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun OrderFoodScreen(
     navController: NavController,
-    orderViewModel: OrderFoodViewModel = viewModel()
+    orderViewModel: OrderFoodViewModel = viewModel(),
+    sharedViewModel: SharedViewModel
 ) {
     val pagerState = rememberPagerState { tabItemOrder.size }
     val coroutineScope = rememberCoroutineScope()
@@ -110,10 +118,13 @@ fun OrderFoodScreen(
                 DeliveringOrder(orderViewModel = orderViewModel)
             }
             if (index == 2) {
-                DeliveredOrder(orderViewModel = orderViewModel)
+                DeliveredOrder(orderViewModel = orderViewModel, sharedViewModel = sharedViewModel)
             }
             if (index == 3) {
-                CanceledOrder(orderViewModel = orderViewModel)
+                CanceledOrder(
+                    orderViewModel = orderViewModel,
+                    sharedViewModel = sharedViewModel
+                )
             }
         }
     }
@@ -302,7 +313,9 @@ fun DeliveringOrder(orderViewModel: OrderFoodViewModel) {
                         horizontalArrangement = Arrangement.End
                     ) {
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                orderViewModel.deliveredOrder(order)
+                            },
                             shape = RectangleShape,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = colorResource(id = R.color.red),
@@ -320,8 +333,16 @@ fun DeliveringOrder(orderViewModel: OrderFoodViewModel) {
 }
 
 @Composable
-fun DeliveredOrder(orderViewModel: OrderFoodViewModel) {
+fun DeliveredOrder(
+    orderViewModel: OrderFoodViewModel,
+    sharedViewModel: SharedViewModel
+) {
+    val context = LocalContext.current
     val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
+    val cardList by sharedViewModel.foodDetailStateFlow.collectAsState()
+    var indexOrder by remember {
+        mutableIntStateOf(0)
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -355,7 +376,8 @@ fun DeliveredOrder(orderViewModel: OrderFoodViewModel) {
                         verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        items(order.listFood) { food ->
+                        itemsIndexed(order.listFood) { index, food ->
+                            indexOrder = index
                             Column(
                                 modifier = Modifier
                                     .size(100.dp)
@@ -411,7 +433,13 @@ fun DeliveredOrder(orderViewModel: OrderFoodViewModel) {
                             NormalTextComponents(value = stringResource(R.string.comment_order))
                         }
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                orderViewModel.notDeliveredOrder(order)
+                                cardList.isEmpty()
+                                sharedViewModel.addFoodDetail(foodDetails = order.listFood[indexOrder])
+                                Toast.makeText(context, "Đặt lại thành công", Toast.LENGTH_SHORT)
+                                    .show()
+                            },
                             shape = RectangleShape,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = colorResource(id = R.color.red),
@@ -429,8 +457,16 @@ fun DeliveredOrder(orderViewModel: OrderFoodViewModel) {
 }
 
 @Composable
-fun CanceledOrder(orderViewModel: OrderFoodViewModel) {
+fun CanceledOrder(
+    orderViewModel: OrderFoodViewModel,
+    sharedViewModel: SharedViewModel
+) {
+    val context = LocalContext.current
     val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
+    val cardList by sharedViewModel.foodDetailStateFlow.collectAsState()
+    var indexOrder by remember {
+        mutableIntStateOf(0)
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -464,7 +500,8 @@ fun CanceledOrder(orderViewModel: OrderFoodViewModel) {
                         verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        items(order.listFood) { food ->
+                        itemsIndexed(order.listFood) { index, food ->
+                            indexOrder = index
                             Column(
                                 modifier = Modifier
                                     .size(100.dp)
@@ -510,7 +547,13 @@ fun CanceledOrder(orderViewModel: OrderFoodViewModel) {
                         horizontalArrangement = Arrangement.End
                     ) {
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                cardList.isEmpty()
+                                orderViewModel.notCancelOrder(order)
+                                sharedViewModel.addFoodDetail(foodDetails = order.listFood[indexOrder])
+                                Toast.makeText(context, "Đặt lại thành công", Toast.LENGTH_SHORT)
+                                    .show()
+                            },
                             shape = RectangleShape,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = colorResource(id = R.color.red),

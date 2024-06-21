@@ -54,6 +54,24 @@ class OrderFoodViewModel : ViewModel() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null && orderFood.id != null) {
             val cancel = mapOf(
+                "cancelled" to false
+            )
+            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
+                .child(orderFood.id!!).updateChildren(cancel).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Firebase", "cancel order success")
+                        fetchOrderFood()
+                    } else {
+                        Log.e("Firebase", "cancel order failed", task.exception)
+                    }
+                }
+        }
+    }
+
+    fun notCancelOrder(orderFood: OrderFood) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null && orderFood.id != null) {
+            val cancel = mapOf(
                 "cancelled" to true
             )
             FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
@@ -63,6 +81,43 @@ class OrderFoodViewModel : ViewModel() {
                         fetchOrderFood()
                     } else {
                         Log.e("Firebase", "cancel order failed", task.exception)
+                    }
+                }
+        }
+    }
+
+    fun deliveredOrder(orderFood: OrderFood) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null && orderFood.id != null) {
+            val delivered = mapOf(
+                "delivered" to true
+            )
+            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
+                .child(orderFood.id!!).updateChildren(delivered).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Firebase", "delivered order success")
+                        fetchOrderFood()
+                    } else {
+                        Log.e("Firebase", "delivered order failed", task.exception)
+                    }
+                }
+        }
+    }
+
+    fun notDeliveredOrder(orderFood: OrderFood) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null && orderFood.id != null) {
+            val delivered = mapOf(
+                "delivered" to false,
+                "comfirm" to false
+            )
+            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
+                .child(orderFood.id!!).updateChildren(delivered).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Firebase", "delivered order success")
+                        fetchOrderFood()
+                    } else {
+                        Log.e("Firebase", "delivered order failed", task.exception)
                     }
                 }
         }

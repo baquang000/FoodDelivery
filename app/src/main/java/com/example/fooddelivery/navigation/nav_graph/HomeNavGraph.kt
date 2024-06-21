@@ -39,9 +39,10 @@ import com.example.fooddelivery.view.home.categoryScreen.ShushiScreen
 fun HomeNavGraph(
     rootNavController: NavHostController,
     homeNavController: NavHostController,
+    sharedViewModel : SharedViewModel,
     innerPadding: PaddingValues
 ) {
-    val sharedViewModel: SharedViewModel = viewModel()
+
     NavHost(
         navController = homeNavController,
         startDestination = HomeRouteScreen.Home.route,
