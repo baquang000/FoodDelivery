@@ -13,5 +13,5 @@ data class Food(
     var TimeId: Int = 0,
     var TimeValue: Int = 0,
     var Title: String? = null,
-    var isShow: Boolean = true
+    var show: Boolean = true
 )

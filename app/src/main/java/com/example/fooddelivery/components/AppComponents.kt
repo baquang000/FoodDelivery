@@ -326,7 +326,7 @@ fun FoodItem(
 ) {
     val context = LocalContext.current
     val encodeURL = URLEncoder.encode(food.ImagePath, "UTF-8")
-    if (food.isShow) {
+    if (food.show) {
         Card(
             modifier = modifier
                 .size(width = 260.dp, height = 295.dp)
