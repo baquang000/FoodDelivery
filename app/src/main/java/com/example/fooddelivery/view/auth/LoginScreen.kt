@@ -42,6 +42,8 @@ fun LoginScreen(
     navController: NavController,
     loginViewModel: LoginViewModel = viewModel()
 ) {
+    val errorMessage by loginViewModel::errormessage
+    val isFailer by loginViewModel::isFailer
     val flowNavigationHome by loginViewModel.navigationHome.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -74,6 +76,14 @@ fun LoginScreen(
                     nomalFontsize = 45.sp,
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Black,
+                )
+            }
+            if (isFailer) {
+                NormalTextComponents(
+                    value = errorMessage.toString(),
+                    nomalFontsize = 16.sp,
+                    nomalFontWeight = FontWeight.Normal,
+                    nomalColor = Color.Red
                 )
             }
             MyTextFieldComponents(

@@ -1,22 +1,25 @@
 package com.example.fooddelivery.data.viewmodel.authviewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.fooddelivery.data.model.SignUpUIState
 import com.example.fooddelivery.data.model.SignupUIEvent
 import com.example.fooddelivery.data.rules.Validator
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class SignupViewModel : ViewModel() {
     var signUpUIState = mutableStateOf(SignUpUIState())
     var allValicationPass = mutableStateOf(false)
     var signInProgress = mutableStateOf(false)
+
+    var errormessage by mutableStateOf<String?>(null)
+    var isError by mutableStateOf(false)
+    var isSuccess by mutableStateOf(false) //3.7
     private val tag = SignupViewModel::class.simpleName
-    private val _navigationHome = MutableStateFlow(false)
-    val navigationHome = _navigationHome.asStateFlow()
+
     fun onEvent(event: SignupUIEvent) {
         validateDataWithRules()
         when (event) {
@@ -31,16 +34,18 @@ class SignupViewModel : ViewModel() {
                 printState()
             }
 
+            is SignupUIEvent.CurPasswordChange -> {
+                signUpUIState.value = signUpUIState.value.copy(curpassword = event.curpassword)
+            }
+
             is SignupUIEvent.RegisterButtonClicked -> {
                 signUp()
             }
         }
+        validateDataWithRules()
     }
 
     private fun signUp() {
-        Log.d(tag, "Inside_signUp")
-        printState()
-
         createUserInFirebase(
             email = signUpUIState.value.email,
             password = signUpUIState.value.password
@@ -54,15 +59,18 @@ class SignupViewModel : ViewModel() {
         val passwordResult = Validator.validatePassword(
             fPassWord = signUpUIState.value.password
         )
-        Log.d(tag, "Inside_validateDataWithRules")
-        Log.d(tag, "sdtResult = $emailResult")
-        Log.d(tag, "passwordResult = $passwordResult")
+        val curpasswordResult = Validator.validateCurPassword(
+            fCurPassWord = signUpUIState.value.curpassword,
+            fPassWord = signUpUIState.value.password,
+        )
 
         signUpUIState.value = signUpUIState.value.copy(
             emailError = emailResult.status,
-            passwordError = passwordResult.status
+            passwordError = passwordResult.status,
+            curpasswordError = curpasswordResult.status
         )
-        allValicationPass.value = emailResult.status && passwordResult.status
+        allValicationPass.value =
+            emailResult.status && passwordResult.status && curpasswordResult.status
 
     }
 
@@ -81,12 +89,14 @@ class SignupViewModel : ViewModel() {
                         tag, "isSuccessful = ${it.isSuccessful}"
                     )
                     signInProgress.value = false
-                    _navigationHome.value = true
+                    isSuccess = true // 3.7
                 }
             }
-            .addOnFailureListener {
+            .addOnFailureListener { exception ->
                 Log.d(tag, "Inside_addOnFailureListener")
                 signInProgress.value = false
+                isError = true
+                errormessage = exception.localizedMessage ?: "An error occurred."
             }
     }
 }

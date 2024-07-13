@@ -9,6 +9,7 @@ import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.view.auth.IntroScreen
 import com.example.fooddelivery.view.auth.LoginScreen
 import com.example.fooddelivery.view.auth.SignUpScreen
+import com.example.fooddelivery.view.auth.TermsScreen
 
 fun NavGraphBuilder.authNavGraph(
     rootNavController: NavHostController
@@ -25,6 +26,9 @@ fun NavGraphBuilder.authNavGraph(
         }
         composable(route = AuthRouteScreen.SignUp.route) {
             SignUpScreen(navController = rootNavController)
+        }
+        composable(route = AuthRouteScreen.Terms.route){
+            TermsScreen(navController = rootNavController)
         }
     }
 }

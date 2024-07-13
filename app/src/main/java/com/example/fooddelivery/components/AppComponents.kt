@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,8 +36,10 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,9 +56,11 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -78,24 +83,26 @@ import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
-import com.example.fooddelivery.ui.theme.category_btn_0
 import java.net.URLEncoder
+import java.text.DecimalFormat
 
 @Composable
 fun NormalTextComponents(
     modifier: Modifier = Modifier,
     value: String,
-    nomalColor: Color = Color.White,
+    nomalColor: Color = MaterialTheme.colorScheme.onPrimary,
     nomalFontsize: TextUnit = 14.sp,
     nomalFontWeight: FontWeight = FontWeight.Normal,
-    nomalTextAlign: TextAlign = TextAlign.Center
+    nomalTextAlign: TextAlign = TextAlign.Center,
+    nomalFontFamily: FontFamily = FontFamily.Default
 ) {
     Text(
         text = value,
         style = TextStyle(
             color = nomalColor,
             fontSize = nomalFontsize,
-            fontWeight = nomalFontWeight
+            fontWeight = nomalFontWeight,
+            fontFamily = nomalFontFamily
         ),
         modifier = modifier,
         textAlign = nomalTextAlign
@@ -283,7 +290,7 @@ fun DrawLineAndTextComponents() {
 
 @Composable
 fun IconButtonWithText(
-    backgroundColor: Color = category_btn_0,
+    backgroundColor: Color = colorResource(id = R.color.btn_1),
     @DrawableRes iconId: Int = R.drawable.btn_1,
     @StringRes textId: Int = R.string.Pizza,
     eventOnclick: () -> Unit
@@ -324,6 +331,7 @@ fun FoodItem(
     food: Food, navController: NavController,
     sharedViewModel: SharedViewModel = viewModel(),
 ) {
+    val decimalFormat = DecimalFormat("#,###.##")
     val context = LocalContext.current
     val encodeURL = URLEncoder.encode(food.ImagePath, "UTF-8")
     if (food.show) {
@@ -384,7 +392,7 @@ fun FoodItem(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         NormalTextComponents(
-                            value = "${food.Price}đ",
+                            value = "${decimalFormat.format(food.Price)}đ",
                             nomalColor = Color.Black,
                             nomalFontWeight = FontWeight.Bold,
                             nomalFontsize = 18.sp,
@@ -636,16 +644,21 @@ fun MyDropdownMenuWithDiscountCode(
     }
     sharedViewModel.getDiscountCodeValue(value = valueDiscount.floatValue)
     Box(modifier = modifier) {
-        ExposedDropdownMenuBox(expanded = expand.value, onExpandedChange = {
-            expand.value = !expand.value
-        }) {
+        ExposedDropdownMenuBox(
+            expanded = expand.value, onExpandedChange = {
+                expand.value = !expand.value
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             OutlinedTextField(
                 value = selected.value, onValueChange = {},
                 readOnly = true,
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
                 },
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -704,12 +717,109 @@ fun RatingBar(
     }
 }
 
+@Composable
+fun ExpandableTextField(
+    modifier: Modifier = Modifier,
+    onTextChange: (String) -> Unit,
+    onDone: (Boolean) -> Unit,
+    onCancel: (Boolean) -> Unit,
+    saveText : String
+) {
+    val localFocusManager = LocalFocusManager.current
+    var noteTextField by remember {
+        mutableStateOf(saveText)
+    }
+    val wordCount = noteTextField.length
+    Box(
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier.fillMaxHeight().background(color = MaterialTheme.colorScheme.onSecondary)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Color.LightGray
+                    )
+                    .padding(vertical = 8.dp, horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(id = R.string.cancel),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Gray.copy(alpha = 1f)
+                    ),
+                    modifier = Modifier.clickable { onCancel(false) }
+                )
+                Text(
+                    text = stringResource(R.string.add_note_order),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Text(
+                    text = stringResource(R.string.done),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Red
+                    ),
+                    modifier = Modifier.clickable { onDone(false) }
+                )
+            }
+            TextField(
+                value = noteTextField,
+                onValueChange = {
+                    if (wordCount < 100) {
+                        noteTextField = it
+                        onTextChange(noteTextField)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                textStyle = MaterialTheme.typography.bodyMedium,
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                ),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        localFocusManager.clearFocus()
+                    }
+                )
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Text(
+                    text = "$wordCount/100",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Gray.copy(alpha = 1f)
+                    )
+                )
+            }
+        }
+    }
+}
+
+
 @Preview(
     showSystemUi = true
 )
 @Composable
 fun ComponentPreview() {
-    RatingBar {
 
-    }
 }

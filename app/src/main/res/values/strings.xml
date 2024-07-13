@@ -4,7 +4,8 @@
     <string name="Sign_Up">Đăng ký</string>
     <string name="Login">Đăng nhập</string>
     <string name="SDT">SĐT</string>
-    <string name="Pass_Word">Password</string>
+    <string name="Pass_Word">Mật khẩu</string>
+    <string name="cur_Pass_Word">Nhập lại Mật khẩu</string>
     <string name="Hide_pass_word">Hide password</string>
     <string name="Show_password">Show password</string>
     <string name="Shared_and_delightful_for_an_easy_and_enjoyable_food_ordering_experience">Shared and delightful, for an easy and enjoyable food ordering experience</string>
@@ -73,4 +74,26 @@
     <string name="comment_order">Đánh giá</string>
     <string name="delivered_order">Đã giao</string>"
     <string name="delevering_order">Đang giao</string>
+    <string name="save_details">Lưu</string>
+    <string name="cancel">Hủy</string>
+    <string name="fix_details">Sửa</string>
+    <string name="success">Thành công</string>
+    <string name="success_signup">Đăng ký thành công</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="date_of_birth">Ngày sinh</string>
+    <string name="trash_icon">trash_icon</string>
+    <string name="location_order">Địa chỉ nhận hàng</string>
+    <string name="next_button">Next button</string>
+    <string name="sum_price_order">Tổng cộng</string>
+    <string name="price_ship">Phí giao hàng</string>
+    <string name="tax_order">Phí áp dụng</string>
+    <string name="discount_code_order">Mã khuyến mãi</string>
+    <string name="tips_icon">tips_icon</string>
+    <string name="reward_for_driver">Thưởng cho tài xế</string>
+    <string name="desciption_dining_subtances">Quán sẽ cung cấp dụng cụ ăn uống. Hãy chung tay bảo vệ môi trường trong những đơn tới nhé!</string>
+    <string name="take_dining_subtances">Lấy dụng cụ ăn uống</string>
+    <string name="delivery_to_door">Giao hàng tận cửa</string>
+    <string name="note_order">Ghi chú</string>
+    <string name="done">Xong</string>
+    <string name="add_note_order">Thêm ghi chú</string>
 </resources>

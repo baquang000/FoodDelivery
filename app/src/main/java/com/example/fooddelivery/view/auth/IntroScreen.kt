@@ -67,7 +67,7 @@ fun IntroScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color(0xffF75564)),
+                .background(color = Color(0xffF75564) ),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

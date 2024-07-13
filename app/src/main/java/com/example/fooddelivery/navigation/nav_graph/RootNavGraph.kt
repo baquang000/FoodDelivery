@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.view.home.MainScreen
 
@@ -15,6 +16,7 @@ import com.example.fooddelivery.view.home.MainScreen
 fun RootNavGraph() {
     val rootNavController: NavHostController = rememberNavController()
     val sharedViewModel: SharedViewModel = viewModel()
+    val userInforViewModel: UserInforViewModel = viewModel()
     NavHost(
         navController = rootNavController,
         startDestination = Graph.AUTHGRAPH,
@@ -22,7 +24,7 @@ fun RootNavGraph() {
     ) {
         authNavGraph(rootNavController = rootNavController)
         composable(route = Graph.HOMEGRAPH) {
-            MainScreen(rootNavHostController = rootNavController, sharedViewModel = sharedViewModel)
+            MainScreen(rootNavHostController = rootNavController, sharedViewModel = sharedViewModel,userInforViewModel = userInforViewModel)
         }
         profileNavGraph(rootNavController = rootNavController, sharedViewModel = sharedViewModel)
     }

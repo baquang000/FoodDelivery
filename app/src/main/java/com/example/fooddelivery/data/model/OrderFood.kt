@@ -6,5 +6,5 @@ data class OrderFood(
     var comfirm: Boolean = false,
     var delivered: Boolean = false,
     var cancelled: Boolean = false,
-    var sumPrice: Float = 0f
+    var sumPrice: Float = 0f,
 )

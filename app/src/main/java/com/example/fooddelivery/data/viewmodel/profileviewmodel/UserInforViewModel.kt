@@ -11,14 +11,20 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
-class UserInforViewModel:ViewModel (){
+class UserInforViewModel : ViewModel() {
     var name by mutableStateOf("")
     var numberphone by mutableStateOf("")
     var address by mutableStateOf("")
+    var email by mutableStateOf("")
+    var dateofbirth by mutableStateOf("")
     var isSaving by mutableStateOf(false)
     var saveResult by mutableStateOf<Boolean?>(null)
     var isLoading by mutableStateOf(false)
     var loadError by mutableStateOf<String?>(null)
+
+    init {
+        getUserData()
+    }
 
     fun saveUserData() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -29,7 +35,9 @@ class UserInforViewModel:ViewModel (){
             val userData = mapOf(
                 "name" to name,
                 "numberphone" to numberphone,
-                "address" to address
+                "address" to address,
+                "email" to email,
+                "dateofbirth" to dateofbirth,
             )
 
             usersRef.child(userId).setValue(userData).addOnCompleteListener { task ->
@@ -40,6 +48,7 @@ class UserInforViewModel:ViewModel (){
             saveResult = false
         }
     }
+
     fun getUserData() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
@@ -51,8 +60,12 @@ class UserInforViewModel:ViewModel (){
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         name = snapshot.child("name").getValue(String::class.java) ?: ""
-                        numberphone = snapshot.child("numberphone").getValue(String::class.java) ?: ""
+                        numberphone =
+                            snapshot.child("numberphone").getValue(String::class.java) ?: ""
                         address = snapshot.child("address").getValue(String::class.java) ?: ""
+                        email = snapshot.child("email").getValue(String::class.java) ?: ""
+                        dateofbirth =
+                            snapshot.child("dateofbirth").getValue(String::class.java) ?: ""
                     }
                     isLoading = false
                 }

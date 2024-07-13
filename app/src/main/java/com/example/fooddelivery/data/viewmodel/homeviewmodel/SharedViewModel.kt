@@ -2,7 +2,9 @@ package com.example.fooddelivery.data.viewmodel.homeviewmodel
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
@@ -30,6 +32,13 @@ class SharedViewModel : ViewModel() {
     private val _sumPrice = MutableStateFlow(0f)
     val sumPrice: StateFlow<Float> = _sumPrice.asStateFlow()
 
+    var isErrorDelete by mutableStateOf(false)
+
+    //switch delivery to door
+    private val priceTaxandDelivery = MutableStateFlow(0)
+    // reward for driver
+    private val rewardForDriver = MutableStateFlow(0)
+
     init {
         fetchDiscountCodeFromFirebase()
     }
@@ -39,10 +48,20 @@ class SharedViewModel : ViewModel() {
             _foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }.toFloat()
         val discountvalue = _discountCodeValue.value
         _sumPrice.value = if (discountvalue == 15000f) {
-            totalPrice + 15000 - discountvalue
+            totalPrice + 15000 - discountvalue + priceTaxandDelivery.value + rewardForDriver.value
         } else {
-            totalPrice - totalPrice * discountvalue + 15000
+            totalPrice - totalPrice * discountvalue + 15000 + priceTaxandDelivery.value + rewardForDriver.value
         }
+    }
+
+    fun deliverytoDoorChange(witch: Boolean) {
+        priceTaxandDelivery.value = if (witch) 8000 else 3000
+        sumPrice()
+    }
+
+    fun rewardForDriverChange(value: Int) {
+        rewardForDriver.value = value
+        sumPrice()
     }
 
     fun getDiscountCodeValue(value: Float) {
@@ -103,11 +122,10 @@ class SharedViewModel : ViewModel() {
         val foodList = _foodDetailStateFlow.value
         val orderlist = OrderFood(listFood = foodList, sumPrice = _sumPrice.value)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
+        orderlist.id = userId
         if (userId != null) {
-            val orderRef =
-                FirebaseDatabase.getInstance().getReference("orderFood").child(userId).push()
-            orderlist.id = orderRef.key
-            orderRef.setValue(orderlist).addOnCompleteListener { task ->
+                FirebaseDatabase.getInstance().getReference("orderFood").push()
+            .setValue(orderlist).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("Firebase", "Save success")
                     _foodDetailStateFlow.value = emptyList()
@@ -115,6 +133,18 @@ class SharedViewModel : ViewModel() {
                     Log.e("Firebase", "Save failed", task.exception)
                 }
             }
+        }
+    }
+
+    fun deleteItemFoodinCart(index: Int) {
+        _foodDetailStateFlow.update { list ->
+            val updatelist = list.toMutableList()
+            if (index in list.indices) {
+                updatelist.removeAt(index)
+            } else {
+                isErrorDelete = true
+            }
+            updatelist
         }
     }
 }

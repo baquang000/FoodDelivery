@@ -10,6 +10,10 @@ object Validator {
     fun validatePassword(fPassWord: String): ValicationResult {
         return ValicationResult(fPassWord.isNotEmpty() && fPassWord.length >= 6)
     }
+
+    fun validateCurPassword(fCurPassWord: String, fPassWord: String): ValicationResult {
+        return ValicationResult(fCurPassWord.isNotEmpty() && fCurPassWord.length >= 6 && fPassWord == fCurPassWord)
+    }
 }
 
 data class ValicationResult(

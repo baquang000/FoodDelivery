@@ -59,6 +59,7 @@ import com.example.fooddelivery.navigation.PRICE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
+import java.text.DecimalFormat
 
 @Composable
 fun FoodDetailsScreen(
@@ -67,6 +68,7 @@ fun FoodDetailsScreen(
     innerPaddingValues: PaddingValues,
     favoriteViewModel: FavoriteViewModel = viewModel()
 ) {
+    val decimalFomat = DecimalFormat("#,###.##")
     val context = LocalContext.current
     val title = navBackStackEntry.arguments?.getString(TITLE_ARGUMENT_KEY)
     val price = navBackStackEntry.arguments?.getFloat(PRICE_ARGUMENT_KEY) ?: 0.0
@@ -154,7 +156,7 @@ fun FoodDetailsScreen(
                 nomalTextAlign = TextAlign.Center
             )
             NormalTextComponents(
-                value = "${price}đ",
+                value = "${decimalFomat.format(price)}đ",
                 nomalColor = Color.Red,
                 nomalFontWeight = FontWeight.Bold,
                 nomalFontsize = 18.sp,
@@ -285,7 +287,7 @@ fun FoodDetailsScreen(
                     nomalFontWeight = FontWeight.Bold
                 )
                 NormalTextComponents(
-                    value = "${totalPrice}đ",
+                    value = "${decimalFomat.format(totalPrice)}đ",
                     nomalFontsize = 16.sp,
                     nomalColor = Color.Black
                 )

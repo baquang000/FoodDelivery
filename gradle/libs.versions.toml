@@ -1,13 +1,13 @@
 [versions]
-agp = "8.5.0"
+agp = "8.5.1"
 coilCompose = "2.6.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeCompose = "2.8.2"
-lifecycleRuntimeKtx = "2.8.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeCompose = "2.8.3"
+lifecycleRuntimeKtx = "2.8.3"
 activityCompose = "1.9.0"
 composeBom = "2024.06.00"
 googleServices = "4.4.2"
@@ -16,6 +16,7 @@ materialIconsExtended = "1.6.8"
 navigationCompose = "2.7.7"
 firebaseAuth = "23.0.0"
 firebaseFirestoreKtx = "25.0.0"
+uiTextGoogleFonts = "1.6.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

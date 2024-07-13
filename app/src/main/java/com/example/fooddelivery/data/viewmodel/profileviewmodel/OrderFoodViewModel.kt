@@ -24,13 +24,13 @@ class OrderFoodViewModel : ViewModel() {
     private fun fetchOrderFood() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            FirebaseDatabase.getInstance().getReference("orderFood").child(userId)
+            FirebaseDatabase.getInstance().getReference("orderFood")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val orderList = mutableListOf<OrderFood>()
                         for (datasnap in snapshot.children) {
                             val foodlist = datasnap.getValue(OrderFood::class.java)
-                            if (foodlist != null) {
+                            if (foodlist != null && foodlist.id == userId) {
                                 orderList.add(foodlist)
                             }
                         }

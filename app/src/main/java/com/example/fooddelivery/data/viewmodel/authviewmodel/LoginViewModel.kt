@@ -1,7 +1,9 @@
 package com.example.fooddelivery.data.viewmodel.authviewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.fooddelivery.data.model.LoginUIEvent
 import com.example.fooddelivery.data.model.LoginUIState
@@ -18,7 +20,8 @@ class LoginViewModel : ViewModel() {
     private val tag = LoginViewModel::class.simpleName
     private val _navigationHome = MutableStateFlow(false)
     val navigationHome = _navigationHome.asStateFlow()
-
+    var isFailer by mutableStateOf(false)
+    var errormessage by mutableStateOf<String?>(null)
     fun onEvent(event: LoginUIEvent) {
         when (event) {
             is LoginUIEvent.EmailChange -> {
@@ -46,16 +49,14 @@ class LoginViewModel : ViewModel() {
                 if (it.isSuccessful) {
                     Log.d(tag, "${it.isSuccessful}")
                     loginInProgress.value = false
-                    Log.d(tag, email)
-                    Log.d(tag, password)
                     _navigationHome.value = true
 
                 }
             }
             .addOnFailureListener {
                 Log.d(tag, "${it.message}")
-                Log.d(tag, email)
-                Log.d(tag, password)
+                isFailer = true
+                errormessage = it.localizedMessage ?: "An error occurred."
                 loginInProgress.value = false
             }
     }

@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.HomeRouteScreen
@@ -38,7 +39,8 @@ import com.example.fooddelivery.view.home.categoryScreen.ShushiScreen
 fun HomeNavGraph(
     rootNavController: NavHostController,
     homeNavController: NavHostController,
-    sharedViewModel : SharedViewModel,
+    sharedViewModel: SharedViewModel,
+    userInforViewModel: UserInforViewModel,
     innerPadding: PaddingValues
 ) {
 
@@ -68,25 +70,53 @@ fun HomeNavGraph(
             )
         }
         composable(route = HomeRouteScreen.Burger.route) {
-            BurgerScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            BurgerScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.Shushi.route) {
-            ShushiScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            ShushiScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.Meat.route) {
-            MeatScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            MeatScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.HotDog.route) {
-            HotDogScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            HotDogScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.Drink.route) {
-            DrinkScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            DrinkScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.More.route) {
-            MoreScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            MoreScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.Chicken.route) {
-            ChickenScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            ChickenScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.Search.route,
             arguments = listOf(
@@ -99,11 +129,15 @@ fun HomeNavGraph(
             SearchScreen(
                 navController = homeNavController,
                 backStackEntry = backStackEntry,
-                sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding
+                sharedViewModel = sharedViewModel, innerPaddingValues = innerPadding
             )
         }
         composable(route = HomeRouteScreen.ViewAll.route) {
-            ViewAllScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            ViewAllScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
         composable(route = HomeRouteScreen.FoodDetails.route,
             arguments = listOf(
@@ -125,7 +159,7 @@ fun HomeNavGraph(
                 navArgument(IMAGEPATH_ARGUMENT_KEY) {
                     type = NavType.StringType
                 },
-                navArgument(ID_ARGUMENT_KEY){
+                navArgument(ID_ARGUMENT_KEY) {
                     type = NavType.IntType
                 }
             )
@@ -138,7 +172,12 @@ fun HomeNavGraph(
             )
         }
         composable(route = HomeRouteScreen.CartHomeRouteScreen.route) {
-            CartScreen(navController = homeNavController, sharedViewModel = sharedViewModel,innerPaddingValues = innerPadding)
+            CartScreen(
+                navController = homeNavController,
+                sharedViewModel = sharedViewModel,
+                userInforViewModel = userInforViewModel,
+                innerPaddingValues = innerPadding
+            )
         }
     }
 }

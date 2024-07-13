@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -62,13 +63,6 @@ import com.example.fooddelivery.data.model.TimeState
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.HomeViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
-import com.example.fooddelivery.ui.theme.category_btn_1
-import com.example.fooddelivery.ui.theme.category_btn_2
-import com.example.fooddelivery.ui.theme.category_btn_3
-import com.example.fooddelivery.ui.theme.category_btn_4
-import com.example.fooddelivery.ui.theme.category_btn_5
-import com.example.fooddelivery.ui.theme.category_btn_6
-import com.example.fooddelivery.ui.theme.category_btn_7
 
 
 @Composable
@@ -253,21 +247,21 @@ fun HomeScreen(
                                 homeNavController.navigate(HomeRouteScreen.Pizza.route)
                             }
                             IconButtonWithText(
-                                backgroundColor = category_btn_1,
+                                backgroundColor = colorResource(id = R.color.btn_2),
                                 iconId = R.drawable.btn_2,
                                 textId = R.string.Burger
                             ) {
                                 homeNavController.navigate(HomeRouteScreen.Burger.route)
                             }
                             IconButtonWithText(
-                                backgroundColor = category_btn_2,
+                                backgroundColor = colorResource(id = R.color.btn_3),
                                 iconId = R.drawable.btn_3,
                                 textId = R.string.Chicken
                             ) {
                                 homeNavController.navigate(HomeRouteScreen.Chicken.route)
                             }
                             IconButtonWithText(
-                                backgroundColor = category_btn_3,
+                                backgroundColor = colorResource(id = R.color.btn_4),
                                 iconId = R.drawable.btn_4,
                                 textId = R.string.Sushi
                             ) {
@@ -279,28 +273,28 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             IconButtonWithText(
-                                backgroundColor = category_btn_4,
+                                backgroundColor = colorResource(id = R.color.btn_5),
                                 iconId = R.drawable.btn_5,
                                 textId = R.string.Meat
                             ) {
                                 homeNavController.navigate(HomeRouteScreen.Meat.route)
                             }
                             IconButtonWithText(
-                                backgroundColor = category_btn_5,
+                                backgroundColor = colorResource(id = R.color.btn_6),
                                 iconId = R.drawable.btn_6,
                                 textId = R.string.hot_dog
                             ) {
                                 homeNavController.navigate(HomeRouteScreen.HotDog.route)
                             }
                             IconButtonWithText(
-                                backgroundColor = category_btn_6,
+                                backgroundColor = colorResource(id = R.color.btn_7),
                                 iconId = R.drawable.btn_7,
                                 textId = R.string.drink
                             ) {
                                 homeNavController.navigate(HomeRouteScreen.Drink.route)
                             }
                             IconButtonWithText(
-                                backgroundColor = category_btn_7,
+                                backgroundColor = colorResource(id = R.color.btn_8),
                                 iconId = R.drawable.btn_8,
                                 textId = R.string.more
                             ) {
