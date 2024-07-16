@@ -3,6 +3,7 @@ package com.example.fooddelivery.data.viewmodel.profileviewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.OrderFood
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -30,7 +31,7 @@ class OrderFoodViewModel : ViewModel() {
                         val orderList = mutableListOf<OrderFood>()
                         for (datasnap in snapshot.children) {
                             val foodlist = datasnap.getValue(OrderFood::class.java)
-                            if (foodlist != null && foodlist.id == userId) {
+                            if (foodlist != null && foodlist.idUser == userId) {
                                 orderList.add(foodlist)
                             }
                         }
@@ -51,13 +52,15 @@ class OrderFoodViewModel : ViewModel() {
     }
 
     fun canceledOrder(orderFood: OrderFood) {
+        val time = Calender().getCalender()
         val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null && orderFood.id != null) {
+        if (uid != null) {
             val cancel = mapOf(
-                "cancelled" to false
+                "cancelled" to true,
+                "time" to time
             )
-            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
-                .child(orderFood.id!!).updateChildren(cancel).addOnCompleteListener { task ->
+            FirebaseDatabase.getInstance().getReference("orderFood").child(orderFood.idOrder)
+                .updateChildren(cancel).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("Firebase", "cancel order success")
                         fetchOrderFood()
@@ -69,13 +72,15 @@ class OrderFoodViewModel : ViewModel() {
     }
 
     fun notCancelOrder(orderFood: OrderFood) {
+        val time = Calender().getCalender()
         val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null && orderFood.id != null) {
+        if (uid != null && orderFood.idUser == uid) {
             val cancel = mapOf(
-                "cancelled" to true
+                "cancelled" to false,
+                "time" to time
             )
-            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
-                .child(orderFood.id!!).updateChildren(cancel).addOnCompleteListener { task ->
+            FirebaseDatabase.getInstance().getReference("orderFood").child(orderFood.idOrder)
+                .updateChildren(cancel).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("Firebase", "cancel order success")
                         fetchOrderFood()
@@ -87,13 +92,15 @@ class OrderFoodViewModel : ViewModel() {
     }
 
     fun deliveredOrder(orderFood: OrderFood) {
+        val time = Calender().getCalender()
         val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null && orderFood.id != null) {
+        if (uid != null && orderFood.idUser == uid) {
             val delivered = mapOf(
-                "delivered" to true
+                "delivered" to true,
+                "time" to time
             )
-            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
-                .child(orderFood.id!!).updateChildren(delivered).addOnCompleteListener { task ->
+            FirebaseDatabase.getInstance().getReference("orderFood").child(orderFood.idOrder)
+                .updateChildren(delivered).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("Firebase", "delivered order success")
                         fetchOrderFood()
@@ -105,14 +112,16 @@ class OrderFoodViewModel : ViewModel() {
     }
 
     fun notDeliveredOrder(orderFood: OrderFood) {
+        val time = Calender().getCalender()
         val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null && orderFood.id != null) {
+        if (uid != null && orderFood.idUser == uid) {
             val delivered = mapOf(
                 "delivered" to false,
-                "comfirm" to false
+                "comfirm" to false,
+                "time" to time
             )
-            FirebaseDatabase.getInstance().getReference("orderFood").child(uid)
-                .child(orderFood.id!!).updateChildren(delivered).addOnCompleteListener { task ->
+            FirebaseDatabase.getInstance().getReference("orderFood").child(orderFood.idOrder)
+                .updateChildren(delivered).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("Firebase", "delivered order success")
                         fetchOrderFood()

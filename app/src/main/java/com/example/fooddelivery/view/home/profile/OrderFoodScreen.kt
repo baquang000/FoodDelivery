@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -54,6 +56,7 @@ import com.example.fooddelivery.data.model.tabItemOrder
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.profileviewmodel.OrderFoodViewModel
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,6 +65,7 @@ fun OrderFoodScreen(
     orderViewModel: OrderFoodViewModel = viewModel(),
     sharedViewModel: SharedViewModel
 ) {
+    val decimalFomat = DecimalFormat("#,###.##")
     val pagerState = rememberPagerState { tabItemOrder.size }
     val coroutineScope = rememberCoroutineScope()
     Column(
@@ -112,18 +116,23 @@ fun OrderFoodScreen(
         ) { index ->
             //Some screen
             if (index == 0) {
-                ConfirmOrder(orderViewModel = orderViewModel)
+                ConfirmOrder(orderViewModel = orderViewModel, decimalFomat = decimalFomat)
             }
             if (index == 1) {
-                DeliveringOrder(orderViewModel = orderViewModel)
+                DeliveringOrder(orderViewModel = orderViewModel, decimalFomat = decimalFomat)
             }
             if (index == 2) {
-                DeliveredOrder(orderViewModel = orderViewModel, sharedViewModel = sharedViewModel)
+                DeliveredOrder(
+                    orderViewModel = orderViewModel,
+                    sharedViewModel = sharedViewModel,
+                    decimalFomat = decimalFomat
+                )
             }
             if (index == 3) {
                 CanceledOrder(
                     orderViewModel = orderViewModel,
-                    sharedViewModel = sharedViewModel
+                    sharedViewModel = sharedViewModel,
+                    decimalFomat = decimalFomat
                 )
             }
         }
@@ -131,7 +140,7 @@ fun OrderFoodScreen(
 }
 
 @Composable
-fun ConfirmOrder(orderViewModel: OrderFoodViewModel) {
+fun ConfirmOrder(orderViewModel: OrderFoodViewModel, decimalFomat: DecimalFormat) {
     val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
     LazyColumn(
         modifier = Modifier
@@ -151,14 +160,26 @@ fun ConfirmOrder(orderViewModel: OrderFoodViewModel) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 4.dp, bottom = 2.dp),
+                            .padding(start = 4.dp, end = 4.dp, bottom = 2.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(7f)
+                        ) {
+                            Text(
+                                text = "${order.name} | ${order.numberphone}",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(text = order.address, style = MaterialTheme.typography.titleMedium)
+                        }
                         NormalTextComponents(
                             value = stringResource(id = R.string.order_comfirm),
                             nomalColor = colorResource(id = R.color.red),
-                            nomalFontsize = 16.sp
+                            nomalFontsize = 16.sp,
+                            modifier = Modifier.weight(3f)
                         )
                     }
                     LazyRow(
@@ -195,12 +216,13 @@ fun ConfirmOrder(orderViewModel: OrderFoodViewModel) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 4.dp, bottom = 2.dp),
+                            .padding(end = 4.dp, bottom = 2.dp, start = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.Absolute.SpaceBetween
                     ) {
+                        Text(text = order.time, style = MaterialTheme.typography.titleMedium)
                         NormalTextComponents(
-                            value = "Tổng: ${order.sumPrice}đ",
+                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )
@@ -232,7 +254,7 @@ fun ConfirmOrder(orderViewModel: OrderFoodViewModel) {
 }
 
 @Composable
-fun DeliveringOrder(orderViewModel: OrderFoodViewModel) {
+fun DeliveringOrder(orderViewModel: OrderFoodViewModel, decimalFomat: DecimalFormat) {
     val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
     LazyColumn(
         modifier = Modifier
@@ -256,6 +278,17 @@ fun DeliveringOrder(orderViewModel: OrderFoodViewModel) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(7f)
+                        ) {
+                            Text(
+                                text = "${order.name} | ${order.numberphone}",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(text = order.address, style = MaterialTheme.typography.titleMedium)
+                        }
                         NormalTextComponents(
                             value = stringResource(id = R.string.delevering_order),
                             nomalColor = colorResource(id = R.color.red),
@@ -296,12 +329,13 @@ fun DeliveringOrder(orderViewModel: OrderFoodViewModel) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 4.dp, bottom = 2.dp),
+                            .padding(end = 4.dp, bottom = 2.dp, start = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+                        Text(text = order.time, style = MaterialTheme.typography.titleMedium)
                         NormalTextComponents(
-                            value = "Tổng: ${order.sumPrice}đ",
+                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )
@@ -335,7 +369,8 @@ fun DeliveringOrder(orderViewModel: OrderFoodViewModel) {
 @Composable
 fun DeliveredOrder(
     orderViewModel: OrderFoodViewModel,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    decimalFomat: DecimalFormat
 ) {
     val context = LocalContext.current
     val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
@@ -411,7 +446,7 @@ fun DeliveredOrder(
                         horizontalArrangement = Arrangement.End
                     ) {
                         NormalTextComponents(
-                            value = "Tổng: ${order.sumPrice}đ",
+                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )
@@ -459,7 +494,8 @@ fun DeliveredOrder(
 @Composable
 fun CanceledOrder(
     orderViewModel: OrderFoodViewModel,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    decimalFomat: DecimalFormat
 ) {
     val context = LocalContext.current
     val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
@@ -535,7 +571,7 @@ fun CanceledOrder(
                         horizontalArrangement = Arrangement.End
                     ) {
                         NormalTextComponents(
-                            value = "Tổng: ${order.sumPrice}đ",
+                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )

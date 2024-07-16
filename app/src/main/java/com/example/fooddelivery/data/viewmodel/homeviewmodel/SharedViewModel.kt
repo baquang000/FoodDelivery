@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
@@ -36,6 +37,7 @@ class SharedViewModel : ViewModel() {
 
     //switch delivery to door
     private val priceTaxandDelivery = MutableStateFlow(0)
+
     // reward for driver
     private val rewardForDriver = MutableStateFlow(0)
 
@@ -118,14 +120,39 @@ class SharedViewModel : ViewModel() {
         return _foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }
     }
 
-    fun addFoodHistoryAndDelete() {
+    fun addFoodHistoryAndDelete(
+        name: String,
+        numberphone: String,
+        address: String,
+        email: String,
+        dateofbirth: String,
+        noteOrder: String,
+        rewardForDriver: Int,
+        deliverytoDoor: Boolean,
+        diningSubtances: Boolean
+    ) {
+        val timeOrder = Calender().getCalender()
         val foodList = _foodDetailStateFlow.value
-        val orderlist = OrderFood(listFood = foodList, sumPrice = _sumPrice.value)
+        val orderlist = OrderFood(
+            listFood = foodList, sumPrice = _sumPrice.value,
+            name = name,
+            numberphone = numberphone,
+            address = address,
+            email = email,
+            dateofbirth = dateofbirth,
+            time = timeOrder,
+            noteOrder = noteOrder,
+            rewardForDriver = rewardForDriver,
+            deliverytoDoor = deliverytoDoor,
+            diningSubtances = diningSubtances
+        )
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        orderlist.id = userId
+        orderlist.idUser = userId
         if (userId != null) {
-                FirebaseDatabase.getInstance().getReference("orderFood").push()
-            .setValue(orderlist).addOnCompleteListener { task ->
+            val order = FirebaseDatabase.getInstance().getReference("orderFood").push()
+            val keyOrder = order.key
+            orderlist.idOrder = keyOrder!!
+            order.setValue(orderlist).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("Firebase", "Save success")
                     _foodDetailStateFlow.value = emptyList()
@@ -147,5 +174,6 @@ class SharedViewModel : ViewModel() {
             updatelist
         }
     }
+
 }
 

@@ -27,5 +27,6 @@ fun RootNavGraph() {
             MainScreen(rootNavHostController = rootNavController, sharedViewModel = sharedViewModel,userInforViewModel = userInforViewModel)
         }
         profileNavGraph(rootNavController = rootNavController, sharedViewModel = sharedViewModel)
+        favoriteNavGraph(rootNavController = rootNavController, sharedViewModel = sharedViewModel)
     }
 }

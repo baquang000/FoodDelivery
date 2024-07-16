@@ -19,7 +19,7 @@ import com.example.fooddelivery.navigation.nav_graph.HomeNavGraph
 fun MainScreen(
     rootNavHostController: NavHostController,
     sharedViewModel: SharedViewModel,
-    userInforViewModel : UserInforViewModel,
+    userInforViewModel: UserInforViewModel,
     homeNavController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by homeNavController.currentBackStackEntryAsState()

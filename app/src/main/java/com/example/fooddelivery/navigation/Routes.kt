@@ -42,8 +42,8 @@ sealed class HomeRouteScreen(val route: String) {
     }
 
     data object CartHomeRouteScreen : HomeRouteScreen(route = "Cart_Screen")
-    data object FavoriteRouteScreen : HomeRouteScreen(route = "Favorite_Screen")
-    data object ProfileRouteScreen : HomeRouteScreen(route = "Frofile_Screen")
+    data object ProfileRouteScreen : HomeRouteScreen(route = "Profile_Screen")
+    data object FavoriteRouteScreen : HomeRouteScreen(route = "FavoriteRoute_Screen")
 }
 
 object Graph {
@@ -64,6 +64,23 @@ sealed class AuthRouteScreen(val route: String) {
 sealed class ProfileRouteScreen(val route: String) {
     data object UserInfor : ProfileRouteScreen(route = "UserInfor_screen")
     data object HisFood : ProfileRouteScreen(route = "HisFood_screen")
-    data object OrderFood: ProfileRouteScreen(route = "OrderFood_screen")
+    data object OrderFood : ProfileRouteScreen(route = "OrderFood_screen")
     data object ChangePass : ProfileRouteScreen(route = "ChangePass_screen")
+}
+
+sealed class FavoriteRouteScreen(val route: String) {
+    data object DetailFavorite :
+        FavoriteRouteScreen(route = "Detail_Favorite_Screen?title={$TITLE_ARGUMENT_KEY}&price={$PRICE_ARGUMENT_KEY}&star={$STAR_ARGUMENT_KEY}&timevalue={$TIMEVALUE_ARGUMENT_KEY}&description={$DESCRIPTION_ARGUMENT_KEY}&imagepath={$IMAGEPATH_ARGUMENT_KEY}&id={$ID_ARGUMENT_KEY}") {
+        fun sendFood(
+            title: String = "",
+            price: Double = 0.0,
+            star: Double = 0.0,
+            timevalue: Int = 0,
+            description: String = "",
+            imagepath: String = "",
+            id: Int = 0
+        ): String {
+            return "Detail_Favorite_Screen?title=$title&price=$price&star=$star&timevalue=$timevalue&description=$description&imagepath=$imagepath&id=$id"
+        }
+    }
 }

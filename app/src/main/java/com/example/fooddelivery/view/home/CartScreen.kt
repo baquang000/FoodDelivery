@@ -96,6 +96,8 @@ fun CartScreen(
     val name by userInforViewModel::name
     val numberphone by userInforViewModel::numberphone
     val address by userInforViewModel::address
+    val email by userInforViewModel::email
+    val dateofbirth by userInforViewModel::dateofbirth
     LaunchedEffect(userInforViewModel) {
         userInforViewModel.getUserData()
     }
@@ -736,7 +738,17 @@ fun CartScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                sharedViewModel.addFoodHistoryAndDelete()
+                                sharedViewModel.addFoodHistoryAndDelete(
+                                    name = name,
+                                    numberphone = numberphone,
+                                    address = address,
+                                    email = email,
+                                    dateofbirth = dateofbirth,
+                                    noteOrder = textNoteOrder,
+                                    rewardForDriver = valueTips,
+                                    deliverytoDoor = switchDeliverytoDoor,
+                                    diningSubtances = switchDiningSubtances
+                                )
                                 Toast.makeText(context, "Đặt hàng thành công", Toast.LENGTH_SHORT)
                                     .show()
                             }
