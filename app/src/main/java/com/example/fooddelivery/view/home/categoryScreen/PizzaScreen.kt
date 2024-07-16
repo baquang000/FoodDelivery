@@ -27,18 +27,20 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.FoodItem
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodState
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.CategoryViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel.PizzaViewModel
 
 @Composable
 fun PizzaScreen(
     navController: NavController,
-    pizzaViewModel: PizzaViewModel = viewModel(),
+    categoryViewModel: CategoryViewModel = viewModel(),
     sharedViewModel: SharedViewModel,
     innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPaddingValues)
     ) {
         IconButton(onClick = {
             navController.navigateUp()
@@ -48,8 +50,8 @@ fun PizzaScreen(
                 contentDescription = stringResource(R.string.arrow)
             )
         }
-        SetMoreItem(
-            pizzaViewModel = pizzaViewModel,
+        SetPizzaItem(
+            categoryViewModel = categoryViewModel,
             navController = navController,
             sharedViewModel = sharedViewModel
         )
@@ -57,12 +59,12 @@ fun PizzaScreen(
 }
 
 @Composable
-fun SetMoreItem(
-    pizzaViewModel: PizzaViewModel,
+fun SetPizzaItem(
+    categoryViewModel: CategoryViewModel,
     navController: NavController,
     sharedViewModel: SharedViewModel
 ) {
-    when (val result = pizzaViewModel.pizzaFood.value) {
+    when (val result = categoryViewModel.pizzaFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()

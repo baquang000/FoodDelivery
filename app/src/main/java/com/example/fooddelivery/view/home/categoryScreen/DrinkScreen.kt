@@ -21,18 +21,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.CategoryViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel.DrinkViewModel
 
 @Composable
 fun DrinkScreen(
     navController: NavController,
-    drinkViewModel: DrinkViewModel = viewModel(),
+    categoryViewModel: CategoryViewModel = viewModel(),
     sharedViewModel: SharedViewModel,
     innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPaddingValues)
     ) {
         IconButton(onClick = {
             navController.navigateUp()
@@ -46,8 +48,8 @@ fun DrinkScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SetMoreItem(
-                drinkViewModel = drinkViewModel,
+            SetDrinkItem(
+                categoryViewModel = categoryViewModel,
                 navController = navController,
                 sharedViewModel = sharedViewModel
             )
@@ -56,12 +58,12 @@ fun DrinkScreen(
 }
 
 @Composable
-fun SetMoreItem(
-    drinkViewModel: DrinkViewModel,
+fun SetDrinkItem(
+    categoryViewModel: CategoryViewModel,
     navController: NavController,
     sharedViewModel: SharedViewModel
 ) {
-    when (val result = drinkViewModel.drinkFood.value) {
+    when (val result = categoryViewModel.drinkFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()

@@ -21,18 +21,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.CategoryViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel.HotDogViewModel
 
 @Composable
 fun HotDogScreen(
     navController: NavController,
-    hotDogViewModel: HotDogViewModel = viewModel(),
+    categoryViewModel: CategoryViewModel = viewModel(),
     sharedViewModel: SharedViewModel,
     innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPaddingValues)
     ) {
         IconButton(onClick = {
             navController.navigateUp()
@@ -46,8 +48,8 @@ fun HotDogScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SetMoreItem(
-                hotDogViewModel = hotDogViewModel,
+            SetHotDogItem(
+                categoryViewModel = categoryViewModel,
                 navController = navController,
                 sharedViewModel = sharedViewModel
             )
@@ -56,12 +58,12 @@ fun HotDogScreen(
 }
 
 @Composable
-fun SetMoreItem(
-    hotDogViewModel: HotDogViewModel,
+fun SetHotDogItem(
+    categoryViewModel: CategoryViewModel,
     navController: NavController,
     sharedViewModel: SharedViewModel
 ) {
-    when (val result = hotDogViewModel.hotdogFood.value) {
+    when (val result = categoryViewModel.hotdogFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()

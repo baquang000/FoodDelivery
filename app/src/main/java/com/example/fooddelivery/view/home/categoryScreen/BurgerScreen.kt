@@ -21,17 +21,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.CategoryViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel.BurgerViewModel
-
 
 
 @Composable
-fun BurgerScreen(navController: NavController, burgerViewModel: BurgerViewModel = viewModel(),
-                 sharedViewModel: SharedViewModel, innerPaddingValues: PaddingValues
+fun BurgerScreen(
+    navController: NavController,
+    categoryViewModel: CategoryViewModel = viewModel(),
+    sharedViewModel: SharedViewModel, innerPaddingValues: PaddingValues
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPaddingValues)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPaddingValues)
     ) {
         IconButton(onClick = {
             navController.navigateUp()
@@ -45,14 +48,22 @@ fun BurgerScreen(navController: NavController, burgerViewModel: BurgerViewModel 
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SetMoreItem(burgerViewModel = burgerViewModel,navController = navController,sharedViewModel = sharedViewModel)
+            SetBurgerItem(
+                categoryViewModel = categoryViewModel,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
     }
 }
 
 @Composable
-fun SetMoreItem(burgerViewModel: BurgerViewModel, navController: NavController, sharedViewModel: SharedViewModel) {
-    when (val result = burgerViewModel.burgerFood.value) {
+fun SetBurgerItem(
+    categoryViewModel: CategoryViewModel,
+    navController: NavController,
+    sharedViewModel: SharedViewModel
+) {
+    when (val result = categoryViewModel.burgerFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -60,7 +71,11 @@ fun SetMoreItem(burgerViewModel: BurgerViewModel, navController: NavController, 
         }
 
         is FoodState.Success -> {
-            ListCategoryFood(result.data,navController = navController,sharedViewModel = sharedViewModel)
+            ListCategoryFood(
+                result.data,
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
 
         is FoodState.Failure -> {

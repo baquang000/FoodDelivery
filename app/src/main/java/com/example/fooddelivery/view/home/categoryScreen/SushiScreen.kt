@@ -21,13 +21,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.FoodState
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.CategoryViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.categoryviewmodel.ShushiViewModel
 
 @Composable
 fun ShushiScreen(
     navController: NavController,
-    shushiViewModel: ShushiViewModel = viewModel(),
+    categoryViewModel: CategoryViewModel = viewModel(),
     sharedViewModel: SharedViewModel,
     innerPaddingValues: PaddingValues
 ) {
@@ -46,8 +46,8 @@ fun ShushiScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SetMoreItem(
-                shushiViewModel = shushiViewModel,
+            SetShushiItem(
+                categoryViewModel = categoryViewModel,
                 navController = navController,
                 sharedViewModel = sharedViewModel
             )
@@ -56,12 +56,12 @@ fun ShushiScreen(
 }
 
 @Composable
-fun SetMoreItem(
-    shushiViewModel: ShushiViewModel,
+fun SetShushiItem(
+    categoryViewModel: CategoryViewModel,
     navController: NavController,
     sharedViewModel: SharedViewModel
 ) {
-    when (val result = shushiViewModel.shushiFood.value) {
+    when (val result = categoryViewModel.shushiFood.value) {
         is FoodState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
