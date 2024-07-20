@@ -291,7 +291,17 @@ fun DetailFavoriteScreen(
                 )
             }
             Button(
-                onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(
+                onClick = {
+                    val fooddetails = FoodDetails(
+                        title = title,
+                        imagePath = imagepath,
+                        price = price.toFloat(),
+                        quantity = quantityFood,
+                        id = id
+                    )
+                    sharedViewModel.addFoodDetail(foodDetails = fooddetails)
+                    Toast.makeText(context, "Thêm vào giỏ hàng thành công", LENGTH_SHORT).show()
+                }, colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red
                 )
             ) {
@@ -302,17 +312,7 @@ fun DetailFavoriteScreen(
                     )
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                NormalTextComponents(value = stringResource(R.string.add_to_cart),
-                    modifier = Modifier.clickable {
-                        val fooddetails = FoodDetails(
-                            title = title,
-                            imagePath = imagepath,
-                            price = price.toFloat(),
-                            quantity = quantityFood
-                        )
-                        sharedViewModel.addFoodDetail(foodDetails = fooddetails)
-                        Toast.makeText(context, "Thêm vào giỏ hàng thành công", LENGTH_SHORT).show()
-                    })
+                NormalTextComponents(value = stringResource(R.string.add_to_cart))
             }
         }
     }

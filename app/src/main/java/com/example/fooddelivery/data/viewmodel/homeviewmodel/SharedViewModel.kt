@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.fooddelivery.data.model.Calender
+import com.example.fooddelivery.data.model.Comment
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
@@ -41,8 +42,13 @@ class SharedViewModel : ViewModel() {
     // reward for driver
     private val rewardForDriver = MutableStateFlow(0)
 
+    //save comment value
+    private val _commentStateFlow = MutableStateFlow<List<Comment>>(emptyList())
+    val commentStateFlow: StateFlow<List<Comment>> = _commentStateFlow.asStateFlow()
+
     init {
         fetchDiscountCodeFromFirebase()
+        getCommentFromFirebase()
     }
 
     private fun sumPrice() {
@@ -106,11 +112,12 @@ class SharedViewModel : ViewModel() {
         sumPrice()
     }
 
-    fun updateFoodDetailQuantity(index: Int, newQuantity: Int) {
+
+    fun updateFoodDetailQuantity(id: Int, newQuantity: Int) {
         _foodDetailStateFlow.update { list ->
-            list.mapIndexed { curindex, fooddetail ->
-                if (curindex == index) fooddetail.copy(quantity = newQuantity)
-                else fooddetail
+            list.map { food ->
+                if (food.id == id) food.copy(quantity = newQuantity)
+                else food
             }
         }
         sumPrice()
@@ -163,11 +170,13 @@ class SharedViewModel : ViewModel() {
         }
     }
 
-    fun deleteItemFoodinCart(index: Int) {
+    fun deleteItemFoodinCart(foodDetails: FoodDetails) {
         _foodDetailStateFlow.update { list ->
             val updatelist = list.toMutableList()
-            if (index in list.indices) {
-                updatelist.removeAt(index)
+            val itemToRemove = updatelist.find { it.id == foodDetails.id }
+            if (itemToRemove != null) {
+                updatelist.remove(itemToRemove)
+                isErrorDelete = false
             } else {
                 isErrorDelete = true
             }
@@ -175,5 +184,29 @@ class SharedViewModel : ViewModel() {
         }
     }
 
+    //getComment
+    private fun getCommentFromFirebase() {
+        val templist = mutableListOf<Comment>()
+        FirebaseDatabase.getInstance().getReference("comment")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (datasnap in snapshot.children) {
+                        val comment = datasnap.getValue(Comment::class.java)
+                        if (comment != null) {
+                            templist.add(comment)
+                        }
+                    }
+                    _commentStateFlow.value = templist
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e(
+                        "SharedViewModel",
+                        "Error fetching comment in fun getCommentFromFirebase: ${error.message}"
+                    )
+                }
+
+            })
+    }
 }
 

@@ -96,4 +96,5 @@
     <string name="note_order">Ghi chú</string>
     <string name="done">Xong</string>
     <string name="add_note_order">Thêm ghi chú</string>
+    <string name="write_comment">Viết đánh giá</string>
 </resources>

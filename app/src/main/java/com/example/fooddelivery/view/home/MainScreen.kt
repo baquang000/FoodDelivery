@@ -20,7 +20,7 @@ fun MainScreen(
     rootNavHostController: NavHostController,
     sharedViewModel: SharedViewModel,
     userInforViewModel: UserInforViewModel,
-    homeNavController: NavHostController = rememberNavController()
+    homeNavController: NavHostController = rememberNavController(),
 ) {
     val navBackStackEntry by homeNavController.currentBackStackEntryAsState()
     val curentRoute by remember(navBackStackEntry) {
@@ -53,7 +53,7 @@ fun MainScreen(
             rootNavController = rootNavHostController,
             innerPadding = innerPadding,
             sharedViewModel = sharedViewModel,
-            userInforViewModel = userInforViewModel
+            userInforViewModel = userInforViewModel,
         )
     }
 }

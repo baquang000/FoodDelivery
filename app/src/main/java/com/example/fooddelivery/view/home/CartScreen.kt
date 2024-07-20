@@ -5,9 +5,11 @@ package com.example.fooddelivery.view.home
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -65,6 +67,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
@@ -75,22 +78,25 @@ import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CartScreen(
     navController: NavController,
     sharedViewModel: SharedViewModel,
     userInforViewModel: UserInforViewModel,
-    innerPaddingValues: PaddingValues
+    innerPaddingValues: PaddingValues,
 ) {
     val context = LocalContext.current
-    val foodDetailStateFlow = sharedViewModel.foodDetailStateFlow.collectAsState()
+    val foodDetailStateFlow = sharedViewModel.foodDetailStateFlow.collectAsStateWithLifecycle()
     val foodDetailsList = foodDetailStateFlow.value
     val sumPrice = sharedViewModel.sumPrice.collectAsState()
     val isErrorDelete by sharedViewModel::isErrorDelete
-    val discountValue by sharedViewModel.discountCodeValue.collectAsState()
+    val discountValue by sharedViewModel.discountCodeValue.collectAsStateWithLifecycle()
     val totalPrice = foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }.toFloat()
     //userInfor
     val name by userInforViewModel::name
@@ -137,7 +143,6 @@ fun CartScreen(
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val halfScreenHeight = screenHeight / 2
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -235,23 +240,24 @@ fun CartScreen(
                     }
                 }
             }
-            items(foodDetailStateFlow.value) { food ->
+            items(foodDetailStateFlow.value, key = {
+                it.id!!
+            }) { food ->
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(bottom = 12.dp)
                 ) {
-                    val index = foodDetailStateFlow.value.indexOf(food)
                     SwipeToDismissItem(
                         foodDetails = food,
-                        index = index,
                         sharedViewModel = sharedViewModel,
                         onRemove = {
-                            sharedViewModel.deleteItemFoodinCart(index)
+                            sharedViewModel.deleteItemFoodinCart(food)
                             if (isErrorDelete) {
                                 Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show()
                             }
-                        }
+                        },
+                        modifier = Modifier.animateItemPlacement(tween(200))
                     )
                 }
             }
@@ -843,7 +849,6 @@ fun OptionButton(
 @Composable
 fun CardFoodIemWithCart(
     foodDetails: FoodDetails,
-    index: Int,
     sharedViewModel: SharedViewModel
 ) {
     var quantity by remember {
@@ -906,7 +911,7 @@ fun CardFoodIemWithCart(
                                 if (quantity > 0) {
                                     quantity--
                                     sharedViewModel.updateFoodDetailQuantity(
-                                        index = index,
+                                        id = foodDetails.id!!,
                                         newQuantity = quantity
                                     )
                                 }
@@ -928,7 +933,7 @@ fun CardFoodIemWithCart(
                             .clickable {
                                 quantity++
                                 sharedViewModel.updateFoodDetailQuantity(
-                                    index = index,
+                                    id = foodDetails.id!!,
                                     newQuantity = quantity
                                 )
                             },
@@ -951,10 +956,10 @@ fun CardFoodIemWithCart(
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun SwipeToDismissItem(
     foodDetails: FoodDetails,
-    index: Int,
     sharedViewModel: SharedViewModel,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier
@@ -964,6 +969,7 @@ fun SwipeToDismissItem(
         confirmValueChange = { state ->
             if (state == SwipeToDismissBoxValue.EndToStart) {
                 coroutineScope.launch {
+                    delay(1.seconds)
                     onRemove()
                 }
                 true
@@ -1000,7 +1006,6 @@ fun SwipeToDismissItem(
     ) {
         CardFoodIemWithCart(
             foodDetails = foodDetails,
-            index = index,
             sharedViewModel = sharedViewModel
         )
     }

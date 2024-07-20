@@ -17,10 +17,14 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -89,233 +94,301 @@ fun FoodDetailsScreen(
     }
     var isFavorited by remember { mutableStateOf(false) }
     isFavorited = favoriteViewModel.favoriteStatus[id] ?: false
-    Column(
+    //comment value
+    val commentValue by sharedViewModel.commentStateFlow.collectAsStateWithLifecycle()
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPaddingValues)
     ) {
-        Box {
-            AsyncImage(
-                model = imagepath.toString(),
-                contentDescription = title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 400.dp)
-            )
-            IconButton(onClick = { navController.navigateUp() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow),
-                    contentDescription = stringResource(
-                        id = R.string.arrow
-                    ),
-                    modifier = Modifier
-                        .scale(2.5f)
-                        .align(alignment = Alignment.TopStart)
-                        .padding(16.dp),
-                    tint = Color.White
-                )
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 24.dp, bottom = 24.dp),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Top
-        ) {
-            Image(
-                painter = if (isFavorited) painterResource(id = R.drawable.favourite) else painterResource(
-                    id = R.drawable.favorite_white
-                ),
-                contentDescription = stringResource(
-                    id = R.string.favorite_white_icon
-                ),
-                modifier = Modifier
-                    .size(32.dp, 32.dp)
-                    .scale(2.2f)
-                    .clickable {
-                        favoriteViewModel.saveFavoriteFood(
-                            id = id,
-                            isFavorited = !isFavorited
-                        )
-                    }
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            NormalTextComponents(
-                value = title.toString(),
-                nomalColor = Color.Black,
-                nomalFontsize = 18.sp,
-                nomalFontWeight = FontWeight.Bold,
-                nomalTextAlign = TextAlign.Center
-            )
-            NormalTextComponents(
-                value = "${decimalFomat.format(price)}đ",
-                nomalColor = Color.Red,
-                nomalFontWeight = FontWeight.Bold,
-                nomalFontsize = 18.sp,
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, top = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                NormalTextComponents(
-                    value = "${rating}/5",
-                    nomalColor = Color.Black,
-                    nomalFontsize = 16.sp
-                )
-                RatingBar(
-                    modifier = Modifier.size(36.dp),
-                    rating = rating
-                ) {}
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                NormalTextComponents(
-                    value = "${timevalue.toString()}p",
-                    nomalColor = Color.Black,
-                    nomalFontsize = 16.sp,
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.time),
-                    contentDescription = stringResource(
-                        id = R.string.time
-                    ),
-                    modifier = Modifier.size(16.dp),
-                    tint = Color.Red
-                )
-            }
-        }
-        NormalTextComponents(
-            value = stringResource(R.string.details),
-            nomalFontsize = 22.sp,
-            nomalColor = Color.Black,
-            nomalFontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)
-        )
-        NormalTextComponents(
-            value = description.toString(),
-            nomalFontsize = 14.sp,
-            nomalColor = Color.Black,
-            modifier = Modifier.padding(start = 16.dp),
-            nomalTextAlign = TextAlign.Start
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            NormalTextComponents(
-                value = stringResource(R.string.quantity),
-                nomalFontsize = 22.sp,
-                nomalColor = Color.Black,
-                nomalFontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+        item {
+            Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.minus),
-                    contentDescription = stringResource(
-                        R.string.minus
-                    ),
+                HeadingFoodDetail(
+                    navController = navController,
+                    imagepath = imagepath,
+                    title = title
+                )
+                Row(
                     modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            if (quantityFood > 0) {
-                                quantityFood--
+                        .fillMaxWidth()
+                        .padding(end = 24.dp, bottom = 24.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Image(
+                        painter = if (isFavorited) painterResource(id = R.drawable.favourite) else painterResource(
+                            id = R.drawable.favorite_white
+                        ),
+                        contentDescription = stringResource(
+                            id = R.string.favorite_white_icon
+                        ),
+                        modifier = Modifier
+                            .size(32.dp, 32.dp)
+                            .scale(2f)
+                            .clickable {
+                                favoriteViewModel.saveFavoriteFood(
+                                    id = id,
+                                    isFavorited = !isFavorited
+                                )
                             }
-                        }
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    NormalTextComponents(
+                        value = title.toString(),
+                        nomalColor = Color.Black,
+                        nomalFontsize = 18.sp,
+                        nomalFontWeight = FontWeight.Bold,
+                        nomalTextAlign = TextAlign.Center
+                    )
+                    NormalTextComponents(
+                        value = "${decimalFomat.format(price)}đ",
+                        nomalColor = Color.Red,
+                        nomalFontWeight = FontWeight.Bold,
+                        nomalFontsize = 18.sp,
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, top = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        NormalTextComponents(
+                            value = "${rating}/5",
+                            nomalColor = Color.Black,
+                            nomalFontsize = 16.sp
+                        )
+                        RatingBar(
+                            modifier = Modifier.size(36.dp),
+                            rating = rating
+                        ) {}
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        NormalTextComponents(
+                            value = "${timevalue.toString()}p",
+                            nomalColor = Color.Black,
+                            nomalFontsize = 16.sp,
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.time),
+                            contentDescription = stringResource(
+                                id = R.string.time
+                            ),
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.Red
+                        )
+                    }
+                }
+                NormalTextComponents(
+                    value = stringResource(R.string.details),
+                    nomalFontsize = 22.sp,
+                    nomalColor = Color.Black,
+                    nomalFontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)
                 )
                 NormalTextComponents(
-                    value = quantityFood.toString(),
+                    value = description.toString(),
+                    nomalFontsize = 14.sp,
                     nomalColor = Color.Black,
-                    nomalFontsize = 16.sp,
-                    nomalFontWeight = FontWeight.Bold
+                    modifier = Modifier.padding(start = 16.dp),
+                    nomalTextAlign = TextAlign.Start
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.plus),
-                    contentDescription = stringResource(
-                        R.string.plus
-                    ),
+                Row(
                     modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            quantityFood++
-                        },
-                    colorFilter = ColorFilter.tint(Color.Red)
-                )
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    NormalTextComponents(
+                        value = stringResource(R.string.quantity),
+                        nomalFontsize = 22.sp,
+                        nomalColor = Color.Black,
+                        nomalFontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.minus),
+                            contentDescription = stringResource(
+                                R.string.minus
+                            ),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    if (quantityFood > 0) {
+                                        quantityFood--
+                                    }
+                                }
+                        )
+                        NormalTextComponents(
+                            value = quantityFood.toString(),
+                            nomalColor = Color.Black,
+                            nomalFontsize = 16.sp,
+                            nomalFontWeight = FontWeight.Bold
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.plus),
+                            contentDescription = stringResource(
+                                R.string.plus
+                            ),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    quantityFood++
+                                },
+                            colorFilter = ColorFilter.tint(Color.Red)
+                        )
+                    }
+                }
             }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-                .background(color = Color.LightGray.copy(alpha = 0.3f)),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                    .background(color = Color.LightGray.copy(alpha = 0.3f)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                NormalTextComponents(
-                    value = stringResource(R.string.total),
-                    nomalFontsize = 16.sp,
-                    nomalColor = Color.Black,
-                    nomalFontWeight = FontWeight.Bold
-                )
-                NormalTextComponents(
-                    value = "${decimalFomat.format(totalPrice)}đ",
-                    nomalFontsize = 16.sp,
-                    nomalColor = Color.Black
-                )
-            }
-            Button(
-                onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red
-                )
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.cart),
-                    contentDescription = stringResource(
-                        R.string.cart
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    NormalTextComponents(
+                        value = stringResource(R.string.total),
+                        nomalFontsize = 16.sp,
+                        nomalColor = Color.Black,
+                        nomalFontWeight = FontWeight.Bold
                     )
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                NormalTextComponents(value = stringResource(R.string.add_to_cart),
-                    modifier = Modifier.clickable {
+                    NormalTextComponents(
+                        value = "${decimalFomat.format(totalPrice)}đ",
+                        nomalFontsize = 16.sp,
+                        nomalColor = Color.Black
+                    )
+                }
+                Button(
+                    onClick = {
                         val fooddetails = FoodDetails(
                             title = title,
                             imagePath = imagepath,
                             price = price.toFloat(),
-                            quantity = quantityFood
+                            quantity = quantityFood,
+                            id = id
                         )
                         sharedViewModel.addFoodDetail(foodDetails = fooddetails)
-                        Toast.makeText(context, "Thêm vào giỏ hàng thành công", LENGTH_SHORT).show()
-                    })
+                        Toast.makeText(context, "Thêm vào giỏ hàng thành công", LENGTH_SHORT)
+                            .show()
+                    }, colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.cart),
+                        contentDescription = stringResource(
+                            R.string.cart
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    NormalTextComponents(value = stringResource(R.string.add_to_cart))
+                }
             }
+        }
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 8.dp, end = 8.dp),
+            ) {
+                Text(
+                    text = "Bình luận", style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Gray
+                    )
+                )
+            }
+        }
+        items(commentValue) { comment ->
+            if (comment.idFood == id) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, start = 24.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = comment.nameUser, style = MaterialTheme.typography.titleMedium,
+                    )
+                    RatingBar(
+                        modifier = Modifier.size(26.dp),
+                        rating = comment.rating
+                    ) {}
+                    Text(text = comment.comment, style = MaterialTheme.typography.titleMedium)
+                    AsyncImage(
+                        model = comment.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier.size(width = 100.dp, height = 100.dp),
+                        contentScale = ContentScale.FillWidth
+                    )
+                    Text(
+                        text = comment.time, style = MaterialTheme.typography.titleMedium.copy(
+                            color = Color.Gray
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HeadingFoodDetail(
+    navController: NavController,
+    imagepath: String?, title: String?
+) {
+    Box {
+        AsyncImage(
+            model = imagepath.toString(),
+            contentDescription = title,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 400.dp)
+        )
+        IconButton(onClick = { navController.navigateUp() }) {
+            Icon(
+                painter = painterResource(id = R.drawable.arrow),
+                contentDescription = stringResource(
+                    id = R.string.arrow
+                ),
+                modifier = Modifier
+                    .scale(2.5f)
+                    .align(alignment = Alignment.TopStart)
+                    .padding(16.dp),
+                tint = Color.White
+            )
         }
     }
 }

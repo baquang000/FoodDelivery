@@ -17,5 +17,7 @@ data class OrderFood(
     var noteOrder: String = "",
     var rewardForDriver: Int = 0,
     var deliverytoDoor: Boolean = false,
-    var diningSubtances: Boolean = true
+    var diningSubtances: Boolean = true,
+    var foodback: Boolean = false,
+    var comment: Boolean = false
 )

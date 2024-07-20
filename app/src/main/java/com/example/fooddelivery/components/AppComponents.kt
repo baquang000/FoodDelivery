@@ -464,7 +464,8 @@ fun FoodItem(
                                         title = food.Title.toString(),
                                         imagePath = food.ImagePath.toString(),
                                         price = food.Price.toFloat(),
-                                        quantity = 1
+                                        quantity = 1,
+                                        id = food.Id
                                     )
                                     sharedViewModel.addFoodDetail(foodDetails = fooddetails)
                                     Toast.makeText(
@@ -723,7 +724,7 @@ fun ExpandableTextField(
     onTextChange: (String) -> Unit,
     onDone: (Boolean) -> Unit,
     onCancel: (Boolean) -> Unit,
-    saveText : String
+    saveText: String
 ) {
     val localFocusManager = LocalFocusManager.current
     var noteTextField by remember {
@@ -734,7 +735,9 @@ fun ExpandableTextField(
         modifier = modifier
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight().background(color = MaterialTheme.colorScheme.onSecondary)
+            modifier = Modifier
+                .fillMaxHeight()
+                .background(color = MaterialTheme.colorScheme.onSecondary)
         ) {
             Row(
                 modifier = Modifier

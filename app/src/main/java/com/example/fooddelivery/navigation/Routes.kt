@@ -8,6 +8,7 @@ const val TIMEVALUE_ARGUMENT_KEY = "timevalue"
 const val DESCRIPTION_ARGUMENT_KEY = "description"
 const val IMAGEPATH_ARGUMENT_KEY = "imagepath"
 const val ID_ARGUMENT_KEY = "id"
+//const val ID_ORDER_ARGUMENT_KEY = "idorder"
 
 sealed class HomeRouteScreen(val route: String) {
     data object Home : HomeRouteScreen(route = "Home_Screen")
@@ -66,6 +67,7 @@ sealed class ProfileRouteScreen(val route: String) {
     data object HisFood : ProfileRouteScreen(route = "HisFood_screen")
     data object OrderFood : ProfileRouteScreen(route = "OrderFood_screen")
     data object ChangePass : ProfileRouteScreen(route = "ChangePass_screen")
+    data object Comment : ProfileRouteScreen(route = "Comment_screen")
 }
 
 sealed class FavoriteRouteScreen(val route: String) {

@@ -41,7 +41,7 @@ fun HomeNavGraph(
     homeNavController: NavHostController,
     sharedViewModel: SharedViewModel,
     userInforViewModel: UserInforViewModel,
-    innerPadding: PaddingValues
+    innerPadding: PaddingValues,
 ) {
 
     NavHost(
@@ -176,7 +176,7 @@ fun HomeNavGraph(
                 navController = homeNavController,
                 sharedViewModel = sharedViewModel,
                 userInforViewModel = userInforViewModel,
-                innerPaddingValues = innerPadding
+                innerPaddingValues = innerPadding,
             )
         }
     }
