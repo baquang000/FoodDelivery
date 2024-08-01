@@ -80,7 +80,8 @@ class SharedViewModel : ViewModel() {
     private fun fetchDiscountCodeFromFirebase() {
         val emptyList = mutableListOf<DiscountCode>()
         discountCode.value = DiscountCodeState.Loading
-        FirebaseDatabase.getInstance().getReference("DiscountCode")
+        FirebaseDatabase.getInstance().getReference("DiscountCode").orderByChild("isshow")
+            .equalTo(true)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (dataSnap in snapshot.children) {

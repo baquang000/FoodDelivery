@@ -76,4 +76,8 @@ class LoginViewModel : ViewModel() {
         allValicationPass.value = emailResult.status && passwordResult.status
 
     }
+
+    fun googleLoginSuccess(){
+        _navigationHome.value = true
+    }
 }

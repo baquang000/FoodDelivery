@@ -113,6 +113,9 @@ fun CommentList(
     var downloadUri by remember {
         mutableStateOf("")
     }
+    var isRating by remember {
+        mutableStateOf(true)
+    }
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -145,6 +148,14 @@ fun CommentList(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    if (!isRating) {
+                        Text(
+                            text = "Bạn chưa chọn số sao",
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        )
+                    }
                     RatingBar(
                         modifier = Modifier.size(50.dp),
                         rating = rating,
@@ -255,10 +266,20 @@ fun CommentList(
         }
         Button(
             onClick = {
-
-                if (selectedImageUri != null) {
-                    uploadImageToFirebase(selectedImageUri, onUri = {
-                        downloadUri = it
+                if (rating != 0f) {
+                    if (selectedImageUri != null) {
+                        uploadImageToFirebase(selectedImageUri, onUri = {
+                            downloadUri = it
+                            val comment = Comment(
+                                idFood = order.listFood.first().id,
+                                comment = commentTextField,
+                                rating = rating,
+                                imageUrl = downloadUri,
+                                nameUser = order.name
+                            )
+                            orderViewModel.commentFood(comment = comment)
+                        })
+                    } else {
                         val comment = Comment(
                             idFood = order.listFood.first().id,
                             comment = commentTextField,
@@ -267,24 +288,17 @@ fun CommentList(
                             nameUser = order.name
                         )
                         orderViewModel.commentFood(comment = comment)
-                    })
+                        if (commentSuccess == false) {
+                            Toast.makeText(context, "Gửi comment thành công", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Gửi comment thành công", Toast.LENGTH_SHORT).show()
+                        }
+                        orderViewModel.isCommented(orderFood = order)
+                        navController.navigateUp()
+                    }
                 } else {
-                    val comment = Comment(
-                        idFood = order.listFood.first().id,
-                        comment = commentTextField,
-                        rating = rating,
-                        imageUrl = downloadUri,
-                        nameUser = order.name
-                    )
-                    orderViewModel.commentFood(comment = comment)
+                    isRating = false
                 }
-                if (commentSuccess == false) {
-                    Toast.makeText(context, "Gửi comment thành công", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Gửi comment thành công", Toast.LENGTH_SHORT).show()
-                }
-                orderViewModel.isCommented(orderFood = order)
-                navController.navigateUp()
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red

@@ -1,14 +1,19 @@
 [versions]
 agp = "8.5.1"
+
 coilCompose = "2.6.0"
+credentials = "1.2.2"
+credentialsPlayServicesAuth = "1.2.2"
+facebookAndroidSdk = "latest.release"
+googleid = "<latest version>"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeCompose = "2.8.3"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.9.0"
+lifecycleRuntimeCompose = "2.8.4"
+lifecycleRuntimeKtx = "2.8.4"
+activityCompose = "1.9.1"
 composeBom = "2024.06.00"
 googleServices = "4.4.2"
 firebaseDatabase = "21.0.0"
@@ -18,12 +23,20 @@ firebaseAuth = "23.0.0"
 firebaseFirestoreKtx = "25.0.0"
 uiTextGoogleFonts = "1.6.8"
 firebaseStorageKtx = "21.0.0"
+googleGmsGoogleServices = "4.4.2"
 
 [libraries]
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+#noinspection CredentialDependency
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
+facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookAndroidSdk" }
+facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebookAndroidSdk" }
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -50,4 +63,5 @@ firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 

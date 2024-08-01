@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("com.google.gms.google-services")
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
@@ -78,4 +78,15 @@ dependencies {
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.coil.compose)
     implementation(libs.androidx.material.icons.extended)
+
+    //google login
+    implementation (libs.androidx.credentials)
+    implementation (libs.credentials.play.services.auth)
+    implementation (libs.googleid)
+    implementation (libs.google.services)
+
+    //Facebook
+    implementation (libs.facebook.android.sdk)  // Latest Facebook SDK version
+    implementation (libs.facebook.login)
+
 }
