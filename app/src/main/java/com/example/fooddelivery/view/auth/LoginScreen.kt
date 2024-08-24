@@ -2,7 +2,6 @@ package com.example.fooddelivery.view.auth
 
 import android.content.Context
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -57,7 +56,6 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -169,7 +167,9 @@ fun LoginScreen(
                 nomalFontsize = 16.sp,
                 nomalFontWeight = FontWeight.Normal,
                 nomalColor = Color.Black,
-                modifier = Modifier.padding(top = 32.dp)
+                modifier = Modifier.padding(top = 32.dp).clickable {
+                    navController.navigate(route = AuthRouteScreen.ResetPass.route)
+                }
             )
             ButtonComponents(
                 value = stringResource(id = R.string.Dang_nhap),
@@ -320,7 +320,7 @@ fun LoginTwitterButton(
         painter = painterResource(id = R.drawable.twitter),
         contentDescription = "logo_twitter",
         modifier = modifier
-            .clickable {
+ /*           .clickable {
                 scope.launch {
                     try {
                         val provider = OAuthProvider.newBuilder("twitter.com")
@@ -353,7 +353,7 @@ fun LoginTwitterButton(
                         onAuthError(e)
                     }
                 }
-            }
+            }*/
             .height(50.dp)
     )
 }

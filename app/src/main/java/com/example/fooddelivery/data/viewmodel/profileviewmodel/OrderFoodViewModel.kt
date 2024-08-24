@@ -49,6 +49,7 @@ class OrderFoodViewModel : ViewModel() {
                         viewModelScope.launch {
                             _orderFoodStateFlow.value = orderList
                         }
+                        Log.d("Firebase","Get orderfood all success full")
                     }
 
                     override fun onCancelled(error: DatabaseError) {
