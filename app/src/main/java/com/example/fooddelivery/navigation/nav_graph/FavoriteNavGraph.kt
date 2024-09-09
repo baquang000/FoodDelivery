@@ -1,5 +1,6 @@
 package com.example.fooddelivery.navigation.nav_graph
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -7,54 +8,37 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.FavoriteRouteScreen
 import com.example.fooddelivery.navigation.Graph
-import com.example.fooddelivery.navigation.ID_ARGUMENT_KEY
-import com.example.fooddelivery.navigation.IMAGEPATH_ARGUMENT_KEY
-import com.example.fooddelivery.navigation.PRICE_ARGUMENT_KEY
-import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
-import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
-import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
-import com.example.fooddelivery.view.home.favorite.DetailFavoriteScreen
+import com.example.fooddelivery.navigation.HomeRouteScreen
+import com.example.fooddelivery.navigation.ID_SHOP_ARGUMENT_KEY
+import com.example.fooddelivery.view.home.favorite.FavoriteScreen
+import com.example.fooddelivery.view.home.ShopScreen
 
 fun NavGraphBuilder.favoriteNavGraph(
-    rootNavController: NavHostController,
-    sharedViewModel: SharedViewModel
+    homeNavController: NavHostController,
+    sharedViewModel: SharedViewModel,
+    innerPadding: PaddingValues
 ) {
     navigation(
-        startDestination = FavoriteRouteScreen.DetailFavorite.route,
+        startDestination = FavoriteRouteScreen.Favorite.route,
         route = Graph.FAVORITEGRAPH
     ) {
-        composable(route = FavoriteRouteScreen.DetailFavorite.route,
+        composable(route = FavoriteRouteScreen.Favorite.route) {
+            FavoriteScreen(innerPadding = innerPadding, navController = homeNavController)
+        }
+        composable(
+            route = HomeRouteScreen.ShopRouteScreen.route,
             arguments = listOf(
-                navArgument(TITLE_ARGUMENT_KEY) {
+                navArgument(ID_SHOP_ARGUMENT_KEY) {
                     type = NavType.StringType
                 },
-                navArgument(PRICE_ARGUMENT_KEY) {
-                    type = NavType.FloatType
-                },
-                navArgument(STAR_ARGUMENT_KEY) {
-                    type = NavType.FloatType
-                },
-                navArgument(TIMEVALUE_ARGUMENT_KEY) {
-                    type = NavType.IntType
-                },
-                navArgument(DESCRIPTION_ARGUMENT_KEY) {
-                    type = NavType.StringType
-                },
-                navArgument(IMAGEPATH_ARGUMENT_KEY) {
-                    type = NavType.StringType
-                },
-                navArgument(ID_ARGUMENT_KEY) {
-                    type = NavType.IntType
-                }
             )
         ) { navBackStackEntry ->
-            DetailFavoriteScreen(
-                navController = rootNavController,
-                navBackStackEntry = navBackStackEntry,
-                sharedViewModel = sharedViewModel
+            ShopScreen(
+                navController = homeNavController, navBackStackEntry = navBackStackEntry,
+                innerPaddingValues = innerPadding,
+                sharedViewModel = sharedViewModel,
             )
         }
     }

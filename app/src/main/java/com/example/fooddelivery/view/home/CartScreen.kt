@@ -78,6 +78,7 @@ import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
+import com.example.fooddelivery.navigation.HomeRouteScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -757,6 +758,11 @@ fun CartScreen(
                                 )
                                 Toast.makeText(context, "Đặt hàng thành công", Toast.LENGTH_SHORT)
                                     .show()
+                                navController.navigate(route = HomeRouteScreen.Home.route) {
+                                    popUpTo(HomeRouteScreen.Home.route) {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         },
                         modifier = Modifier.fillMaxWidth(),

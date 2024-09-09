@@ -8,6 +8,8 @@ import com.example.fooddelivery.navigation.AuthRouteScreen
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.view.auth.IntroScreen
 import com.example.fooddelivery.view.auth.LoginScreen
+import com.example.fooddelivery.view.auth.LoginWithPhoneNumber
+import com.example.fooddelivery.view.auth.OtpScreen
 import com.example.fooddelivery.view.auth.ResetPasswordScreen
 import com.example.fooddelivery.view.auth.SignUpScreen
 import com.example.fooddelivery.view.auth.TermsScreen
@@ -33,6 +35,12 @@ fun NavGraphBuilder.authNavGraph(
         }
         composable(route = AuthRouteScreen.ResetPass.route){
             ResetPasswordScreen(navController = rootNavController)
+        }
+        composable(route = AuthRouteScreen.LoginPhone.route){
+            LoginWithPhoneNumber(navController = rootNavController)
+        }
+        composable(route = AuthRouteScreen.OtpScreen.route) {
+            OtpScreen(navController = rootNavController)
         }
     }
 }

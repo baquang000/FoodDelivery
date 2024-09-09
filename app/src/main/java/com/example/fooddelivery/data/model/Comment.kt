@@ -7,4 +7,6 @@ data class Comment(
     var time: String = "",
     var imageUrl: String = "",
     var nameUser: String = "",
+    var idShop: String = "",
+    var idUser: String? = ""
 )

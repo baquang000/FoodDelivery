@@ -31,6 +31,6 @@ fun RootNavGraph() {
         profileNavGraph(rootNavController = rootNavController,
             sharedViewModel = sharedViewModel,
             orderViewModel = orderViewModel,)
-        favoriteNavGraph(rootNavController = rootNavController, sharedViewModel = sharedViewModel)
+        //favoriteNavGraph(rootNavController = rootNavController, sharedViewModel = sharedViewModel)
     }
 }

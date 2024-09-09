@@ -1,6 +1,5 @@
 package com.example.fooddelivery.view.auth
 
-import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
@@ -167,9 +166,11 @@ fun LoginScreen(
                 nomalFontsize = 16.sp,
                 nomalFontWeight = FontWeight.Normal,
                 nomalColor = Color.Black,
-                modifier = Modifier.padding(top = 32.dp).clickable {
-                    navController.navigate(route = AuthRouteScreen.ResetPass.route)
-                }
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .clickable {
+                        navController.navigate(route = AuthRouteScreen.ResetPass.route)
+                    }
             )
             ButtonComponents(
                 value = stringResource(id = R.string.Dang_nhap),
@@ -208,10 +209,13 @@ fun LoginScreen(
                         .weight(1f)
                         .height(50.dp)
                 )
-                LoginTwitterButton(
-                    onAuthComplete = {
-                        navController.navigate(route = Graph.HOMEGRAPH) {
-                            popUpTo(AuthRouteScreen.Login.route) { inclusive = true }
+                /*LoginTwitterButton(
+                    onAuthComplete = {authResult->
+                        val user = authResult.user
+                        if (user != null) {
+                            navController.navigate(route = Graph.HOMEGRAPH) {
+                                popUpTo(AuthRouteScreen.Login.route) { inclusive = true }
+                            }
                         }
                     },
                     onAuthError = {
@@ -219,7 +223,20 @@ fun LoginScreen(
                     },
                     context = context,
                     modifier = Modifier.weight(1f)
+                )*/
+                Image(
+                    painter = painterResource(id = R.drawable.phone),
+                    contentDescription = "Phone login",
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(
+                                route = AuthRouteScreen.LoginPhone.route
+                            )
+                        }
+                        .weight(1f)
+                        .height(50.dp)
                 )
+
             }
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -302,61 +319,45 @@ fun LoginFacebookButton(
     )
 }
 
-@Composable
+/*@Composable
 fun LoginTwitterButton(
-    onAuthComplete: () -> Unit,
+    onAuthComplete: (AuthResult) -> Unit,
     onAuthError: (Exception) -> Unit,
     context: Context,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
-    val auth = Firebase.auth
-
-    DisposableEffect(Unit) {
-        onDispose { }
-    }
-
+    val auth = FirebaseAuth.getInstance()
     Image(
         painter = painterResource(id = R.drawable.twitter),
         contentDescription = "logo_twitter",
         modifier = modifier
- /*           .clickable {
+            .clickable {
                 scope.launch {
                     try {
                         val provider = OAuthProvider.newBuilder("twitter.com")
-                        provider.addCustomParameter("lang", "fr")
-                        val pendingResultTask = auth.pendingAuthResult
-                        if (pendingResultTask != null) {
-                            // There's something already here! Finish the sign-in for your user.
-                            pendingResultTask
-                                .addOnSuccessListener {
-                                    onAuthComplete()
-                                }
-                                .addOnFailureListener {
-                                    onAuthError(it)
-                                }
+                        val pending = auth.pendingAuthResult
+                        if (pending != null) {
+                            pending
+                                .addOnSuccessListener { authResult -> onAuthComplete(authResult) }
+                                .addOnFailureListener { exception -> onAuthError(exception) }
                         } else {
-                            // There's no pending result so you need to start the sign-in flow.
                             auth
                                 .startActivityForSignInWithProvider(
-                                    context as ComponentActivity,
+                                    context as Activity,
                                     provider.build()
                                 )
-                                .addOnSuccessListener {
-                                    onAuthComplete()
-                                }
-                                .addOnFailureListener {
-                                    onAuthError(it)
-                                }
+                                .addOnSuccessListener { authResult -> onAuthComplete(authResult) }
+                                .addOnFailureListener { exception -> onAuthError(exception) }
                         }
                     } catch (e: Exception) {
                         onAuthError(e)
                     }
                 }
-            }*/
+            }
             .height(50.dp)
     )
-}
+}*/
 
 @Preview(
     showBackground = true

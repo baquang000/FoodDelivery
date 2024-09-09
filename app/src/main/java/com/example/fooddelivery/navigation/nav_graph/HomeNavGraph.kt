@@ -13,6 +13,7 @@ import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.navigation.ID_ARGUMENT_KEY
+import com.example.fooddelivery.navigation.ID_SHOP_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.IMAGEPATH_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.PRICE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.SEARCH_ARGUMENT_KEY
@@ -20,11 +21,11 @@ import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 import com.example.fooddelivery.view.home.CartScreen
-import com.example.fooddelivery.view.home.FavoriteScreen
 import com.example.fooddelivery.view.home.FoodDetailsScreen
 import com.example.fooddelivery.view.home.HomeScreen
 import com.example.fooddelivery.view.home.ProfileScreen
 import com.example.fooddelivery.view.home.SearchScreen
+import com.example.fooddelivery.view.home.ShopScreen
 import com.example.fooddelivery.view.home.ViewAllScreen
 import com.example.fooddelivery.view.home.categoryScreen.BurgerScreen
 import com.example.fooddelivery.view.home.categoryScreen.ChickenScreen
@@ -56,9 +57,11 @@ fun HomeNavGraph(
                 innerPadding = innerPadding
             )
         }
-        composable(route = HomeRouteScreen.FavoriteRouteScreen.route) {
-            FavoriteScreen(innerPadding = innerPadding, navController = rootNavController)
-        }
+        favoriteNavGraph(
+            homeNavController = homeNavController,
+            sharedViewModel = sharedViewModel,
+            innerPadding = innerPadding
+        )
         composable(route = HomeRouteScreen.ProfileRouteScreen.route) {
             ProfileScreen(innerPadding = innerPadding, navController = rootNavController)
         }
@@ -177,6 +180,20 @@ fun HomeNavGraph(
                 sharedViewModel = sharedViewModel,
                 userInforViewModel = userInforViewModel,
                 innerPaddingValues = innerPadding,
+            )
+        }
+        composable(
+            route = HomeRouteScreen.ShopRouteScreen.route,
+            arguments = listOf(
+                navArgument(ID_SHOP_ARGUMENT_KEY) {
+                    type = NavType.StringType
+                },
+            )
+        ) { navBackStackEntry ->
+            ShopScreen(
+                navController = homeNavController, navBackStackEntry = navBackStackEntry,
+                innerPaddingValues = innerPadding,
+                sharedViewModel = sharedViewModel,
             )
         }
     }

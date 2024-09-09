@@ -29,11 +29,11 @@ fun MainScreen(
         }
     }
 
-    Scaffold(
-        bottomBar = {
+    Scaffold(bottomBar = {
+        if (curentRoute in bottomNavigationItemList.map { it.route }) {
             BottomNavigationBar(
                 items = bottomNavigationItemList,
-                currentRoute = curentRoute
+                currentRoute = curentRoute,
             ) { currentNavigationItem ->
                 homeNavController.navigate(currentNavigationItem.route) {
                     homeNavController.graph.startDestinationRoute?.let { startDestinationRoute ->
@@ -47,7 +47,7 @@ fun MainScreen(
 
             }
         }
-    ) { innerPadding ->
+    }) { innerPadding ->
         HomeNavGraph(
             homeNavController = homeNavController,
             rootNavController = rootNavHostController,

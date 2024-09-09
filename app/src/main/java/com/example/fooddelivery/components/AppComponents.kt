@@ -1,6 +1,5 @@
 package com.example.fooddelivery.components
 
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -54,7 +53,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -83,7 +81,6 @@ import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
-import java.net.URLEncoder
 import java.text.DecimalFormat
 
 @Composable
@@ -332,8 +329,6 @@ fun FoodItem(
     sharedViewModel: SharedViewModel = viewModel(),
 ) {
     val decimalFormat = DecimalFormat("#,###.##")
-    val context = LocalContext.current
-    val encodeURL = URLEncoder.encode(food.ImagePath, "UTF-8")
     if (food.show) {
         Card(
             modifier = modifier
@@ -343,14 +338,8 @@ fun FoodItem(
                 .padding(horizontal = 8.dp, vertical = 8.dp)
                 .clickable {
                     navController.navigate(
-                        HomeRouteScreen.FoodDetails.sendFood(
-                            title = food.Title.toString(),
-                            price = food.Price,
-                            star = food.Star,
-                            timevalue = food.TimeValue,
-                            description = food.Description.toString(),
-                            imagepath = encodeURL,
-                            id = food.Id
+                        route = HomeRouteScreen.ShopRouteScreen.sendIdShop(
+                            food.idShop
                         )
                     )
                 }
@@ -467,11 +456,18 @@ fun FoodItem(
                                         quantity = 1,
                                         id = food.Id
                                     )
-                                    sharedViewModel.addFoodDetail(foodDetails = fooddetails)
-                                    Toast.makeText(
+
+                                    /*Toast.makeText(
                                         context, "Thêm vào giỏ hàng thành công",
                                         Toast.LENGTH_SHORT
-                                    ).show()
+                                    ).show()*/
+                                    sharedViewModel.getIdShop(food.idShop)
+                                    sharedViewModel.addFoodDetail(foodDetails = fooddetails)
+                                    navController.navigate(
+                                        route = HomeRouteScreen.ShopRouteScreen.sendIdShop(
+                                            food.idShop
+                                        )
+                                    )
                                 }) {
                                     Text(
                                         text = "+", style = TextStyle(

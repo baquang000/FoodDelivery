@@ -468,79 +468,49 @@ fun DeliveredOrder(
                         )
                     }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                    if (order.listFood.size == 1) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            onClick = {
+                                navController.navigate(route = ProfileRouteScreen.Comment.route)
+                                orderId = order.idOrder
+                            },
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.red),
+                            ),
+                            modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
                         ) {
-                            Button(
-                                onClick = {
-                                    navController.navigate(route = ProfileRouteScreen.Comment.route)
-                                    orderId = order.idOrder
-                                },
-                                shape = RectangleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = colorResource(id = R.color.red),
-                                ),
-                                modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
-                            ) {
-                                NormalTextComponents(value = stringResource(R.string.comment_order))
-                            }
-                            Button(
-                                onClick = {
-                                    orderViewModel.notCancelOrder(order)
-                                    cardList.isEmpty()
-                                    sharedViewModel.addFoodDetail(foodDetails = order.listFood[indexOrder])
-                                    Toast.makeText(
-                                        context,
-                                        "Đã thêm lại vào giỏ hàng",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                },
-                                shape = RectangleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = colorResource(id = R.color.red),
-                                ),
-                                modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
-                            ) {
-                                NormalTextComponents(value = stringResource(R.string.re_order))
-                            }
+                            NormalTextComponents(value = stringResource(R.string.comment_order))
                         }
-                    } else {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
+                        Button(
+                            onClick = {
+                                orderViewModel.notCancelOrder(order)
+                                cardList.isEmpty()
+                                sharedViewModel.addFoodDetail(foodDetails = order.listFood[indexOrder])
+                                Toast.makeText(
+                                    context,
+                                    "Đã thêm lại vào giỏ hàng",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            },
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.red),
+                            ),
+                            modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
                         ) {
-                            Button(
-                                onClick = {
-                                    orderViewModel.notCancelOrder(order)
-                                    cardList.isEmpty()
-                                    order.listFood.forEach { food ->
-                                        sharedViewModel.addFoodDetail(foodDetails = food)
-                                    }
-                                    Toast.makeText(
-                                        context,
-                                        "Đã thêm lại vào giỏ hàng",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                },
-                                shape = RectangleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = colorResource(id = R.color.red),
-                                ),
-                                modifier = Modifier.padding(end = 4.dp, bottom = 2.dp)
-                            ) {
-                                NormalTextComponents(value = stringResource(R.string.re_order))
-                            }
+                            NormalTextComponents(value = stringResource(R.string.re_order))
                         }
                     }
                 }
-                Spacer(modifier = Modifier.padding(8.dp))
             }
+            Spacer(modifier = Modifier.padding(8.dp))
         }
     }
 }

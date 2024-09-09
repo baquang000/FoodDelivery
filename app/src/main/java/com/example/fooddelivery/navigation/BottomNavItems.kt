@@ -27,7 +27,7 @@ val bottomNavigationItemList = listOf(
         title = "Favorite",
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.Favorite,
-        route = HomeRouteScreen.FavoriteRouteScreen.route
+        route = FavoriteRouteScreen.Favorite.route
     ),
     BottomNavigationItem(
         title = "Profile",

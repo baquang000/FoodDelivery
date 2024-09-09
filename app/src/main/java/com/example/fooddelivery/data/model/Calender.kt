@@ -13,4 +13,10 @@ class Calender {
         val formattedDateAndTime = dateFomat.format(calender.time)
         return formattedDateAndTime
     }
+    fun getTimePlusOneHour(): String {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY) + 1
+        val minute = calendar.get(Calendar.MINUTE)
+        return "$hour:$minute"
+    }
 }

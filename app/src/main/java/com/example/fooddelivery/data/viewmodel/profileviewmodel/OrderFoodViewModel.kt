@@ -28,6 +28,8 @@ class OrderFoodViewModel : ViewModel() {
 
     var orderIdComment by mutableStateOf("")
     var commentSuccess by mutableStateOf<Boolean?>(null)
+    private val tag = ViewModel::class.java.simpleName
+    private var starShop: Double? = null
 
     init {
         fetchOrderFood()
@@ -49,7 +51,7 @@ class OrderFoodViewModel : ViewModel() {
                         viewModelScope.launch {
                             _orderFoodStateFlow.value = orderList
                         }
-                        Log.d("Firebase","Get orderfood all success full")
+                        Log.d("Firebase", "Get orderfood all success full")
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -143,7 +145,7 @@ class OrderFoodViewModel : ViewModel() {
 
     fun commentFood(comment: Comment) {
         getAllFood()
-        val newStar = getNewStar(comment = comment)
+        val newStar = getNewStarFood(comment = comment)
         val time = Calender().getCalender()
         val commentNew = comment.copy(
             time = time
@@ -160,7 +162,7 @@ class OrderFoodViewModel : ViewModel() {
                             Log.d("Firebase", "Comment successfully")
                             commentSuccess = true
                             if (newStar != 0.0) {
-                                changeStar(star = newStar, idFood = comment.idFood.toString())
+                                changeStarFood(star = newStar, idFood = comment.idFood.toString())
                             }
                         } else {
                             commentSuccess = false
@@ -172,6 +174,13 @@ class OrderFoodViewModel : ViewModel() {
                 Log.e("Firebase", "Failed to comment", exception)
             }
         }
+        // update star shop
+        getStarShop(comment.idShop)
+        if (starShop != null){
+            val newStarShop = (starShop!! + comment.rating) / 2.0
+            changeStarShop(star = newStarShop, idShop = comment.idShop)
+        }
+
     }
 
     private fun getAllFood() {
@@ -190,7 +199,7 @@ class OrderFoodViewModel : ViewModel() {
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e(
-                        "OrderFoodViewModel",
+                        tag,
                         "Failed to fetch all food in fun getAllFood"
                     )
                 }
@@ -198,30 +207,64 @@ class OrderFoodViewModel : ViewModel() {
             })
     }
 
-    private fun getNewStar(comment: Comment): Double {
+    private fun getNewStarFood(comment: Comment): Double {
         var newStar = 0.0
         _allFoodStateFlow.value.forEach { food ->
             if (comment.idFood == food.Id) {
                 newStar = (comment.rating.toDouble() + food.Star) / 2.0
-                Log.d("OrderFoodViewModel", "set new star: $newStar")
+                Log.d(tag, "set new star: $newStar")
             } else {
-                Log.e("OrderFoodViewModel", "get new star failed")
+                Log.e(tag, "get new star failed")
             }
         }
         return newStar
     }
 
-    private fun changeStar(star: Double, idFood: String) {
+    private fun changeStarFood(star: Double, idFood: String) {
         val newStar = mapOf(
             "Star" to star
         )
         FirebaseDatabase.getInstance().getReference("Foods").child(idFood).updateChildren(newStar)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d("OrderFoodViewModel", "update new star success")
+                    Log.d(tag, "update new star success")
                 } else {
-                    Log.e("OrderFoodViewModel", "Failed to comment", task.exception)
+                    Log.e(tag, "Failed to comment", task.exception)
                 }
             }
+    }
+
+    private fun changeStarShop(star: Double, idShop: String) {
+        val newStar = mapOf(
+            "starShop" to star
+        )
+        FirebaseDatabase.getInstance().getReference("adminprofile").child(idShop).updateChildren(newStar)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d(tag, "update new star shop success")
+                } else {
+                    Log.e(tag, "Failed to comment", task.exception)
+                }
+
+            }
+    }
+
+    private fun getStarShop(shopId: String) {
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("adminprofile").child(shopId)
+
+        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    starShop = snapshot.child("starShop").getValue(Double::class.java) ?: 0.0
+                    Log.d(tag, "get star success")
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(tag, "get star shop failed: ${error.message}")
+            }
+        })
     }
 }

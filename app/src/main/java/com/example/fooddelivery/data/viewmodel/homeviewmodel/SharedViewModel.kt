@@ -46,19 +46,34 @@ class SharedViewModel : ViewModel() {
     private val _commentStateFlow = MutableStateFlow<List<Comment>>(emptyList())
     val commentStateFlow: StateFlow<List<Comment>> = _commentStateFlow.asStateFlow()
 
+    private var _countFoodInCart =
+        MutableStateFlow(0)
+    var countFoodInCart: StateFlow<Int> = _countFoodInCart.asStateFlow()
+
+    private var _totalPrice = MutableStateFlow(0f)
+    var totalPrice: StateFlow<Float> = _totalPrice.asStateFlow()
+
+    private val _idShopStateFlow = MutableStateFlow("")
+    //val idShopStateFlow: StateFlow<String> = _idShopStateFlow.asStateFlow()
+
+    private val _nameShop = MutableStateFlow("")
+    val nameShop: StateFlow<String> = _nameShop.asStateFlow()
+
+    private val tag = ViewModel::class.java.simpleName
+
     init {
         fetchDiscountCodeFromFirebase()
         getCommentFromFirebase()
     }
 
     private fun sumPrice() {
-        val totalPrice =
+        _totalPrice.value =
             _foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }.toFloat()
         val discountvalue = _discountCodeValue.value
         _sumPrice.value = if (discountvalue == 15000f) {
-            totalPrice + 15000 - discountvalue + priceTaxandDelivery.value + rewardForDriver.value
+            _totalPrice.value + 15000 - discountvalue + priceTaxandDelivery.value + rewardForDriver.value
         } else {
-            totalPrice - totalPrice * discountvalue + 15000 + priceTaxandDelivery.value + rewardForDriver.value
+            _totalPrice.value - _totalPrice.value * discountvalue + 15000 + priceTaxandDelivery.value + rewardForDriver.value
         }
     }
 
@@ -108,11 +123,27 @@ class SharedViewModel : ViewModel() {
             } else {
                 updatedList.add(foodDetails.copy())
             }
+            _countFoodInCart.value++
             return@update updatedList.toList()
         }
         sumPrice()
     }
 
+    fun deleteFoodDetail(foodDetails: FoodDetails) {
+        _foodDetailStateFlow.update { currentList ->
+            val updatedList = currentList.toMutableList()
+            val existingItem = updatedList.find { it.title == foodDetails.title }
+            if (existingItem != null) {
+                existingItem.quantity -= foodDetails.quantity
+            } else {
+                Log.e(tag, "Not found fooddetails in _foodDetailStateFlow and delete failed")
+            }
+            updatedList.removeIf{ it.id == foodDetails.id && it.quantity == 0}
+            _countFoodInCart.value--
+            return@update updatedList.toList()
+        }
+        sumPrice()
+    }
 
     fun updateFoodDetailQuantity(id: Int, newQuantity: Int) {
         _foodDetailStateFlow.update { list ->
@@ -152,7 +183,8 @@ class SharedViewModel : ViewModel() {
             noteOrder = noteOrder,
             rewardForDriver = rewardForDriver,
             deliverytoDoor = deliverytoDoor,
-            diningSubtances = diningSubtances
+            diningSubtances = diningSubtances,
+            idShop = _idShopStateFlow.value
         )
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         orderlist.idUser = userId
@@ -163,7 +195,7 @@ class SharedViewModel : ViewModel() {
             order.setValue(orderlist).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("Firebase", "Save success")
-                    _foodDetailStateFlow.value = emptyList()
+                    deleteListFood()
                 } else {
                     Log.e("Firebase", "Save failed", task.exception)
                 }
@@ -208,6 +240,28 @@ class SharedViewModel : ViewModel() {
                 }
 
             })
+    }
+
+    fun getIdShop(id: String) {
+        if (_idShopStateFlow.value == "")
+            _idShopStateFlow.value = id
+        else {
+            if (_idShopStateFlow.value != id) {
+                deleteListFood()
+            }
+        }
+    }
+
+    fun getNameShop(name: String?) {
+        _nameShop.value = name ?: ""
+    }
+
+    fun deleteListFood() {
+        _foodDetailStateFlow.value = emptyList()
+        _countFoodInCart.value = 0
+        _nameShop.value = ""
+        _totalPrice.value = 0f
+        _idShopStateFlow.value = ""
     }
 }
 

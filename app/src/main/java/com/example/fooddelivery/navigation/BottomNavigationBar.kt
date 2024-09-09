@@ -26,7 +26,7 @@ fun BottomNavigationBar(
                 label = {
                     Text(text = navigationItem.title)
                 },
-                alwaysShowLabel = false
+                alwaysShowLabel = false,
             )
         }
     }

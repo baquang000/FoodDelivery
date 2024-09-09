@@ -19,5 +19,6 @@ data class OrderFood(
     var deliverytoDoor: Boolean = false,
     var diningSubtances: Boolean = true,
     var foodback: Boolean = false,
-    var comment: Boolean = false
+    var comment: Boolean = false,
+    var idShop: String = "",
 )
