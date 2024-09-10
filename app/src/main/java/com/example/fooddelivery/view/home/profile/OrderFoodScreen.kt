@@ -385,16 +385,13 @@ fun DeliveredOrder(
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.gray_background)),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Top
     ) {
         items(orderList) { order ->
             if (order.comfirm && order.delivered && !order.cancelled && !order.foodback && !order.comment) {
                 Column(
                     modifier = Modifier
                         .background(color = colorResource(id = R.color.white)),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.End
                 ) {
                     Row(
                         modifier = Modifier
@@ -468,7 +465,6 @@ fun DeliveredOrder(
                         )
                     }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,

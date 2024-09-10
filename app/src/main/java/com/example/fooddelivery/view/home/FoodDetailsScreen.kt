@@ -96,7 +96,7 @@ fun FoodDetailsScreen(
     val description = navBackStackEntry.arguments?.getString(DESCRIPTION_ARGUMENT_KEY)
     val imagepath = navBackStackEntry.arguments?.getString(IMAGEPATH_ARGUMENT_KEY)
     val id = navBackStackEntry.arguments?.getInt(ID_ARGUMENT_KEY) ?: -1
-    //val idshop = navBackStackEntry.arguments?.getString(ID_SHOP_ARGUMENT_KEY)
+
     val rating by remember {
         mutableFloatStateOf(star.toFloat())
     }

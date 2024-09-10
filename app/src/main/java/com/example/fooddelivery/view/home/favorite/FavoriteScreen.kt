@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -142,25 +141,24 @@ fun FavoriteItem(
                         modifier = Modifier.size(24.dp, 24.dp)
                     )
                 }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Image(
-                        painter = if (favoriteShopStateFlow) painterResource(id = R.drawable.favourite) else painterResource(
-                            id = R.drawable.favorite_white
-                        ),
-                        contentDescription = stringResource(
-                            id = R.string.favorite_white_icon
-                        ),
-                        modifier = Modifier
-                            .size(32.dp, 32.dp)
-                            .clickable {
-                                favoriteViewModel.saveFavoriteFood(
-                                    id = shop.idshop!!,
-                                    isFavorite = !favoriteShopStateFlow
-                                )
+                Image(
+                    painter = if (favoriteShopStateFlow) painterResource(id = R.drawable.favourite) else painterResource(
+                        id = R.drawable.favorite_white
+                    ),
+                    contentDescription = stringResource(
+                        id = R.string.favorite_white_icon
+                    ),
+                    modifier = Modifier
+                        .size(32.dp, 32.dp)
+                        .clickable {
+                            favoriteViewModel.saveFavoriteFood(
+                                id = shop.idshop!!,
+                                isFavorite = !favoriteShopStateFlow
+                            )
 
-                            }
-                    )
-                }
+                        }
+                )
+
             }
         }
     }

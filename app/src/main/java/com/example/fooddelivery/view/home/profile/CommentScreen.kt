@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.fooddelivery.R
@@ -62,7 +63,7 @@ import com.google.firebase.storage.FirebaseStorage
 @Composable
 fun CommentScreen(
     navController: NavController,
-    orderViewModel: OrderFoodViewModel,
+    orderViewModel: OrderFoodViewModel = viewModel(),
 ) {
     val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
     val orderId by orderViewModel::orderIdComment
@@ -90,7 +91,7 @@ fun CommentList(
     orderViewModel: OrderFoodViewModel,
     navController: NavController,
 ) {
-    val idFood = if(order.listFood.size > 1) null else order.listFood.first().id
+    val idFood = if(order.listFood.size > 1) -1 else order.listFood.first().id
     val commentSuccess by orderViewModel::commentSuccess
     val localManager = LocalFocusManager.current
     val context = LocalContext.current
@@ -267,7 +268,7 @@ fun CommentList(
                         idFood = idFood,
                         comment = commentTextField,
                         rating = rating,
-                        imageUrl = downloadUri,
+                        imageUrl = "",
                         nameUser = order.name,
                         idShop = order.idShop,
                         idUser = order.idUser

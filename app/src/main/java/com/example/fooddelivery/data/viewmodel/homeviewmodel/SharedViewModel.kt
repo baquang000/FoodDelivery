@@ -138,7 +138,7 @@ class SharedViewModel : ViewModel() {
             } else {
                 Log.e(tag, "Not found fooddetails in _foodDetailStateFlow and delete failed")
             }
-            updatedList.removeIf{ it.id == foodDetails.id && it.quantity == 0}
+            updatedList.removeIf { it.id == foodDetails.id && it.quantity == 0 }
             _countFoodInCart.value--
             return@update updatedList.toList()
         }
@@ -262,6 +262,10 @@ class SharedViewModel : ViewModel() {
         _nameShop.value = ""
         _totalPrice.value = 0f
         _idShopStateFlow.value = ""
+    }
+
+    fun countCommentOfShop(idShop: String): Int {
+        return _commentStateFlow.value.filter { it.idShop == idShop }.size
     }
 }
 

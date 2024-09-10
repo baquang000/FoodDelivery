@@ -328,6 +328,7 @@ fun FoodItem(
     food: Food, navController: NavController,
     sharedViewModel: SharedViewModel = viewModel(),
 ) {
+    val formatter = DecimalFormat("#.##")
     val decimalFormat = DecimalFormat("#,###.##")
     if (food.show) {
         Card(
@@ -402,7 +403,7 @@ fun FoodItem(
                                 modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
                             ) {
                                 NormalTextComponents(
-                                    value = food.Star.toString(),
+                                    value = formatter.format(food.Star),
                                     nomalColor = Color.Black,
                                     nomalFontsize = 18.sp,
                                 )

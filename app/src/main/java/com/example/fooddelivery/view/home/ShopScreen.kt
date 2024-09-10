@@ -88,7 +88,13 @@ fun ShopScreen(
             snackState.currentSnackbarData?.dismiss()
         }
     }
-
+    //count comment
+    var countComment by remember {
+        mutableIntStateOf(0)
+    }
+    LaunchedEffect(key1 = idshop) {
+        countComment = sharedViewModel.countCommentOfShop(idShop = idshop!!)
+    }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -113,7 +119,8 @@ fun ShopScreen(
                         TitleShop(
                             titleShop = shop.titleShop.toString(), star = shop.starShop!!,
                             favoriteViewModel = favoriteViewModel,
-                            id = shop.idshop.toString()
+                            id = shop.idshop.toString(),
+                            countComment = countComment
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -158,7 +165,8 @@ fun ShopScreen(
 fun TitleShop(
     titleShop: String, star: Double,
     favoriteViewModel: FavoriteViewModel,
-    id: String
+    id: String,
+    countComment : Int
 ) {
     LaunchedEffect(key1 = Unit) {
         favoriteViewModel.loadFavoriteShop(id)
@@ -194,7 +202,7 @@ fun TitleShop(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "(999+ Bình luận)> |", style = MaterialTheme.typography.titleSmall.copy(
+                text = "($countComment Bình luận)> |", style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Normal
                 )
             )
@@ -213,25 +221,23 @@ fun TitleShop(
                 )
             )
             Spacer(modifier = Modifier.width(4.dp))
-            IconButton(onClick = { /*TODO*/ }) {
-                Image(
-                    painter = if (favoriteShopStateFlow) painterResource(id = R.drawable.favourite) else painterResource(
-                        id = R.drawable.favorite_white
-                    ),
-                    contentDescription = stringResource(
-                        id = R.string.favorite_white_icon
-                    ),
-                    modifier = Modifier
-                        .size(32.dp, 32.dp)
-                        .clickable {
-                            favoriteViewModel.saveFavoriteFood(
-                                id = id,
-                                isFavorite = !favoriteShopStateFlow
-                            )
+            Image(
+                painter = if (favoriteShopStateFlow) painterResource(id = R.drawable.favourite) else painterResource(
+                    id = R.drawable.favorite_white
+                ),
+                contentDescription = stringResource(
+                    id = R.string.favorite_white_icon
+                ),
+                modifier = Modifier
+                    .size(32.dp, 32.dp)
+                    .clickable {
+                        favoriteViewModel.saveFavoriteFood(
+                            id = id,
+                            isFavorite = !favoriteShopStateFlow
+                        )
 
-                        }
-                )
-            }
+                    }
+            )
         }
 
     }
