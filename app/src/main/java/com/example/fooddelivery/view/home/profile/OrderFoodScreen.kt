@@ -472,7 +472,9 @@ fun DeliveredOrder(
                     ) {
                         Button(
                             onClick = {
-                                navController.navigate(route = ProfileRouteScreen.Comment.route)
+                                navController.navigate(route = ProfileRouteScreen.Comment.route){
+                                    launchSingleTop = true
+                                }
                                 orderId = order.idOrder
                             },
                             shape = RectangleShape,

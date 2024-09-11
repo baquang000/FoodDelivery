@@ -36,6 +36,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -71,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.DiscountCode
@@ -341,7 +343,11 @@ fun FoodItem(
                     navController.navigate(
                         route = HomeRouteScreen.ShopRouteScreen.sendIdShop(
                             food.idShop
-                        )
+                        ),
+                        navOptions = NavOptions
+                            .Builder()
+                            .setLaunchSingleTop(true)
+                            .build()
                     )
                 }
         ) {
@@ -457,11 +463,6 @@ fun FoodItem(
                                         quantity = 1,
                                         id = food.Id
                                     )
-
-                                    /*Toast.makeText(
-                                        context, "Thêm vào giỏ hàng thành công",
-                                        Toast.LENGTH_SHORT
-                                    ).show()*/
                                     sharedViewModel.getIdShop(food.idShop)
                                     sharedViewModel.addFoodDetail(foodDetails = fooddetails)
                                     navController.navigate(
@@ -505,7 +506,10 @@ fun MyDropdownMenuWithLoc(modifier: Modifier = Modifier, location: MutableList<L
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
                 },
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor(
+                    type = MenuAnchorType.PrimaryNotEditable,
+                    enabled = true
+                ),
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.location),
@@ -551,7 +555,10 @@ fun MyDropdownMenuWithTime(modifier: Modifier = Modifier, time: MutableList<Time
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
                 },
                 singleLine = true,
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor(
+                    type = MenuAnchorType.PrimaryNotEditable,
+                    enabled = true
+                ),
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.time),
@@ -597,7 +604,10 @@ fun MyDropdownMenuWithPrice(modifier: Modifier = Modifier, price: MutableList<Pr
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
                 },
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor(
+                    type = MenuAnchorType.PrimaryNotEditable,
+                    enabled = true
+                ),
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -655,7 +665,10 @@ fun MyDropdownMenuWithDiscountCode(
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
                 },
                 modifier = Modifier
-                    .menuAnchor()
+                    .menuAnchor(
+                        type = MenuAnchorType.PrimaryNotEditable,
+                        enabled = true
+                    )
                     .fillMaxWidth(),
                 singleLine = true,
                 leadingIcon = {

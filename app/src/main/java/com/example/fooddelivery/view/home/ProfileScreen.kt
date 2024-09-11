@@ -66,7 +66,9 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .heightIn(min = 50.dp)
                     .clickable {
-                        navController.navigate(ProfileRouteScreen.UserInfor.route)
+                        navController.navigate(ProfileRouteScreen.UserInfor.route){
+                            launchSingleTop = true
+                        }
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -90,7 +92,9 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .heightIn(min = 50.dp)
                     .clickable {
-                        navController.navigate(route = ProfileRouteScreen.HisFood.route)
+                        navController.navigate(route = ProfileRouteScreen.HisFood.route){
+                            launchSingleTop = true
+                        }
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -114,7 +118,9 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .heightIn(min = 50.dp)
                     .clickable {
-                        navController.navigate(route = ProfileRouteScreen.OrderFood.route)
+                        navController.navigate(route = ProfileRouteScreen.OrderFood.route){
+                            launchSingleTop = true
+                        }
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -138,7 +144,9 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .heightIn(min = 50.dp)
                     .clickable {
-                        navController.navigate(route = ProfileRouteScreen.ChangePass.route)
+                        navController.navigate(route = ProfileRouteScreen.ChangePass.route){
+                            launchSingleTop = true
+                        }
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -200,6 +208,7 @@ fun ProfileScreen(
                                 popUpTo(Graph.AUTHGRAPH) {
                                     inclusive = true
                                 }
+                                launchSingleTop = true
                             }
                         }) {
                             Text(text = stringResource(R.string.confirm))

@@ -1,5 +1,9 @@
 package com.example.fooddelivery.navigation.nav_graph
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -48,7 +52,32 @@ fun HomeNavGraph(
     NavHost(
         navController = homeNavController,
         startDestination = HomeRouteScreen.Home.route,
-        route = Graph.HOMEGRAPH
+        route = Graph.HOMEGRAPH,
+
+        enterTransition = {
+            fadeIn(animationSpec = tween(durationMillis = timeAnimation)) + slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(durationMillis = timeAnimation)
+            )
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(durationMillis = timeAnimation)) + slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(durationMillis = timeAnimation)
+            )
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(durationMillis = timeAnimation)) + slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(durationMillis = timeAnimation)
+            )
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(durationMillis = timeAnimation)) + slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(durationMillis = timeAnimation)
+            )
+        },
     ) {
         composable(route = HomeRouteScreen.Home.route) {
             HomeScreen(

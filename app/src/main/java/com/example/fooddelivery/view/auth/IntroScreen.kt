@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
@@ -67,7 +68,7 @@ fun IntroScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color(0xffF75564) ),
+                .background(color = Color(0xffF75564)),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -93,7 +94,13 @@ fun IntroScreen(
                     modifier = Modifier
                         .padding(start = 24.dp, bottom = 24.dp)
                         .clickable {
-                            navController.navigate(AuthRouteScreen.SignUp.route)
+                            navController.navigate(
+                                route = AuthRouteScreen.SignUp.route,
+                                navOptions = NavOptions
+                                    .Builder()
+                                    .setLaunchSingleTop(true)
+                                    .build()
+                            )
                         })
                 NormalTextComponents(value = stringResource(id = R.string.Login),
                     nomalFontsize = 16.sp,
@@ -102,7 +109,13 @@ fun IntroScreen(
                     modifier = Modifier
                         .padding(end = 24.dp, bottom = 24.dp)
                         .clickable {
-                            navController.navigate(AuthRouteScreen.Login.route)
+                            navController.navigate(
+                                route = AuthRouteScreen.Login.route,
+                                navOptions = NavOptions
+                                    .Builder()
+                                    .setLaunchSingleTop(true)
+                                    .build()
+                            )
                         })
             }
         }

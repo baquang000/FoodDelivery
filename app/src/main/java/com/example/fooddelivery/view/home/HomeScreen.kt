@@ -151,7 +151,9 @@ fun HomeScreen(
                                         HomeRouteScreen.Search.sendText(
                                             searchText
                                         )
-                                    )
+                                    ){
+                                        launchSingleTop = true
+                                    }
                                 }
                             )
                         }, placeholder = {

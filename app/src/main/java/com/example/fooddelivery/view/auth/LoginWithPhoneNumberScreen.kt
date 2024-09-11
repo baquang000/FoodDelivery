@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.navigation.AuthRouteScreen
@@ -146,7 +147,11 @@ fun LoginWithPhoneNumber(
                         ) {
                             Log.d("LoginPhone", "sending otp")
                             isLoading = false
-                            navController.navigate(route = AuthRouteScreen.OtpScreen.route)
+                            navController.navigate(route = AuthRouteScreen.OtpScreen.route,
+                                navOptions = NavOptions
+                                    .Builder()
+                                    .setLaunchSingleTop(true)
+                                    .build())
                         }
                     },
                     modifier = Modifier
@@ -215,6 +220,7 @@ fun signInWithPhoneAuthCredential(
             if (task.isSuccessful) {
                 navController.navigate(route = Graph.HOMEGRAPH) {
                     popUpTo(AuthRouteScreen.Login.route) { inclusive = true }
+                    launchSingleTop = true
                 }
             } else {
                 if (task.exception is FirebaseAuthInvalidCredentialsException) {

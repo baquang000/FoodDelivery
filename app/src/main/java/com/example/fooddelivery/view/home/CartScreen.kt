@@ -762,6 +762,7 @@ fun CartScreen(
                                     popUpTo(HomeRouteScreen.Home.route) {
                                         inclusive = true
                                     }
+                                    launchSingleTop = true
                                 }
                             }
                         },

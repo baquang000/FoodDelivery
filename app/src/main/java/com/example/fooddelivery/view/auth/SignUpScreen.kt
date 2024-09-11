@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.ButtonComponents
@@ -131,7 +132,11 @@ fun SignUpScreen(
                     value = "các điều khoản và điều kiện ", nomalFontsize = 14.sp,
                     nomalColor = Color.Blue,
                     modifier = Modifier.clickable {
-                        navController.navigate(route = AuthRouteScreen.Terms.route)
+                        navController.navigate(route = AuthRouteScreen.Terms.route,
+                            navOptions = NavOptions
+                                .Builder()
+                                .setLaunchSingleTop(true)
+                                .build())
                     }
                 )
             }
@@ -159,7 +164,11 @@ fun SignUpScreen(
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Red,
                     modifier = Modifier.clickable {
-                        navController.navigate(AuthRouteScreen.Login.route)
+                        navController.navigate(AuthRouteScreen.Login.route,
+                            navOptions = NavOptions
+                                .Builder()
+                                .setLaunchSingleTop(true)
+                                .build())
                     }
                 )
             }
@@ -181,7 +190,11 @@ fun SignUpScreen(
                 confirmButton = {
                     Button(onClick = {
                         isSuccess = false
-                        navController.navigate(route = AuthRouteScreen.Login.route)
+                        navController.navigate(route = AuthRouteScreen.Login.route,
+                            navOptions = NavOptions
+                                .Builder()
+                                .setLaunchSingleTop(true)
+                                .build())
                     }) {
                         Text(text = "Ok")
                     }

@@ -328,7 +328,9 @@ fun FoodDetailsScreen(
                 countFood = countStateFlow,
                 price = totalPriceSnackbar.value.toDouble()
             ) {
-                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route)
+                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route){
+                    launchSingleTop = true
+                }
             }
         }
     }

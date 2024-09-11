@@ -155,7 +155,9 @@ fun ShopScreen(
                 countFood = countStateFlow,
                 price = totalPrice.value.toDouble()
             ) {
-                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route)
+                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route){
+                    launchSingleTop = true
+                }
             }
         }
     }
@@ -272,7 +274,9 @@ fun FoodItemInShop(
                         id = food.Id,
                         idshop = food.idShop
                     )
-                )
+                ){
+                    launchSingleTop = true
+                }
             }
     ) {
         Spacer(modifier = Modifier.width(8.dp))

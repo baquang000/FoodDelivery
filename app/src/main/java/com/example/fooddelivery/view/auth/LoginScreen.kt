@@ -34,6 +34,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.ButtonComponents
@@ -169,7 +170,13 @@ fun LoginScreen(
                 modifier = Modifier
                     .padding(top = 32.dp)
                     .clickable {
-                        navController.navigate(route = AuthRouteScreen.ResetPass.route)
+                        navController.navigate(
+                            route = AuthRouteScreen.ResetPass.route,
+                            navOptions = NavOptions
+                                .Builder()
+                                .setLaunchSingleTop(true)
+                                .build()
+                        )
                     }
             )
             ButtonComponents(
@@ -181,6 +188,7 @@ fun LoginScreen(
             if (flowNavigationHome) {
                 navController.navigate(route = Graph.HOMEGRAPH) {
                     popUpTo(AuthRouteScreen.Login.route) { inclusive = true }
+                    launchSingleTop = true
                 }
             }
             DrawLineAndTextComponents()
@@ -194,6 +202,7 @@ fun LoginScreen(
                 LoginFacebookButton(onAuthComplete = {
                     navController.navigate(route = Graph.HOMEGRAPH) {
                         popUpTo(AuthRouteScreen.Login.route) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }, onAuthError = {
                     Log.e("LoginScreen", "Facebook login error", it)
@@ -230,7 +239,11 @@ fun LoginScreen(
                     modifier = Modifier
                         .clickable {
                             navController.navigate(
-                                route = AuthRouteScreen.LoginPhone.route
+                                route = AuthRouteScreen.LoginPhone.route,
+                                navOptions = NavOptions
+                                    .Builder()
+                                    .setLaunchSingleTop(true)
+                                    .build()
                             )
                         }
                         .weight(1f)
@@ -255,7 +268,13 @@ fun LoginScreen(
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Red,
                     modifier = Modifier.clickable {
-                        navController.navigate(AuthRouteScreen.SignUp.route)
+                        navController.navigate(
+                            AuthRouteScreen.SignUp.route,
+                            navOptions = NavOptions
+                                .Builder()
+                                .setLaunchSingleTop(true)
+                                .build()
+                        )
                     }
                 )
             }
