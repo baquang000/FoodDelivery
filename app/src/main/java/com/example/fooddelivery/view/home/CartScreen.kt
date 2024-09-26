@@ -100,14 +100,32 @@ fun CartScreen(
     val discountValue by sharedViewModel.discountCodeValue.collectAsStateWithLifecycle()
     val totalPrice = foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }.toFloat()
     //userInfor
-    val name by userInforViewModel::name
-    val numberphone by userInforViewModel::numberphone
-    val address by userInforViewModel::address
-    val email by userInforViewModel::email
-    val dateofbirth by userInforViewModel::dateofbirth
-    LaunchedEffect(userInforViewModel) {
-        userInforViewModel.getUserData()
+    val userInfor by userInforViewModel.userInfor.collectAsStateWithLifecycle()
+    var name by remember {
+        mutableStateOf("")
     }
+    var numberphone by remember {
+        mutableStateOf("")
+    }
+    var address by remember {
+        mutableStateOf("")
+    }
+    var email by remember {
+        mutableStateOf("")
+    }
+    var dateOfBirth by remember {
+        mutableStateOf("")
+    }
+    LaunchedEffect(key1 = userInfor) {
+        userInfor?.let {
+            name = it.name
+            numberphone = it.numberPhone
+            address = it.address
+            email = it.email
+            dateOfBirth = it.dateOfBirth
+        }
+    }
+
     //switch giao hang tan cua
     var switchDeliverytoDoor by remember {
         mutableStateOf(false)
@@ -242,7 +260,7 @@ fun CartScreen(
                 }
             }
             items(foodDetailStateFlow.value, key = {
-                it.id!!
+                it.idFood!!
             }) { food ->
                 Column(
                     modifier = Modifier
@@ -253,7 +271,7 @@ fun CartScreen(
                         foodDetails = food,
                         sharedViewModel = sharedViewModel,
                         onRemove = {
-                            sharedViewModel.deleteItemFoodinCart(food)
+                            sharedViewModel.deleteItemFoodInCart(food)
                             if (isErrorDelete) {
                                 Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show()
                             }
@@ -745,12 +763,7 @@ fun CartScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                sharedViewModel.addFoodHistoryAndDelete(
-                                    name = name,
-                                    numberphone = numberphone,
-                                    address = address,
-                                    email = email,
-                                    dateofbirth = dateofbirth,
+                                sharedViewModel.createOrderAndDetails(
                                     noteOrder = textNoteOrder,
                                     rewardForDriver = valueTips,
                                     deliverytoDoor = switchDeliverytoDoor,
@@ -918,7 +931,7 @@ fun CardFoodIemWithCart(
                                 if (quantity > 0) {
                                     quantity--
                                     sharedViewModel.updateFoodDetailQuantity(
-                                        id = foodDetails.id!!,
+                                        id = foodDetails.idFood!!,
                                         newQuantity = quantity
                                     )
                                 }
@@ -940,7 +953,7 @@ fun CardFoodIemWithCart(
                             .clickable {
                                 quantity++
                                 sharedViewModel.updateFoodDetailQuantity(
-                                    id = foodDetails.id!!,
+                                    id = foodDetails.idFood!!,
                                     newQuantity = quantity
                                 )
                             },

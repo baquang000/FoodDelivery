@@ -5,5 +5,17 @@ data class FoodDetails(
     var imagePath: String? = null,
     var price: Float = 0f,
     var quantity: Int = 0,
-    var id: Int? = null,
+    var idFood: Int? = null,
 )
+
+
+data class GetFoodDetail(
+    val id: Int,
+    val idFood: Int,
+    val idOrder: String,
+    val imagePath: String,
+    val price: Int,
+    val quantity: Int,
+    val title: String
+)
+

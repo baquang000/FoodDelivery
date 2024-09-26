@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -47,24 +48,40 @@ fun UserInforScreen(
     userInforViewModel: UserInforViewModel = viewModel()
 ) {
     val localFocusManager = LocalFocusManager.current
-    val name by userInforViewModel::name
-    val numberphone by userInforViewModel::numberphone
-    val address by userInforViewModel::address
-    val email by userInforViewModel::email
-    val dateOfBirth by userInforViewModel::dateofbirth
-    val isSaving by userInforViewModel::isSaving
-    val saveResult by userInforViewModel::saveResult
-    val isLoading by userInforViewModel::isLoading
-    val loadError by userInforViewModel::loadError
+    val userInfor by userInforViewModel.userInfor.collectAsStateWithLifecycle()
+    var name by remember {
+        mutableStateOf("")
+    }
+    var numberphone by remember {
+        mutableStateOf("")
+    }
+    var address by remember {
+        mutableStateOf("")
+    }
+    var email by remember {
+        mutableStateOf("")
+    }
+    var dateOfBirth by remember {
+        mutableStateOf("")
+    }
+    LaunchedEffect(key1 = userInfor) {
+        userInfor?.let {
+            name = it.name
+            numberphone = it.numberPhone
+            address = it.address
+            email = it.email
+            dateOfBirth = it.dateOfBirth
+        }
+    }
+
+    val isLoading by userInforViewModel.isLoadUserInfor.collectAsStateWithLifecycle()
     var isFixDetails by remember {
         mutableStateOf(false)
     }
     var readonlyTextField by remember {
         mutableStateOf(true)
     }
-    LaunchedEffect(Unit) {
-        userInforViewModel.getUserData()
-    }
+
     if (isLoading) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
     } else {
@@ -104,7 +121,7 @@ fun UserInforScreen(
                 OutlinedTextField(
                     value = name,
                     onValueChange = {
-                        userInforViewModel.name = it
+                        name = it
                     },
                     label = {
                         Text(
@@ -125,7 +142,7 @@ fun UserInforScreen(
                 )
                 OutlinedTextField(
                     value = numberphone, onValueChange = {
-                        userInforViewModel.numberphone = it
+                        numberphone = it
                     },
                     label = {
                         Text(
@@ -146,7 +163,7 @@ fun UserInforScreen(
                 )
                 OutlinedTextField(
                     value = address, onValueChange = {
-                        userInforViewModel.address = it
+                        address = it
                     },
                     label = {
                         Text(
@@ -167,7 +184,7 @@ fun UserInforScreen(
                 )
                 OutlinedTextField(
                     value = email, onValueChange = {
-                        userInforViewModel.email = it
+                        email = it
                     },
                     label = {
                         Text(
@@ -188,7 +205,7 @@ fun UserInforScreen(
                 )
                 OutlinedTextField(
                     value = dateOfBirth, onValueChange = {
-                        userInforViewModel.dateofbirth = it
+                        dateOfBirth = it
                     },
                     label = {
                         Text(
@@ -207,38 +224,24 @@ fun UserInforScreen(
                         }
                     )
                 )
-
                 Button(
                     onClick = {
-                        userInforViewModel.saveUserData()
+                        userInforViewModel.saveUserData(
+                            name = name,
+                            numberPhone = numberphone,
+                            address = address,
+                            email = email,
+                            dateOfBirth = dateOfBirth
+                        )
+                        isFixDetails = !isFixDetails
+                        readonlyTextField = !readonlyTextField
                     },
                     modifier = Modifier.width(160.dp),
                     enabled = !readonlyTextField
                 ) {
                     Text(
-                        text = if (isSaving) stringResource(R.string.is_saving) else stringResource(
-                            id = R.string.save
-                        ),
+                        text = stringResource(id = R.string.save),
                         style = MaterialTheme.typography.titleLarge
-                    )
-                }
-                saveResult?.let { success ->
-                    if (success) {
-                        Text(
-                            text = stringResource(R.string.save_success),
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    } else {
-                        Text(
-                            text = stringResource(R.string.save_failed),
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
-                }
-                loadError?.let { error ->
-                    Text(
-                        text = error, color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.labelSmall
                     )
                 }
             }

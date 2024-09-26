@@ -5,10 +5,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.SignUpUIState
 import com.example.fooddelivery.data.model.SignupUIEvent
+import com.example.fooddelivery.data.model.UserInfor
 import com.example.fooddelivery.data.rules.Validator
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SignupViewModel : ViewModel() {
     var signUpUIState = mutableStateOf(SignUpUIState())
@@ -90,6 +95,26 @@ class SignupViewModel : ViewModel() {
                     )
                     signInProgress.value = false
                     isSuccess = true // 3.7
+                    // Lấy ID của người dùng vừa đăng ký
+                    val firebaseUser = it.result?.user
+                    if (firebaseUser != null) {
+                        val userId = firebaseUser.uid
+                        // Sử dụng userId để lưu thông tin người dùng hoặc thực hiện các hành động khác
+                        val user = UserInfor(
+                            idUser = userId,
+                            name = "",
+                            email = email,
+                            numberPhone = "",
+                            address = "",
+                            dateOfBirth = ""
+                        )
+                        viewModelScope.launch(Dispatchers.IO) {
+                            RetrofitClient.userAPIService.createUser(user)
+                        }
+                    } else {
+                        // Xử lý trường hợp không lấy được ID người dùng
+                        Log.e(tag, "Failed to get user ID")
+                    }
                 }
             }
             .addOnFailureListener { exception ->

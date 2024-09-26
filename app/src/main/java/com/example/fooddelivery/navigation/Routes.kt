@@ -32,7 +32,7 @@ sealed class HomeRouteScreen(val route: String) {
         HomeRouteScreen(route = "Food_Details_Screen?title={$TITLE_ARGUMENT_KEY}&price={$PRICE_ARGUMENT_KEY}&star={$STAR_ARGUMENT_KEY}&timevalue={$TIMEVALUE_ARGUMENT_KEY}&description={$DESCRIPTION_ARGUMENT_KEY}&imagepath={$IMAGEPATH_ARGUMENT_KEY}&id={$ID_ARGUMENT_KEY}&idshop={$ID_SHOP_ARGUMENT_KEY}") {
         fun sendFood(
             title: String = "",
-            price: Double = 0.0,
+            price: Int = 0,
             star: Double = 0.0,
             timevalue: Int = 0,
             description: String = "",

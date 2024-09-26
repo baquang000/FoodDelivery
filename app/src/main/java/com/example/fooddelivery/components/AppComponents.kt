@@ -76,11 +76,11 @@ import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.DiscountCode
-import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.Location
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
+import com.example.fooddelivery.data.model.newFood
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import java.text.DecimalFormat
@@ -327,12 +327,12 @@ fun FoodItem(
     modifier: Modifier = Modifier,
     buttonSize: TextUnit = 30.sp,
     spacerbuttonModifier: Modifier = Modifier.padding(start = 0.dp),
-    food: Food, navController: NavController,
+    food: newFood, navController: NavController,
     sharedViewModel: SharedViewModel = viewModel(),
 ) {
     val formatter = DecimalFormat("#.##")
     val decimalFormat = DecimalFormat("#,###.##")
-    if (food.show) {
+    if (food.showFood) {
         Card(
             modifier = modifier
                 .size(width = 260.dp, height = 295.dp)
@@ -355,8 +355,8 @@ fun FoodItem(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 AsyncImage(
-                    model = food.ImagePath,
-                    contentDescription = food.Title,
+                    model = food.imagePath,
+                    contentDescription = food.title,
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -373,7 +373,7 @@ fun FoodItem(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         NormalTextComponents(
-                            value = food.Title.toString(),
+                            value = food.title,
                             nomalColor = Color.Black,
                             nomalFontsize = 18.sp,
                             nomalFontWeight = FontWeight.Bold,
@@ -388,7 +388,7 @@ fun FoodItem(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         NormalTextComponents(
-                            value = "${decimalFormat.format(food.Price)}đ",
+                            value = "${decimalFormat.format(food.price)}đ",
                             nomalColor = Color.Black,
                             nomalFontWeight = FontWeight.Bold,
                             nomalFontsize = 18.sp,
@@ -409,7 +409,7 @@ fun FoodItem(
                                 modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
                             ) {
                                 NormalTextComponents(
-                                    value = formatter.format(food.Star),
+                                    value = formatter.format(food.star),
                                     nomalColor = Color.Black,
                                     nomalFontsize = 18.sp,
                                 )
@@ -427,7 +427,7 @@ fun FoodItem(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 NormalTextComponents(
-                                    value = "${food.TimeValue}p",
+                                    value = "${food.timeValue}p",
                                     nomalFontsize = 18.sp,
                                     nomalColor = Color.Black,
                                     modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
@@ -457,11 +457,11 @@ fun FoodItem(
                                     )
                                 ), onClick = {
                                     val fooddetails = FoodDetails(
-                                        title = food.Title.toString(),
-                                        imagePath = food.ImagePath.toString(),
-                                        price = food.Price.toFloat(),
+                                        title = food.title,
+                                        imagePath = food.imagePath,
+                                        price = food.price.toFloat(),
                                         quantity = 1,
-                                        id = food.Id
+                                        idFood = food.idFood
                                     )
                                     sharedViewModel.getIdShop(food.idShop)
                                     sharedViewModel.addFoodDetail(foodDetails = fooddetails)

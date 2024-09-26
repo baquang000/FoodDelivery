@@ -38,7 +38,7 @@ import com.example.fooddelivery.view.home.categoryScreen.HotDogScreen
 import com.example.fooddelivery.view.home.categoryScreen.MeatScreen
 import com.example.fooddelivery.view.home.categoryScreen.MoreScreen
 import com.example.fooddelivery.view.home.categoryScreen.PizzaScreen
-import com.example.fooddelivery.view.home.categoryScreen.ShushiScreen
+import com.example.fooddelivery.view.home.categoryScreen.SushiScreen
 
 @Composable
 fun HomeNavGraph(
@@ -79,7 +79,9 @@ fun HomeNavGraph(
             )
         },
     ) {
-        composable(route = HomeRouteScreen.Home.route) {
+        composable(
+            route = HomeRouteScreen.Home.route,
+        ) {
             HomeScreen(
                 sharedViewModel = sharedViewModel,
                 homeNavController = homeNavController,
@@ -109,7 +111,7 @@ fun HomeNavGraph(
             )
         }
         composable(route = HomeRouteScreen.Shushi.route) {
-            ShushiScreen(
+            SushiScreen(
                 navController = homeNavController,
                 sharedViewModel = sharedViewModel,
                 innerPaddingValues = innerPadding

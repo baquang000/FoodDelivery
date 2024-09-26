@@ -1,81 +1,72 @@
 package com.example.fooddelivery.data.viewmodel.profileviewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.api.RetrofitClient
+import com.example.fooddelivery.data.model.UserInfor
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 
 class UserInforViewModel : ViewModel() {
-    var name by mutableStateOf("")
-    var numberphone by mutableStateOf("")
-    var address by mutableStateOf("")
-    var email by mutableStateOf("")
-    var dateofbirth by mutableStateOf("")
-    var isSaving by mutableStateOf(false)
-    var saveResult by mutableStateOf<Boolean?>(null)
-    var isLoading by mutableStateOf(false)
-    var loadError by mutableStateOf<String?>(null)
+
+    private val _userInfor = MutableStateFlow<UserInfor?>(null)
+    val userInfor = _userInfor.asStateFlow()
+    private val _isLoadUserInfor = MutableStateFlow(false)
+    val isLoadUserInfor = _isLoadUserInfor.asStateFlow()
+    private val tag = ViewModel::class.java.simpleName
 
     init {
-        getUserData()
-    }
-
-    fun saveUserData() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            isSaving = true
-            val database = FirebaseDatabase.getInstance()
-            val usersRef = database.getReference("users")
-            val userData = mapOf(
-                "name" to name,
-                "numberphone" to numberphone,
-                "address" to address,
-                "email" to email,
-                "dateofbirth" to dateofbirth,
-            )
-
-            usersRef.child(userId).setValue(userData).addOnCompleteListener { task ->
-                isSaving = false
-                saveResult = task.isSuccessful
+            viewModelScope.launch(Dispatchers.IO) {
+                getUser(userId)
             }
-        } else {
-            saveResult = false
+        }
+        Log.d("test", _userInfor.toString())
+    }
+
+    private suspend fun getUser(id: String) {
+        _isLoadUserInfor.value = true
+        try {
+            _userInfor.value = RetrofitClient.userAPIService.getUser(id)
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
+        } finally {
+            _isLoadUserInfor.value = false
         }
     }
 
-    fun getUserData() {
+    fun saveUserData(
+        name: String,
+        numberPhone: String,
+        address: String,
+        email: String,
+        dateOfBirth: String
+    ) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            isLoading = true
-            val database = FirebaseDatabase.getInstance()
-            val usersRef = database.getReference("users").child(userId)
-
-            usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        name = snapshot.child("name").getValue(String::class.java) ?: ""
-                        numberphone =
-                            snapshot.child("numberphone").getValue(String::class.java) ?: ""
-                        address = snapshot.child("address").getValue(String::class.java) ?: ""
-                        email = snapshot.child("email").getValue(String::class.java) ?: ""
-                        dateofbirth =
-                            snapshot.child("dateofbirth").getValue(String::class.java) ?: ""
-                    }
-                    isLoading = false
+            val user = UserInfor(
+                name = name,
+                numberPhone = numberPhone,
+                address = address,
+                email = email,
+                dateOfBirth = dateOfBirth,
+                idUser = userId
+            )
+            try {
+                viewModelScope.launch(Dispatchers.IO) {
+                    RetrofitClient.userAPIService.updateUser(userId,user)
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    loadError = error.message
-                    isLoading = false
-                }
-            })
+            } catch (e: Exception) {
+                Log.e(tag, e.message.toString())
+            }
         }
     }
+
 
 }

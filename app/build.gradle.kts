@@ -89,4 +89,13 @@ dependencies {
     implementation (libs.facebook.android.sdk)  // Latest Facebook SDK version
     implementation (libs.facebook.login)
 
+    //retrofit
+    implementation(libs.retrofit)
+
+    // moshi
+    implementation(libs.moshi.kotlin)
+    implementation(libs.moshi)
+    implementation (libs.converter.moshi)
+    //okhttp3
+    implementation(libs.logging.interceptor)
 }

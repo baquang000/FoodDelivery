@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -32,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -45,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -53,8 +56,8 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.CustomSnackBar
 import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.Calender
-import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
+import com.example.fooddelivery.data.model.newFood
 import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.ShopViewModel
@@ -70,15 +73,24 @@ fun ShopScreen(
     innerPaddingValues: PaddingValues,
     sharedViewModel: SharedViewModel,
     shopViewModel: ShopViewModel = viewModel(),
-    favoriteViewModel: FavoriteViewModel = viewModel()
+    favoriteViewModel: FavoriteViewModel = viewModel(),
 ) {
-    val totalPrice = sharedViewModel.totalPrice.collectAsState()
+    val idshop = navBackStackEntry.arguments?.getString(ID_SHOP_ARGUMENT_KEY)
+    //count comment
+    var countComment by remember {
+        mutableIntStateOf(0)
+    }
+    LaunchedEffect(key1 = idshop) {
+        countComment = sharedViewModel.countCommentOfShop(idShop = idshop!!)
+        shopViewModel.setIdShop(idShop = idshop)
+    }
+    val totalPrice = sharedViewModel.totalPrice.collectAsStateWithLifecycle()
     val snackState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val shopProfileFlow by shopViewModel.shopProfileStateFlow.collectAsState()
-    val foodStateFlow by shopViewModel.getFoodStateFlow.collectAsState()
-    val idshop = navBackStackEntry.arguments?.getString(ID_SHOP_ARGUMENT_KEY)
-    val countStateFlow by sharedViewModel.countFoodInCart.collectAsState()
+    //shop information
+    val shopProfileFlow by shopViewModel.shopProfileStateFlow.collectAsStateWithLifecycle()
+    val loadingShopProfile by shopViewModel.isLoadShop.collectAsStateWithLifecycle()
+    val countStateFlow by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()
     LaunchedEffect(countStateFlow) {
         if (countStateFlow > 0) {
             coroutineScope.launch {
@@ -88,24 +100,21 @@ fun ShopScreen(
             snackState.currentSnackbarData?.dismiss()
         }
     }
-    //count comment
-    var countComment by remember {
-        mutableIntStateOf(0)
-    }
-    LaunchedEffect(key1 = idshop) {
-        countComment = sharedViewModel.countCommentOfShop(idShop = idshop!!)
-    }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        shopProfileFlow.forEach { shop ->
-            if (idshop == shop.idshop) {
-                sharedViewModel.getNameShop(shop.name)
-                LazyColumn(
-                    modifier = Modifier
-                        .background(color = Color.LightGray.copy(alpha = 0.5f))
-                        .padding(innerPaddingValues)
-                ) {
+        LazyColumn(
+            modifier = Modifier
+                .background(color = Color.LightGray.copy(alpha = 0.5f))
+                .padding(innerPaddingValues)
+        ) {
+            if (loadingShopProfile) {
+                item {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+            } else {
+                shopProfileFlow.forEach { shop ->
+                    sharedViewModel.getNameShop(shop.titleShop)
                     item {
                         HeadingWithBackgroudFood(
                             navController = navController,
@@ -117,9 +126,10 @@ fun ShopScreen(
                     }
                     item {
                         TitleShop(
-                            titleShop = shop.titleShop.toString(), star = shop.starShop!!,
+                            titleShop = shop.titleShop,
+                            star = shop.starShop,
                             favoriteViewModel = favoriteViewModel,
-                            id = shop.idshop.toString(),
+                            id = shop.idShop,
                             countComment = countComment
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -128,20 +138,18 @@ fun ShopScreen(
                         DeliveryTime()
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    items(foodStateFlow) { food ->
-                        if (food.idShop == idshop) {
-                            FoodItemInShop(
-                                food = food,
-                                sharedViewModel = sharedViewModel,
-                                navController = navController
-                            )
-                        }
+                    items(shop.foods) { food ->
+                        FoodItemInShop(
+                            food = food,
+                            sharedViewModel = sharedViewModel,
+                            navController = navController
+                        )
                     }
-                    if (countStateFlow > 0) {
-                        item {
-                            Spacer(modifier = Modifier.height(65.dp))
-                        }
-                    }
+                }
+            }
+            if (countStateFlow > 0) {
+                item {
+                    Spacer(modifier = Modifier.height(65.dp))
                 }
             }
         }
@@ -155,7 +163,7 @@ fun ShopScreen(
                 countFood = countStateFlow,
                 price = totalPrice.value.toDouble()
             ) {
-                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route){
+                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route) {
                     launchSingleTop = true
                 }
             }
@@ -168,12 +176,19 @@ fun TitleShop(
     titleShop: String, star: Double,
     favoriteViewModel: FavoriteViewModel,
     id: String,
-    countComment : Int
+    countComment: Int
 ) {
     LaunchedEffect(key1 = Unit) {
-        favoriteViewModel.loadFavoriteShop(id)
+        favoriteViewModel.getFavoriteWithApi()
     }
-    val favoriteShopStateFlow by favoriteViewModel.favoriteShopStateFlow.collectAsState()
+    val favoriteShopStateFlow by favoriteViewModel.favorite.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
+    var isFavorite by remember {
+        mutableStateOf(favoriteShopStateFlow.any { it.idShop == id })
+    }
+    LaunchedEffect(key1 = favoriteShopStateFlow) {
+        isFavorite = favoriteShopStateFlow.any { it.idShop == id }
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,7 +219,8 @@ fun TitleShop(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "($countComment Bình luận)> |", style = MaterialTheme.typography.titleSmall.copy(
+                text = "($countComment Bình luận)> |",
+                style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Normal
                 )
             )
@@ -222,9 +238,9 @@ fun TitleShop(
                     fontWeight = FontWeight.Normal
                 )
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Image(
-                painter = if (favoriteShopStateFlow) painterResource(id = R.drawable.favourite) else painterResource(
+                painter = if (isFavorite) painterResource(id = R.drawable.favourite) else painterResource(
                     id = R.drawable.favorite_white
                 ),
                 contentDescription = stringResource(
@@ -233,31 +249,35 @@ fun TitleShop(
                 modifier = Modifier
                     .size(32.dp, 32.dp)
                     .clickable {
-                        favoriteViewModel.saveFavoriteFood(
-                            id = id,
-                            isFavorite = !favoriteShopStateFlow
-                        )
-
+                        coroutineScope.launch {
+                            if (isFavorite) {
+                                favoriteViewModel.deleteFavorite(idShop = id)
+                                isFavorite = false
+                            } else {
+                                favoriteViewModel.createFavorite(idShop = id)
+                                isFavorite = true
+                            }
+                        }
                     }
             )
-        }
 
+        }
     }
 }
 
 @Composable
 fun FoodItemInShop(
-    food: Food,
+    food: newFood,
     sharedViewModel: SharedViewModel,
     navController: NavController
 ) {
     val foodDetailStateFlow by sharedViewModel.foodDetailStateFlow.collectAsState()
     var numberOfFood by remember {
         mutableIntStateOf(
-            foodDetailStateFlow.find { it.id == food.Id }?.quantity ?: 0
+            foodDetailStateFlow.find { it.idFood == food.idFood }?.quantity ?: 0
         )
     }
-    val encodeURL = URLEncoder.encode(food.ImagePath, "UTF-8")
+    val encodeURL = URLEncoder.encode(food.imagePath, "UTF-8")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -265,32 +285,32 @@ fun FoodItemInShop(
             .clickable {
                 navController.navigate(
                     HomeRouteScreen.FoodDetails.sendFood(
-                        title = food.Title.toString(),
-                        price = food.Price,
-                        star = food.Star,
-                        timevalue = food.TimeValue,
-                        description = food.Description.toString(),
+                        title = food.title,
+                        price = food.price,
+                        star = food.star,
+                        timevalue = food.timeValue,
+                        description = food.description,
                         imagepath = encodeURL,
-                        id = food.Id,
+                        id = food.idFood,
                         idshop = food.idShop
                     )
-                ){
+                ) {
                     launchSingleTop = true
                 }
             }
     ) {
         Spacer(modifier = Modifier.width(8.dp))
         AsyncImage(
-            food.ImagePath,
-            contentDescription = food.Title,
+            food.imagePath,
+            contentDescription = food.title,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.size(100.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
-            Text(text = food.Title.toString(), style = MaterialTheme.typography.titleMedium)
+            Text(text = food.title, style = MaterialTheme.typography.titleMedium)
             Text(
-                text = food.Description.toString(),
+                text = food.description,
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Normal
                 ),
@@ -321,7 +341,7 @@ fun FoodItemInShop(
                     .padding(end = 8.dp)
             ) {
                 Text(
-                    text = "${food.Price} đ", style = MaterialTheme.typography.titleMedium.copy(
+                    text = "${food.price} đ", style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.Red
                     )
                 )
@@ -334,11 +354,11 @@ fun FoodItemInShop(
                             onClick = {
                                 numberOfFood--
                                 val fooddetails = FoodDetails(
-                                    title = food.Title.toString(),
-                                    imagePath = food.ImagePath.toString(),
-                                    price = food.Price.toFloat(),
+                                    title = food.title,
+                                    imagePath = food.imagePath,
+                                    price = food.price.toFloat(),
                                     quantity = 1,
-                                    id = food.Id
+                                    idFood = food.idFood
                                 )
                                 sharedViewModel.deleteFoodDetail(foodDetails = fooddetails)
                             },
@@ -365,11 +385,11 @@ fun FoodItemInShop(
                         onClick = {
                             numberOfFood++
                             val fooddetails = FoodDetails(
-                                title = food.Title.toString(),
-                                imagePath = food.ImagePath.toString(),
-                                price = food.Price.toFloat(),
+                                title = food.title,
+                                imagePath = food.imagePath,
+                                price = food.price.toFloat(),
                                 quantity = 1,
-                                id = food.Id
+                                idFood = food.idFood
                             )
                             sharedViewModel.addFoodDetail(foodDetails = fooddetails)
                         },

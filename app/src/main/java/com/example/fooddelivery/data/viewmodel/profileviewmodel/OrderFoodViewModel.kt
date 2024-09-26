@@ -6,22 +6,40 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.Comment
 import com.example.fooddelivery.data.model.Food
+import com.example.fooddelivery.data.model.GetFoodDetail
+import com.example.fooddelivery.data.model.GetOrder
 import com.example.fooddelivery.data.model.OrderFood
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class OrderFoodViewModel : ViewModel() {
-    private val _orderFoodStateFlow = MutableStateFlow<List<OrderFood>>(emptyList())
+    //// order
+    private val _orderFoodStateFlow = MutableStateFlow<List<GetOrder>>(emptyList())
     val orderFoodStateFlow = _orderFoodStateFlow.asStateFlow()
+
+    //is loading
+    private val _isLoadingOrder = MutableStateFlow(false)
+    val isLoadingOrder = _isLoadingOrder.asStateFlow()
+
+
+    //// order
+    private val _orderDetails = MutableStateFlow<Map<String, List<GetFoodDetail>>>(emptyMap())
+    val orderDetails = _orderDetails.asStateFlow()
+
+    //is loading
+    private val _isLoadingOrderDetail = MutableStateFlow(false)
+    val isLoadingOrderDetail = _isLoadingOrderDetail.asStateFlow()
 
     // star
     private val _allFoodStateFlow = MutableStateFlow<List<Food>>(emptyList())
@@ -31,36 +49,71 @@ class OrderFoodViewModel : ViewModel() {
     private val tag = ViewModel::class.java.simpleName
 
     init {
-        fetchOrderFood()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val orderDetailsMap = mutableMapOf<String, List<GetFoodDetail>>()
+        if (userId != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                getOrderByUser(userId)
+                _isLoadingOrderDetail.value = false
+                _orderFoodStateFlow.value.forEach {
+                    val details = getOrderDetail(it.idOrder)
+                    if (details != null) {
+                        orderDetailsMap[it.idOrder] = details
+                    }
+                }
+                _orderDetails.value = orderDetailsMap
+                _isLoadingOrderDetail.value = false
+            }
+        }
     }
 
-    private fun fetchOrderFood() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            FirebaseDatabase.getInstance().getReference("orderFood")
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val orderList = mutableListOf<OrderFood>()
-                        for (datasnap in snapshot.children) {
-                            val foodlist = datasnap.getValue(OrderFood::class.java)
-                            if (foodlist != null && foodlist.idUser == userId) {
-                                orderList.add(foodlist)
+    /*    private fun fetchOrderFood() {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            if (userId != null) {
+                FirebaseDatabase.getInstance().getReference("orderFood")
+                    .addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val orderList = mutableListOf<OrderFood>()
+                            for (datasnap in snapshot.children) {
+                                val foodlist = datasnap.getValue(OrderFood::class.java)
+                                if (foodlist != null && foodlist.idUser == userId) {
+                                    orderList.add(foodlist)
+                                }
                             }
+                            viewModelScope.launch {
+                                _orderFoodStateFlow.value = orderList
+                            }
+                            Log.d(tag, "Get orderfood all success full")
                         }
-                        viewModelScope.launch {
-                            _orderFoodStateFlow.value = orderList
-                        }
-                        Log.d(tag, "Get orderfood all success full")
-                    }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e(
-                            tag,
-                            "Fetch order confirmation food failed",
-                            error.toException()
-                        )
-                    }
-                })
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(
+                                tag,
+                                "Fetch order confirmation food failed",
+                                error.toException()
+                            )
+                        }
+                    })
+            }
+        }*/
+
+    private suspend fun getOrderByUser(idUser: String) {
+        _isLoadingOrder.value = true
+        try {
+            _orderFoodStateFlow.value = RetrofitClient.orderAPIService.getOrderByUser(idUser)
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
+        } finally {
+            _isLoadingOrder.value = false
+        }
+    }
+
+    private suspend fun getOrderDetail(idOrder: String): List<GetFoodDetail>? {
+        return try {
+             RetrofitClient.orderDetailAPIService.getOrderDetails(idOrder)
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
+            null
         }
     }
 
@@ -210,14 +263,14 @@ class OrderFoodViewModel : ViewModel() {
     private fun getNewStarFood(comment: Comment) {
         var newStar: Float
         _allFoodStateFlow.value.forEach { food ->
-             if (comment.idFood == food.Id) {
-                 newStar = (comment.rating + food.Star.toFloat()) / 2.0f
-                 Log.d(tag, "set new star: $newStar")
-                 changeStarFood(star = newStar, idFood = comment.idFood.toString())
-             } else {
-                 Log.e(tag, "get new star failed")
-             }
-         }
+            if (comment.idFood == food.Id) {
+                newStar = (comment.rating + food.Star.toFloat()) / 2.0f
+                Log.d(tag, "set new star: $newStar")
+                changeStarFood(star = newStar, idFood = comment.idFood.toString())
+            } else {
+                Log.e(tag, "get new star failed")
+            }
+        }
     }
 
     private fun changeStarFood(star: Float, idFood: String) {

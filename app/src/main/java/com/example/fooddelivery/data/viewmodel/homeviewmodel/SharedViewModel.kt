@@ -6,21 +6,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.Comment
+import com.example.fooddelivery.data.model.CreateOrder
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.model.OrderFood
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 class SharedViewModel : ViewModel() {
     private val _foodDetailStateFlow = MutableStateFlow<List<FoodDetails>>(emptyList())
@@ -138,7 +143,7 @@ class SharedViewModel : ViewModel() {
             } else {
                 Log.e(tag, "Not found fooddetails in _foodDetailStateFlow and delete failed")
             }
-            updatedList.removeIf { it.id == foodDetails.id && it.quantity == 0 }
+            updatedList.removeIf { it.idFood == foodDetails.idFood && it.quantity == 0 }
             _countFoodInCart.value--
             return@update updatedList.toList()
         }
@@ -148,7 +153,7 @@ class SharedViewModel : ViewModel() {
     fun updateFoodDetailQuantity(id: Int, newQuantity: Int) {
         _foodDetailStateFlow.update { list ->
             list.map { food ->
-                if (food.id == id) food.copy(quantity = newQuantity)
+                if (food.idFood == id) food.copy(quantity = newQuantity)
                 else food
             }
         }
@@ -159,54 +164,51 @@ class SharedViewModel : ViewModel() {
         return _foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }
     }
 
-    fun addFoodHistoryAndDelete(
-        name: String,
-        numberphone: String,
-        address: String,
-        email: String,
-        dateofbirth: String,
+    fun createOrderAndDetails(
         noteOrder: String,
         rewardForDriver: Int,
         deliverytoDoor: Boolean,
         diningSubtances: Boolean
     ) {
-        val timeOrder = Calender().getCalender()
         val foodList = _foodDetailStateFlow.value
-        val orderlist = OrderFood(
-            listFood = foodList, sumPrice = _sumPrice.value,
-            name = name,
-            numberphone = numberphone,
-            address = address,
-            email = email,
-            dateofbirth = dateofbirth,
-            time = timeOrder,
-            noteOrder = noteOrder,
-            rewardForDriver = rewardForDriver,
-            deliverytoDoor = deliverytoDoor,
-            diningSubtances = diningSubtances,
-            idShop = _idShopStateFlow.value
-        )
+        val timeOrder = Calender().getCalender()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        orderlist.idUser = userId
+        val idOrder = UUID.randomUUID().toString()
         if (userId != null) {
-            val order = FirebaseDatabase.getInstance().getReference("orderFood").push()
-            val keyOrder = order.key
-            orderlist.idOrder = keyOrder!!
-            order.setValue(orderlist).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("Firebase", "Save success")
+            val newOrder = CreateOrder(
+                deliverytoDoor = deliverytoDoor,
+                diningSubtances = diningSubtances,
+                idShop = _idShopStateFlow.value,
+                idUser = userId,
+                noteOrder = noteOrder,
+                rewardForDriver = rewardForDriver,
+                sumPrice = _sumPrice.value.toDouble(),
+                time = timeOrder
+            )
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    RetrofitClient.orderAPIService.createOrder(idOrder, newOrder)
+                    foodList.forEach { food ->
+                        food.idFood?.let {
+                            RetrofitClient.orderDetailAPIService.createOrderDetail(
+                                idOrder,
+                                food
+                            )
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(tag, e.message.toString())
+                }finally {
                     deleteListFood()
-                } else {
-                    Log.e("Firebase", "Save failed", task.exception)
                 }
             }
         }
     }
 
-    fun deleteItemFoodinCart(foodDetails: FoodDetails) {
+    fun deleteItemFoodInCart(foodDetails: FoodDetails) {
         _foodDetailStateFlow.update { list ->
             val updatelist = list.toMutableList()
-            val itemToRemove = updatelist.find { it.id == foodDetails.id }
+            val itemToRemove = updatelist.find { it.idFood == foodDetails.idFood }
             if (itemToRemove != null) {
                 updatelist.remove(itemToRemove)
                 isErrorDelete = false
@@ -238,7 +240,6 @@ class SharedViewModel : ViewModel() {
                         "Error fetching comment in fun getCommentFromFirebase: ${error.message}"
                     )
                 }
-
             })
     }
 

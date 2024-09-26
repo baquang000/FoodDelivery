@@ -2,80 +2,38 @@ package com.example.fooddelivery.data.viewmodel.homeviewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.fooddelivery.data.model.Food
-import com.example.fooddelivery.data.model.Shop
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.api.RetrofitClient
+import com.example.fooddelivery.data.model.newShop
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class ShopViewModel : ViewModel() {
-    private val _shopProfileStateFlow = MutableStateFlow<List<Shop>>(emptyList())
-    val shopProfileStateFlow: StateFlow<List<Shop>> = _shopProfileStateFlow.asStateFlow()
+    //shop information
+    private val _shopProfileStateFlow = MutableStateFlow<List<newShop>>(emptyList())
+    val shopProfileStateFlow: StateFlow<List<newShop>> = _shopProfileStateFlow.asStateFlow()
+    private val _isLoadShop = MutableStateFlow(false)
+    val isLoadShop = _isLoadShop.asStateFlow()
     private val tag = ViewModel::class.java.simpleName
-    private val _getFoodStateFlow = MutableStateFlow<List<Food>>(emptyList())
-    val getFoodStateFlow: StateFlow<List<Food>> = _getFoodStateFlow.asStateFlow()
 
-    init {
-        getShopProfile()
-        fetchAllDataFood()
+    fun setIdShop(idShop: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getShopProfile(idShop = idShop)
+        }
     }
 
-    private fun getShopProfile() {
-        val tempList = mutableListOf<Shop>()
-        FirebaseDatabase.getInstance().getReference("adminprofile").addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (datasnap in snapshot.children) {
-                        val shop = datasnap.getValue(Shop::class.java)
-                        if (shop != null) {
-                            tempList.add(shop)
-                        }
-                    }
-                    _shopProfileStateFlow.value = tempList
-                    Log.d(
-                        tag,
-                        "getShopProfile success"
-                    )
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(
-                        tag,
-                        "Error fetching shop profile in fun getShopProfile: ${error.message}"
-                    )
-                }
-            })
+    private suspend fun getShopProfile(idShop: String) {
+        _isLoadShop.value = true
+        try {
+            _shopProfileStateFlow.value =
+                RetrofitClient.shopAPIService.getInforShop(idShop = idShop)
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
+        } finally {
+            _isLoadShop.value = false
+        }
     }
-
-    private fun fetchAllDataFood() {
-        val empList = mutableListOf<Food>()
-        FirebaseDatabase.getInstance().getReference("Foods")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (dataSnap in snapshot.children) {
-                        val foodItem = dataSnap.getValue(Food::class.java)
-                        if (foodItem != null) {
-                            empList.add(foodItem)
-                        }
-                    }
-                    _getFoodStateFlow.value = empList
-                    Log.d(
-                        tag,
-                        "fetchAllDataFood success"
-                    )
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(
-                        tag,
-                        "Error fetching food in fun fetchAllDataFood: ${error.message}"
-                    )
-                }
-            })
-    }
-
 }

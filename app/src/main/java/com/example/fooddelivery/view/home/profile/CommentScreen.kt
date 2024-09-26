@@ -75,11 +75,11 @@ fun CommentScreen(
         }
         items(orderList) { order ->
             if (orderId == order.idOrder) {
-                CommentList(
+               /* CommentList(
                     order = order,
                     orderViewModel = orderViewModel,
                     navController = navController,
-                )
+                )*/
             }
         }
     }
@@ -91,7 +91,7 @@ fun CommentList(
     orderViewModel: OrderFoodViewModel,
     navController: NavController,
 ) {
-    val idFood = if(order.listFood.size > 1) -1 else order.listFood.first().id
+    val idFood = if(order.listFood.size > 1) -1 else order.listFood.first().idFood
     val commentSuccess by orderViewModel::commentSuccess
     val localManager = LocalFocusManager.current
     val context = LocalContext.current

@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -67,8 +68,6 @@ import com.example.fooddelivery.components.MyDropdownMenuWithLoc
 import com.example.fooddelivery.components.MyDropdownMenuWithPrice
 import com.example.fooddelivery.components.MyDropdownMenuWithTime
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.model.Food
-import com.example.fooddelivery.data.model.FoodState
 import com.example.fooddelivery.data.model.LocationState
 import com.example.fooddelivery.data.model.PriceState
 import com.example.fooddelivery.data.model.TimeState
@@ -85,9 +84,12 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
     sharedViewModel: SharedViewModel = viewModel()
 ) {
-    val totalPrice = sharedViewModel.totalPrice.collectAsState()
+    //loading bestfood
+    val isLoading by homeViewModel.isLoadBestFood.collectAsStateWithLifecycle()
+
+    val totalPrice = sharedViewModel.totalPrice.collectAsStateWithLifecycle()
     ///
-    val countStateFlow by sharedViewModel.countFoodInCart.collectAsState()
+    val countStateFlow by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()
     val snackState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(countStateFlow) {
@@ -113,270 +115,279 @@ fun HomeScreen(
                 .fillMaxSize()
                 .background(color = Color.Transparent)
         ) {
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 8.dp, end = 8.dp)
-            ) {
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        IconButton(
-                            modifier = Modifier
-                                .size(48.dp, 48.dp)
-                                .weight(1f),
-                            onClick = { /*TODO*/ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.settings),
-                                contentDescription = stringResource(
-                                    R.string.setting_logo
-                                ),
-                                tint = Color.Red,
-                                modifier = Modifier.scale(1.7f)
-                            )
-                        }
-                        OutlinedTextField(value = searchText, onValueChange = {
-                            searchText = it
-                        }, leadingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.search_icon),
-                                contentDescription = stringResource(
-                                    R.string.search_icon
-                                ),
-                                tint = Color.Red,
-                                modifier = Modifier.clickable {
-                                    homeNavController.navigate(
-                                        HomeRouteScreen.Search.sendText(
-                                            searchText
-                                        )
-                                    ){
-                                        launchSingleTop = true
-                                    }
-                                }
-                            )
-                        }, placeholder = {
-                            Text(text = stringResource(R.string.search_food))
-                        }, modifier = Modifier.weight(6f), colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.LightGray.copy(alpha = 0.3f),
-                            focusedContainerColor = Color.White,
-                            unfocusedIndicatorColor = Color.White,
-                            focusedIndicatorColor = Color.White,
-                            focusedTrailingIconColor = Color.Black,
-                            unfocusedTrailingIconColor = Color.White,
-                            focusedLeadingIconColor = Color.Blue,
-                            unfocusedLeadingIconColor = Color.Red
-                        ),
-                            trailingIcon = {
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 8.dp, end = 8.dp)
+                ) {
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            IconButton(
+                                modifier = Modifier
+                                    .size(48.dp, 48.dp)
+                                    .weight(1f),
+                                onClick = { /*TODO*/ }) {
                                 Icon(
-                                    imageVector = Icons.Filled.Close,
+                                    painter = painterResource(id = R.drawable.settings),
                                     contentDescription = stringResource(
-                                        R.string.close
+                                        R.string.setting_logo
                                     ),
-                                    modifier = Modifier.clickable {
-                                        searchText = ""
+                                    tint = Color.Red,
+                                    modifier = Modifier.scale(1.7f)
+                                )
+                            }
+                            OutlinedTextField(value = searchText,
+                                onValueChange = {
+                                    searchText = it
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.search_icon),
+                                        contentDescription = stringResource(
+                                            R.string.search_icon
+                                        ),
+                                        tint = Color.Red,
+                                        modifier = Modifier.clickable {
+                                            homeNavController.navigate(
+                                                HomeRouteScreen.Search.sendText(
+                                                    searchText
+                                                )
+                                            ) {
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    )
+                                },
+                                placeholder = {
+                                    Text(text = stringResource(R.string.search_food))
+                                },
+                                modifier = Modifier.weight(6f),
+                                colors = TextFieldDefaults.colors(
+                                    unfocusedContainerColor = Color.LightGray.copy(alpha = 0.3f),
+                                    focusedContainerColor = Color.White,
+                                    unfocusedIndicatorColor = Color.White,
+                                    focusedIndicatorColor = Color.White,
+                                    focusedTrailingIconColor = Color.Black,
+                                    unfocusedTrailingIconColor = Color.White,
+                                    focusedLeadingIconColor = Color.Blue,
+                                    unfocusedLeadingIconColor = Color.Red
+                                ),
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Close,
+                                        contentDescription = stringResource(
+                                            R.string.close
+                                        ),
+                                        modifier = Modifier.clickable {
+                                            searchText = ""
+                                        }
+                                    )
+                                },
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Search
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onSearch = {
+                                        homeNavController.navigate(
+                                            HomeRouteScreen.Search.sendText(
+                                                searchText
+                                            )
+                                        )
                                     }
                                 )
-                            },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Search
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onSearch = {
-                                    homeNavController.navigate(
-                                        HomeRouteScreen.Search.sendText(
-                                            searchText
-                                        )
+                            )
+                            IconButton(
+                                modifier = Modifier
+                                    .size(48.dp, 48.dp)
+                                    .weight(1f),
+                                onClick = { }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.basket),
+                                    contentDescription = stringResource(
+                                        R.string.basket_logo
+                                    ),
+                                    tint = Color.Red,
+                                    modifier = Modifier.scale(1.7f)
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier.padding(top = 8.dp)
+                        ) {
+                            LazyRow()
+                            {
+                                item {
+                                    SetLocationItems(
+                                        homeViewModel = homeViewModel,
+                                        modifier = Modifier
+                                            .widthIn(max = 200.dp)
+                                            .padding(horizontal = 8.dp)
+                                    )
+                                    SetTimeIems(
+                                        homeViewModel = homeViewModel,
+                                        modifier = Modifier
+                                            .widthIn(max = 200.dp)
+                                            .padding(horizontal = 8.dp)
+                                    )
+                                    SetPriceIems(
+                                        homeViewModel = homeViewModel,
+                                        modifier = Modifier
+                                            .widthIn(max = 200.dp)
+                                            .padding(horizontal = 8.dp)
                                     )
                                 }
-                            )
-                        )
-                        IconButton(
-                            modifier = Modifier
-                                .size(48.dp, 48.dp)
-                                .weight(1f),
-                            onClick = { }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.basket),
-                                contentDescription = stringResource(
-                                    R.string.basket_logo
-                                ),
-                                tint = Color.Red,
-                                modifier = Modifier.scale(1.7f)
-                            )
-                        }
-                    }
-                }
-                item {
-                    Row(
-                        modifier = Modifier.padding(top = 8.dp)
-                    ) {
-                        LazyRow()
-                        {
-                            item {
-                                SetLocationItems(
-                                    homeViewModel = homeViewModel,
-                                    modifier = Modifier
-                                        .widthIn(max = 200.dp)
-                                        .padding(horizontal = 8.dp)
-                                )
-                                SetTimeIems(
-                                    homeViewModel = homeViewModel,
-                                    modifier = Modifier
-                                        .widthIn(max = 200.dp)
-                                        .padding(horizontal = 8.dp)
-                                )
-                                SetPriceIems(
-                                    homeViewModel = homeViewModel,
-                                    modifier = Modifier
-                                        .widthIn(max = 200.dp)
-                                        .padding(horizontal = 8.dp)
-                                )
                             }
                         }
-                    }
 
-                }
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(top = 8.dp)
-                            .heightIn(32.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp, bottom = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            NormalTextComponents(
-                                value = stringResource(R.string.today_best_food),
-                                nomalFontWeight = FontWeight.Bold,
-                                nomalColor = Color.Black, nomalFontsize = 22.sp,
-                            )
-                            NormalTextComponents(
-                                value = stringResource(R.string.view_all), nomalColor = Color.Red,
-                                modifier = Modifier.clickable {
-                                    homeNavController.navigate(HomeRouteScreen.ViewAll.route)
-                                }
-                            )
-                        }
-                        SetFoodItems(
-                            homeViewModel = homeViewModel,
-                            navController = homeNavController,
-                            sharedViewModel = sharedViewModel
-                        )
                     }
-                }
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(top = 8.dp, bottom = 8.dp)
-                    ) {
-                        NormalTextComponents(
-                            value = stringResource(R.string.choose_category),
-                            nomalColor = Color.Black,
-                            nomalFontsize = 22.sp,
-                            nomalFontWeight = FontWeight.Bold
-                        )
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                IconButtonWithText {
-                                    homeNavController.navigate(HomeRouteScreen.Pizza.route)
-                                }
-                                IconButtonWithText(
-                                    backgroundColor = colorResource(id = R.color.btn_2),
-                                    iconId = R.drawable.btn_2,
-                                    textId = R.string.Burger
-                                ) {
-                                    homeNavController.navigate(HomeRouteScreen.Burger.route)
-                                }
-                                IconButtonWithText(
-                                    backgroundColor = colorResource(id = R.color.btn_3),
-                                    iconId = R.drawable.btn_3,
-                                    textId = R.string.Chicken
-                                ) {
-                                    homeNavController.navigate(HomeRouteScreen.Chicken.route)
-                                }
-                                IconButtonWithText(
-                                    backgroundColor = colorResource(id = R.color.btn_4),
-                                    iconId = R.drawable.btn_4,
-                                    textId = R.string.Sushi
-                                ) {
-                                    homeNavController.navigate(HomeRouteScreen.Shushi.route)
-                                }
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                IconButtonWithText(
-                                    backgroundColor = colorResource(id = R.color.btn_5),
-                                    iconId = R.drawable.btn_5,
-                                    textId = R.string.Meat
-                                ) {
-                                    homeNavController.navigate(HomeRouteScreen.Meat.route)
-                                }
-                                IconButtonWithText(
-                                    backgroundColor = colorResource(id = R.color.btn_6),
-                                    iconId = R.drawable.btn_6,
-                                    textId = R.string.hot_dog
-                                ) {
-                                    homeNavController.navigate(HomeRouteScreen.HotDog.route)
-                                }
-                                IconButtonWithText(
-                                    backgroundColor = colorResource(id = R.color.btn_7),
-                                    iconId = R.drawable.btn_7,
-                                    textId = R.string.drink
-                                ) {
-                                    homeNavController.navigate(HomeRouteScreen.Drink.route)
-                                }
-                                IconButtonWithText(
-                                    backgroundColor = colorResource(id = R.color.btn_8),
-                                    iconId = R.drawable.btn_8,
-                                    textId = R.string.more
-                                ) {
-                                    homeNavController.navigate(HomeRouteScreen.More.route)
-                                }
-                            }
-                        }
-                    }
-                }
-                if (countStateFlow > 0) {
                     item {
-                        Spacer(modifier = Modifier.height(65.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(top = 8.dp)
+                                .heightIn(32.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp, bottom = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                NormalTextComponents(
+                                    value = stringResource(R.string.today_best_food),
+                                    nomalFontWeight = FontWeight.Bold,
+                                    nomalColor = Color.Black, nomalFontsize = 22.sp,
+                                )
+                                NormalTextComponents(
+                                    value = stringResource(R.string.view_all),
+                                    nomalColor = Color.Red,
+                                    modifier = Modifier.clickable {
+                                        homeNavController.navigate(HomeRouteScreen.ViewAll.route)
+                                    }
+                                )
+                            }
+                            SetBestFood(
+                                homeViewModel = homeViewModel,
+                                navController = homeNavController,
+                                sharedViewModel = sharedViewModel
+                            )
+                        }
+                    }
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(top = 8.dp, bottom = 8.dp)
+                        ) {
+                            NormalTextComponents(
+                                value = stringResource(R.string.choose_category),
+                                nomalColor = Color.Black,
+                                nomalFontsize = 22.sp,
+                                nomalFontWeight = FontWeight.Bold
+                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxHeight()
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    IconButtonWithText {
+                                        homeNavController.navigate(HomeRouteScreen.Pizza.route)
+                                    }
+                                    IconButtonWithText(
+                                        backgroundColor = colorResource(id = R.color.btn_2),
+                                        iconId = R.drawable.btn_2,
+                                        textId = R.string.Burger
+                                    ) {
+                                        homeNavController.navigate(HomeRouteScreen.Burger.route)
+                                    }
+                                    IconButtonWithText(
+                                        backgroundColor = colorResource(id = R.color.btn_3),
+                                        iconId = R.drawable.btn_3,
+                                        textId = R.string.Chicken
+                                    ) {
+                                        homeNavController.navigate(HomeRouteScreen.Chicken.route)
+                                    }
+                                    IconButtonWithText(
+                                        backgroundColor = colorResource(id = R.color.btn_4),
+                                        iconId = R.drawable.btn_4,
+                                        textId = R.string.Sushi
+                                    ) {
+                                        homeNavController.navigate(HomeRouteScreen.Shushi.route)
+                                    }
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    IconButtonWithText(
+                                        backgroundColor = colorResource(id = R.color.btn_5),
+                                        iconId = R.drawable.btn_5,
+                                        textId = R.string.Meat
+                                    ) {
+                                        homeNavController.navigate(HomeRouteScreen.Meat.route)
+                                    }
+                                    IconButtonWithText(
+                                        backgroundColor = colorResource(id = R.color.btn_6),
+                                        iconId = R.drawable.btn_6,
+                                        textId = R.string.hot_dog
+                                    ) {
+                                        homeNavController.navigate(HomeRouteScreen.HotDog.route)
+                                    }
+                                    IconButtonWithText(
+                                        backgroundColor = colorResource(id = R.color.btn_7),
+                                        iconId = R.drawable.btn_7,
+                                        textId = R.string.drink
+                                    ) {
+                                        homeNavController.navigate(HomeRouteScreen.Drink.route)
+                                    }
+                                    IconButtonWithText(
+                                        backgroundColor = colorResource(id = R.color.btn_8),
+                                        iconId = R.drawable.btn_8,
+                                        textId = R.string.more
+                                    ) {
+                                        homeNavController.navigate(HomeRouteScreen.More.route)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (countStateFlow > 0) {
+                        item {
+                            Spacer(modifier = Modifier.height(65.dp))
+                        }
                     }
                 }
-            }
-            SnackbarHost(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .clip(shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                    .background(color = Color.White)
-                    .padding(horizontal = 16.dp),
-                hostState = snackState
-            ) {
-                CustomSnackBarInHome(
-                    countFood = countStateFlow,
-                    price = totalPrice.value.toDouble(),
-                    nameShop = nameShop,
-                    modifier = Modifier.clickable {
-                        homeNavController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route)
-                    }
+                SnackbarHost(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .clip(shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                        .background(color = Color.White)
+                        .padding(horizontal = 16.dp),
+                    hostState = snackState
                 ) {
-                    snackState.currentSnackbarData?.dismiss()
-                    sharedViewModel.deleteListFood()
+                    CustomSnackBarInHome(
+                        countFood = countStateFlow,
+                        price = totalPrice.value.toDouble(),
+                        nameShop = nameShop,
+                        modifier = Modifier.clickable {
+                            homeNavController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route)
+                        }
+                    ) {
+                        snackState.currentSnackbarData?.dismiss()
+                        sharedViewModel.deleteListFood()
+                    }
                 }
             }
         }
@@ -456,59 +467,16 @@ fun SetTimeIems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SetFoodItems(
+fun SetBestFood(
     homeViewModel: HomeViewModel,
     navController: NavController,
     sharedViewModel: SharedViewModel
 ) {
-    when (val result = homeViewModel.responseBestFood.value) {
-        is FoodState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is FoodState.Success -> {
-            ListItemFood(
-                result.data,
-                navController = navController,
-                sharedViewModel = sharedViewModel
-            )
-
-        }
-
-        is FoodState.Failure -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = result.message, style = TextStyle(
-                        fontSize = 20.sp,
-                    )
-                )
-            }
-        }
-
-        else -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.error_loading_data), style = TextStyle(
-                        fontSize = 20.sp, color = Color.Red
-                    )
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ListItemFood(
-    foods: MutableList<Food>,
-    navController: NavController,
-    sharedViewModel: SharedViewModel,
-) {
+    val bestFoodList by homeViewModel.bestFood.collectAsStateWithLifecycle()
     LazyRow(
         modifier = Modifier.background(color = Color.White)
     ) {
-        items(foods) { food ->
+        items(bestFoodList) { food ->
             FoodItem(
                 food = food,
                 navController = navController,
@@ -516,7 +484,9 @@ fun ListItemFood(
             )
         }
     }
+
 }
+
 
 @Composable
 fun SetLocationItems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {

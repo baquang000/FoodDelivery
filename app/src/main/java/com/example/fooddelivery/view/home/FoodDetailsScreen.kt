@@ -221,7 +221,7 @@ fun FoodDetailsScreen(
                                             imagePath = imagepath.toString(),
                                             price = price.toFloat(),
                                             quantity = 1,
-                                            id = id
+                                            idFood = id
                                         )
                                         sharedViewModel.deleteFoodDetail(foodDetails = fooddetails)
                                     },
@@ -252,7 +252,7 @@ fun FoodDetailsScreen(
                                         imagePath = imagepath.toString(),
                                         price = price.toFloat(),
                                         quantity = 1,
-                                        id = id
+                                        idFood = id
                                     )
                                     sharedViewModel.addFoodDetail(foodDetails = fooddetails)
                                 },

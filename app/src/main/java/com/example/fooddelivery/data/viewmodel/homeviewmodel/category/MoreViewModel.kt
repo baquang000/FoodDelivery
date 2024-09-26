@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel.homeviewmodel
+package com.example.fooddelivery.data.viewmodel.homeviewmodel.category
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -10,26 +10,31 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ViewAllViewModel : ViewModel() {
-    private val _allFood = MutableStateFlow<List<newFood>>(emptyList())
-    val allFood = _allFood.asStateFlow()
+class MoreViewModel : ViewModel() {
+    //moreFood
+    private val _moreFood = MutableStateFlow<List<newFood>>(emptyList())
+    val moreFood = _moreFood.asStateFlow()
+    private val _isLoadMore = MutableStateFlow(false)
+    val isLoadMore = _isLoadMore.asStateFlow()
+
+    //tag viewmodel
     private val tag = ViewModel::class.java.simpleName
-    private val _isLoadAllFood = MutableStateFlow(false)
-    val isLoadAllFood = _isLoadAllFood.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            getAllFoodWithApi()
+            getMoreWithApi()
         }
     }
 
-    private suspend fun getAllFoodWithApi() {
+    private suspend fun getMoreWithApi() {
+        _isLoadMore.value = true
         try {
-            _allFood.value = RetrofitClient.foodAPIService.getAllFood()
+            _moreFood.value = RetrofitClient.foodAPIService.getCategory(7)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {
-            _isLoadAllFood.value = false
+            _isLoadMore.value = false
         }
     }
+
 }

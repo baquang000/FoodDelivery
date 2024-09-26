@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -70,7 +70,7 @@ fun LoginScreen(
     val context = LocalContext.current
     val errorMessage by loginViewModel::errormessage
     val isFailer by loginViewModel::isFailer
-    val flowNavigationHome by loginViewModel.navigationHome.collectAsState()
+    val flowNavigationHome by loginViewModel.navigationHome.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     val onclick: () -> Unit = {
 

@@ -19,8 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,15 +30,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.model.Shop
+import com.example.fooddelivery.data.model.GetFavorite
 import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun FavoriteScreen(
@@ -46,11 +48,10 @@ fun FavoriteScreen(
     navController: NavController,
     favoriteViewModel: FavoriteViewModel = viewModel()
 ) {
-    val favoriteFood by favoriteViewModel.shopFovoriteStateFlow.collectAsState()
-    val isLoading by favoriteViewModel::isLoading
-    val loadError by favoriteViewModel::loadError
-    LaunchedEffect(Unit) {
-        favoriteViewModel.getFavoriteFood()
+    val isLoading by favoriteViewModel.isLoadFavorite.collectAsStateWithLifecycle()
+    val favoriteShopStateFlow by favoriteViewModel.favorite.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = favoriteShopStateFlow) {
+        favoriteViewModel.getFavoriteWithApi()
     }
     if (isLoading) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
@@ -63,7 +64,7 @@ fun FavoriteScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(favoriteFood) { shop ->
+                items(favoriteShopStateFlow) { shop ->
                     FavoriteItem(
                         shop,
                         navController = navController,
@@ -71,41 +72,37 @@ fun FavoriteScreen(
                     )
                 }
             }
-            if (loadError != null) {
-                Text(text = loadError ?: "", color = MaterialTheme.colorScheme.error)
-            }
         }
     }
 }
 
 @Composable
 fun FavoriteItem(
-    shop: Shop,
+    shop: GetFavorite,
     modifier: Modifier = Modifier,
     favoriteViewModel: FavoriteViewModel,
     navController: NavController
 ) {
-    val favoriteShopStateFlow by favoriteViewModel.favoriteShopStateFlow.collectAsState()
-    LaunchedEffect(Unit) {
-        favoriteViewModel.loadFavoriteShop(shop.idshop!!)
-    }
+    val coroutineScope = rememberCoroutineScope()
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .clickable {
-                navController.navigate(route = HomeRouteScreen.ShopRouteScreen.sendIdShop(idshop = shop.idshop!!),
+                navController.navigate(
+                    route = HomeRouteScreen.ShopRouteScreen.sendIdShop(idshop = shop.shop.idshop!!),
                     navOptions = NavOptions
                         .Builder()
                         .setLaunchSingleTop(true)
-                        .build())
+                        .build()
+                )
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         AsyncImage(
-            model = shop.imageUrl,
-            contentDescription = shop.titleShop,
+            model = shop.shop.imageUrl,
+            contentDescription = shop.shop.titleShop,
             contentScale = ContentScale.Inside,
             modifier = Modifier.size(100.dp, 100.dp)
         )
@@ -117,7 +114,7 @@ fun FavoriteItem(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = shop.titleShop.toString(),
+                text = shop.shop.titleShop.toString(),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                 )
@@ -133,7 +130,7 @@ fun FavoriteItem(
                     modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
                 ) {
                     NormalTextComponents(
-                        value = shop.starShop.toString(),
+                        value = shop.shop.starShop.toString(),
                         nomalColor = Color.Black,
                         nomalFontsize = 18.sp,
                     )
@@ -147,23 +144,18 @@ fun FavoriteItem(
                     )
                 }
                 Image(
-                    painter = if (favoriteShopStateFlow) painterResource(id = R.drawable.favourite) else painterResource(
-                        id = R.drawable.favorite_white
-                    ),
+                    painter = painterResource(id = R.drawable.favourite),
                     contentDescription = stringResource(
                         id = R.string.favorite_white_icon
                     ),
                     modifier = Modifier
                         .size(32.dp, 32.dp)
                         .clickable {
-                            favoriteViewModel.saveFavoriteFood(
-                                id = shop.idshop!!,
-                                isFavorite = !favoriteShopStateFlow
-                            )
-
+                            coroutineScope.launch {
+                                favoriteViewModel.deleteFavorite(idShop = shop.idShop)
+                            }
                         }
                 )
-
             }
         }
     }
