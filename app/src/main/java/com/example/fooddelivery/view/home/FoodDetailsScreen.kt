@@ -1,5 +1,6 @@
 package com.example.fooddelivery.view.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +25,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,6 +52,7 @@ import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.ShopViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.navigation.ID_ARGUMENT_KEY
@@ -68,10 +69,11 @@ fun FoodDetailsScreen(
     navController: NavController, navBackStackEntry: NavBackStackEntry,
     sharedViewModel: SharedViewModel,
     innerPaddingValues: PaddingValues,
+    shopViewModel: ShopViewModel
 ) {
     ///snack bar
-    val totalPriceSnackbar = sharedViewModel.totalPrice.collectAsState()
-    val countStateFlow by sharedViewModel.countFoodInCart.collectAsState()
+    val totalPriceSnackbar = sharedViewModel.totalPrice.collectAsStateWithLifecycle()
+    val countStateFlow by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()
     val snackState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(countStateFlow) {
@@ -83,7 +85,7 @@ fun FoodDetailsScreen(
             snackState.currentSnackbarData?.dismiss()
         }
     }
-    val countFood by sharedViewModel.countFoodInCart.collectAsState()
+    val countFood by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()
     var numberOfFood by remember {
         mutableIntStateOf(countFood)
     }
@@ -101,8 +103,7 @@ fun FoodDetailsScreen(
         mutableFloatStateOf(star.toFloat())
     }
     //comment value
-    val commentValue by sharedViewModel.commentStateFlow.collectAsStateWithLifecycle()
-
+    val commentValue by shopViewModel.commentStateFlow.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -288,6 +289,7 @@ fun FoodDetailsScreen(
             }
             items(commentValue) { comment ->
                 if (comment.idFood == id) {
+                    Log.d("Test", "${comment.idFood}")
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -296,15 +298,16 @@ fun FoodDetailsScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = comment.nameUser, style = MaterialTheme.typography.titleMedium,
+                            text = comment.user.name, style = MaterialTheme.typography.titleMedium,
                         )
                         RatingBar(
                             modifier = Modifier.size(26.dp),
-                            rating = comment.rating
+                            rating = comment.rating.toFloat()
                         ) {}
-                        Text(text = comment.comment, style = MaterialTheme.typography.titleMedium)
+                        Log.d("Test", "${comment.rating.toFloat()}")
+                        Text(text = comment.content, style = MaterialTheme.typography.titleMedium)
                         AsyncImage(
-                            model = comment.imageUrl,
+                            model = comment.imagePath,
                             contentDescription = null,
                             modifier = Modifier.size(width = 100.dp, height = 100.dp),
                             contentScale = ContentScale.FillWidth
@@ -328,7 +331,7 @@ fun FoodDetailsScreen(
                 countFood = countStateFlow,
                 price = totalPriceSnackbar.value.toDouble()
             ) {
-                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route){
+                navController.navigate(route = HomeRouteScreen.CartHomeRouteScreen.route) {
                     launchSingleTop = true
                 }
             }

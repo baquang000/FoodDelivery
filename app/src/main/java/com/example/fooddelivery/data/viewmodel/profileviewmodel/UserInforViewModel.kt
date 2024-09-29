@@ -27,7 +27,6 @@ class UserInforViewModel : ViewModel() {
                 getUser(userId)
             }
         }
-        Log.d("test", _userInfor.toString())
     }
 
     private suspend fun getUser(id: String) {
@@ -60,7 +59,7 @@ class UserInforViewModel : ViewModel() {
             )
             try {
                 viewModelScope.launch(Dispatchers.IO) {
-                    RetrofitClient.userAPIService.updateUser(userId,user)
+                    RetrofitClient.userAPIService.updateUser(userId, user)
                 }
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())

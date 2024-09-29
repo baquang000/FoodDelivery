@@ -31,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
@@ -46,7 +45,7 @@ import kotlinx.coroutines.launch
 fun FavoriteScreen(
     innerPadding: PaddingValues,
     navController: NavController,
-    favoriteViewModel: FavoriteViewModel = viewModel()
+    favoriteViewModel: FavoriteViewModel
 ) {
     val isLoading by favoriteViewModel.isLoadFavorite.collectAsStateWithLifecycle()
     val favoriteShopStateFlow by favoriteViewModel.favorite.collectAsStateWithLifecycle()
@@ -90,7 +89,7 @@ fun FavoriteItem(
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .clickable {
                 navController.navigate(
-                    route = HomeRouteScreen.ShopRouteScreen.sendIdShop(idshop = shop.shop.idshop!!),
+                    route = HomeRouteScreen.ShopRouteScreen.sendIdShop(idshop = shop.idShop),
                     navOptions = NavOptions
                         .Builder()
                         .setLaunchSingleTop(true)
@@ -114,7 +113,7 @@ fun FavoriteItem(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = shop.shop.titleShop.toString(),
+                text = shop.shop.titleShop,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                 )
@@ -130,7 +129,7 @@ fun FavoriteItem(
                     modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
                 ) {
                     NormalTextComponents(
-                        value = shop.shop.starShop.toString(),
+                        value = shop.shop.starShop,
                         nomalColor = Color.Black,
                         nomalFontsize = 18.sp,
                     )

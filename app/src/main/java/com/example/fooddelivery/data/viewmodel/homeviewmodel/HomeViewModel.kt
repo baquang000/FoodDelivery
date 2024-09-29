@@ -12,7 +12,7 @@ import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.PriceState
 import com.example.fooddelivery.data.model.Time
 import com.example.fooddelivery.data.model.TimeState
-import com.example.fooddelivery.data.model.newFood
+import com.example.fooddelivery.data.model.Food
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -29,7 +29,7 @@ class HomeViewModel : ViewModel() {
     val price: MutableState<PriceState> = mutableStateOf(PriceState.Empty)
 
     //Best food
-    private val _bestFood = MutableStateFlow<List<newFood>>(emptyList())
+    private val _bestFood = MutableStateFlow<List<Food>>(emptyList())
     val bestFood = _bestFood.asStateFlow()
     private val _isLoadBestFood = MutableStateFlow(false)
     val isLoadBestFood = _isLoadBestFood.asStateFlow()
@@ -55,6 +55,9 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+
+
+    //////
     private fun fetchPriceFromFirebase() {
         val emptyList = mutableListOf<Price>()
         price.value = PriceState.Loading
@@ -76,6 +79,8 @@ class HomeViewModel : ViewModel() {
             })
     }
 
+
+    /////////
     private fun fetchTimeFromFirebase() {
         val emptyList = mutableListOf<Time>()
         time.value = TimeState.Loading
@@ -97,6 +102,7 @@ class HomeViewModel : ViewModel() {
             })
     }
 
+    ///////////
     private fun fetchLocationFromFirebase() {
         val emptyList = mutableListOf<Location>()
         location.value = LocationState.Loading

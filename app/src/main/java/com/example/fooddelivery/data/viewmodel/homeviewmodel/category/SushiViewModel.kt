@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
-import com.example.fooddelivery.data.model.newFood
+import com.example.fooddelivery.data.model.Food
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class SushiViewModel : ViewModel() {
     //sushiFood
-    private val _sushiFood = MutableStateFlow<List<newFood>>(emptyList())
+    private val _sushiFood = MutableStateFlow<List<Food>>(emptyList())
     val sushiFood = _sushiFood.asStateFlow()
     private val _isLoadSushi = MutableStateFlow(false)
     val isLoadSushi = _isLoadSushi.asStateFlow()

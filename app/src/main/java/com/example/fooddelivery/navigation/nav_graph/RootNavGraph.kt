@@ -68,6 +68,6 @@ fun RootNavGraph() {
             sharedViewModel = sharedViewModel,
             orderViewModel = orderViewModel,
         )
-        //favoriteNavGraph(rootNavController = rootNavController, sharedViewModel = sharedViewModel)
+
     }
 }

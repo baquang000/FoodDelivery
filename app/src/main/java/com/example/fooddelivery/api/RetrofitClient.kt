@@ -37,16 +37,18 @@ object RetrofitClient {
                 okHttpClient
             ).build().create(OrderAPIService::class.java)
     }
-    val orderDetailAPIService: OrderDetailAPIService by lazy {
-        Retrofit.Builder().baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
-                okHttpClient
-            ).build().create(OrderDetailAPIService::class.java)
-    }
+
     val userFavoriteAPIService: UserFavoriteAPIService by lazy {
         Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
                 okHttpClient
             ).build().create(UserFavoriteAPIService::class.java)
+    }
+
+    val commentAPIService: CommentAPIService by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
+                okHttpClient
+            ).build().create(CommentAPIService::class.java)
     }
 }

@@ -6,12 +6,15 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.homeviewmodel.ShopViewModel
 import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.Graph
@@ -48,7 +51,8 @@ fun HomeNavGraph(
     userInforViewModel: UserInforViewModel,
     innerPadding: PaddingValues,
 ) {
-
+    val shopViewModel : ShopViewModel = viewModel()
+    val favoriteViewModel : FavoriteViewModel = viewModel()
     NavHost(
         navController = homeNavController,
         startDestination = HomeRouteScreen.Home.route,
@@ -91,6 +95,8 @@ fun HomeNavGraph(
         favoriteNavGraph(
             homeNavController = homeNavController,
             sharedViewModel = sharedViewModel,
+            shopViewModel = shopViewModel,
+            favoriteViewModel = favoriteViewModel,
             innerPadding = innerPadding
         )
         composable(route = HomeRouteScreen.ProfileRouteScreen.route) {
@@ -202,6 +208,7 @@ fun HomeNavGraph(
                 navController = homeNavController,
                 navBackStackEntry = navBackStackEntry,
                 sharedViewModel = sharedViewModel,
+                shopViewModel = shopViewModel,
                 innerPaddingValues = innerPadding
             )
         }
@@ -225,6 +232,8 @@ fun HomeNavGraph(
                 navController = homeNavController, navBackStackEntry = navBackStackEntry,
                 innerPaddingValues = innerPadding,
                 sharedViewModel = sharedViewModel,
+                shopViewModel = shopViewModel,
+                favoriteViewModel = favoriteViewModel
             )
         }
     }

@@ -48,7 +48,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -56,8 +55,8 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.CustomSnackBar
 import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.Calender
+import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.model.newFood
 import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.ShopViewModel
@@ -72,16 +71,11 @@ fun ShopScreen(
     navBackStackEntry: NavBackStackEntry,
     innerPaddingValues: PaddingValues,
     sharedViewModel: SharedViewModel,
-    shopViewModel: ShopViewModel = viewModel(),
-    favoriteViewModel: FavoriteViewModel = viewModel(),
+    shopViewModel: ShopViewModel ,
+    favoriteViewModel: FavoriteViewModel,
 ) {
-    val idshop = navBackStackEntry.arguments?.getString(ID_SHOP_ARGUMENT_KEY)
-    //count comment
-    var countComment by remember {
-        mutableIntStateOf(0)
-    }
-    LaunchedEffect(key1 = idshop) {
-        countComment = sharedViewModel.countCommentOfShop(idShop = idshop!!)
+    val idshop = navBackStackEntry.arguments?.getString(ID_SHOP_ARGUMENT_KEY) ?: ""
+    LaunchedEffect(key1 = Unit, key2 = idshop) {
         shopViewModel.setIdShop(idShop = idshop)
     }
     val totalPrice = sharedViewModel.totalPrice.collectAsStateWithLifecycle()
@@ -91,6 +85,9 @@ fun ShopScreen(
     val shopProfileFlow by shopViewModel.shopProfileStateFlow.collectAsStateWithLifecycle()
     val loadingShopProfile by shopViewModel.isLoadShop.collectAsStateWithLifecycle()
     val countStateFlow by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()
+    //count comment
+    val countComment by shopViewModel.countComent.collectAsStateWithLifecycle()
+    val isLoadComment by shopViewModel.isLoadComment.collectAsStateWithLifecycle()
     LaunchedEffect(countStateFlow) {
         if (countStateFlow > 0) {
             coroutineScope.launch {
@@ -108,7 +105,7 @@ fun ShopScreen(
                 .background(color = Color.LightGray.copy(alpha = 0.5f))
                 .padding(innerPaddingValues)
         ) {
-            if (loadingShopProfile) {
+            if (loadingShopProfile && isLoadComment) {
                 item {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
@@ -127,7 +124,7 @@ fun ShopScreen(
                     item {
                         TitleShop(
                             titleShop = shop.titleShop,
-                            star = shop.starShop,
+                            star = shop.starShop.toDouble(),
                             favoriteViewModel = favoriteViewModel,
                             id = shop.idShop,
                             countComment = countComment
@@ -267,7 +264,7 @@ fun TitleShop(
 
 @Composable
 fun FoodItemInShop(
-    food: newFood,
+    food: Food,
     sharedViewModel: SharedViewModel,
     navController: NavController
 ) {

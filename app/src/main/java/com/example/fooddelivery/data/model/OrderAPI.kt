@@ -1,7 +1,8 @@
 package com.example.fooddelivery.data.model
 
-///////// lấy order từ api
-data class GetOrder(
+/*  get order from api */
+
+data class GetOrderItem(
     val deliverytoDoor: Boolean,
     val diningSubtances: Boolean,
     val idOrder: String,
@@ -11,27 +12,55 @@ data class GetOrder(
     val orderDetails: List<OrderDetail>,
     val orderStatus: String,
     val rewardForDriver: Int,
-    val sumPrice: Int,
-    val time: String
+    val sumPrice: Double,
+    val time: String,
+    val user: User
 )
 
 data class OrderDetail(
-    val id: Int,
+    val id: String,
     val idFood: Int,
     val idOrder: String,
-    val quantity: Int
+    val imagePath: String,
+    val price: Double,
+    val quantity: Int,
+    val title: String
+)
+
+data class User(
+    val address: String,
+    val dateOfBirth: String,
+    val email: String,
+    val idUser: String,
+    val name: String,
+    val numberPhone: String
 )
 
 
-/////// tạo các order từ giao diện người dùng
+
+
+
+
+///update
+
+data class UpdateOrder(
+    val statusOrder: String
+)
+
+
+////create order
+
+
 data class CreateOrder(
     val deliverytoDoor: Boolean,
     val diningSubtances: Boolean,
     val idShop: String,
     val idUser: String,
-    val noteOrder: Any,
+    val noteOrder: String,
+    val orderDetails: List<FoodDetails>,
     val rewardForDriver: Int,
     val sumPrice: Double,
     val time: String
 )
+
 

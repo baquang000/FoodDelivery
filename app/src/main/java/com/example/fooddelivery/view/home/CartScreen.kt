@@ -9,7 +9,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -84,7 +83,7 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun CartScreen(
     navController: NavController,
@@ -276,7 +275,11 @@ fun CartScreen(
                                 Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show()
                             }
                         },
-                        modifier = Modifier.animateItemPlacement(tween(200))
+                        modifier = Modifier.animateItem(
+                            fadeInSpec = null,
+                            fadeOutSpec = null,
+                            placementSpec = tween(200)
+                        )
                     )
                 }
             }

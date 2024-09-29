@@ -80,7 +80,7 @@ import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.Location
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
-import com.example.fooddelivery.data.model.newFood
+import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import java.text.DecimalFormat
@@ -327,7 +327,7 @@ fun FoodItem(
     modifier: Modifier = Modifier,
     buttonSize: TextUnit = 30.sp,
     spacerbuttonModifier: Modifier = Modifier.padding(start = 0.dp),
-    food: newFood, navController: NavController,
+    food: Food, navController: NavController,
     sharedViewModel: SharedViewModel = viewModel(),
 ) {
     val formatter = DecimalFormat("#.##")

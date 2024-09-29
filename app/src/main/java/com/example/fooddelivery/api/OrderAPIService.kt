@@ -1,20 +1,31 @@
 package com.example.fooddelivery.api
 
 import com.example.fooddelivery.data.model.CreateOrder
-import com.example.fooddelivery.data.model.GetOrder
+import com.example.fooddelivery.data.model.GetOrderItem
+import com.example.fooddelivery.data.model.ResultState
+import com.example.fooddelivery.data.model.UpdateOrder
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface OrderAPIService {
-    @POST("/order/{idOrder}")
+    @POST("/order/")
     suspend fun createOrder(
-        @Path("idOrder") idOrder: String,
-        @Body order: CreateOrder
-    ): Response<CreateOrder>
+        @Body order: CreateOrder,
+    ): Response<ResultState>
 
     @GET("/order/{idOrder}")
-    suspend fun getOrderByUser(@Path("idOrder") idOrder: String): List<GetOrder>
+    suspend fun getOrderByUser(@Path("idOrder") idOrder: String): List<GetOrderItem>
+
+    @PUT("/order/user/{idUser}/{idOrder}")
+    suspend fun updateOrderStatus(
+        @Path("idUser") idShop: String,
+        @Path("idOrder") idOrder: String,
+        @Body statusOrder: UpdateOrder
+    ): Response<ResultState>
+
+
 }

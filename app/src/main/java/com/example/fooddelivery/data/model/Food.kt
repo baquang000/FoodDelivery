@@ -1,18 +1,19 @@
 package com.example.fooddelivery.data.model
 
 data class Food(
-    var BestFood: Boolean = false,
-    var CategoryId: Int = 0,
-    var Description: String? = null,
-    var Id: Int = 0,
-    var ImagePath: String? = null,
-    var LocationId: Int = 0,
-    var Price: Double = 0.0,
-    var PriceId: Int = 0,
-    var Star: Double = 0.0,
-    var TimeId: Int = 0,
-    var TimeValue: Int = 0,
-    var Title: String? = null,
-    var show: Boolean = true,
-    var idShop: String = ""
+    val bestFood: Boolean,
+    val categoryId: Int,
+    val description: String,
+    val idFood: Int,
+    val idShop: String,
+    val imagePath: String,
+    val locationId: Int,
+    val price: Int,
+    val priceId: Int,
+    val showFood: Boolean,
+    val star: Double,
+    val timeId: Int,
+    val timeValue: Int,
+    val title: String
 )
+

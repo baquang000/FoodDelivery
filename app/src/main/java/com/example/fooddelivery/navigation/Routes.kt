@@ -9,7 +9,7 @@ const val DESCRIPTION_ARGUMENT_KEY = "description"
 const val IMAGEPATH_ARGUMENT_KEY = "imagepath"
 const val ID_ARGUMENT_KEY = "id"
 const val ID_SHOP_ARGUMENT_KEY = "idshop"
-//const val ID_ORDER_ARGUMENT_KEY = "idorder"
+
 
 sealed class HomeRouteScreen(val route: String) {
     data object Home : HomeRouteScreen(route = "Home_Screen")

@@ -1,12 +1,26 @@
 package com.example.fooddelivery.data.model
 
-data class Comment(
-    val idFood: Int? = null,
-    val comment: String = "",
-    val rating: Float = 0f,
-    var time: String = "",
-    var imageUrl: String = "",
-    var nameUser: String = "",
-    var idShop: String = "",
-    var idUser: String? = ""
+data class CreateComment(
+    val idShop: String,
+    val idUser: String,
+    val idFood: Int?,
+    val idOrder: String,
+    val content: String,
+    val imagePath: String?,
+    val rating: Double,
+    val time: String
+)
+
+
+data class GetComment(
+    val content: String,
+    val id: String,
+    val idFood: Int?,
+    val idOrder: String,
+    val idShop: String,
+    val idUser: String,
+    val imagePath: String?,
+    val rating: String,
+    val time: String,
+    val user: UserInfor
 )

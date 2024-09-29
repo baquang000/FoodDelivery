@@ -9,13 +9,3 @@ data class FoodDetails(
 )
 
 
-data class GetFoodDetail(
-    val id: Int,
-    val idFood: Int,
-    val idOrder: String,
-    val imagePath: String,
-    val price: Int,
-    val quantity: Int,
-    val title: String
-)
-

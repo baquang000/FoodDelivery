@@ -73,7 +73,6 @@ fun UserInforScreen(
             dateOfBirth = it.dateOfBirth
         }
     }
-
     val isLoading by userInforViewModel.isLoadUserInfor.collectAsStateWithLifecycle()
     var isFixDetails by remember {
         mutableStateOf(false)

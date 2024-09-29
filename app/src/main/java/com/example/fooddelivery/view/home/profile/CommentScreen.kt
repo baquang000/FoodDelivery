@@ -31,7 +31,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,13 +49,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.RatingBar
-import com.example.fooddelivery.data.model.Comment
-import com.example.fooddelivery.data.model.OrderFood
+import com.example.fooddelivery.data.model.Calender
+import com.example.fooddelivery.data.model.CreateComment
+import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.viewmodel.profileviewmodel.OrderFoodViewModel
 import com.google.firebase.storage.FirebaseStorage
 
@@ -65,8 +66,8 @@ fun CommentScreen(
     navController: NavController,
     orderViewModel: OrderFoodViewModel = viewModel(),
 ) {
-    val orderList by orderViewModel.orderFoodStateFlow.collectAsState()
-    val orderId by orderViewModel::orderIdComment
+    val orderList by orderViewModel.orderFoodStateFlow.collectAsStateWithLifecycle()
+    val idOrder by orderViewModel.idOrder.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -74,12 +75,12 @@ fun CommentScreen(
             CommentHeading(navController = navController)
         }
         items(orderList) { order ->
-            if (orderId == order.idOrder) {
-               /* CommentList(
+            if (idOrder == order.idOrder) {
+                CommentList(
                     order = order,
                     orderViewModel = orderViewModel,
                     navController = navController,
-                )*/
+                )
             }
         }
     }
@@ -87,11 +88,11 @@ fun CommentScreen(
 
 @Composable
 fun CommentList(
-    order: OrderFood,
+    order: GetOrderItem,
     orderViewModel: OrderFoodViewModel,
     navController: NavController,
 ) {
-    val idFood = if(order.listFood.size > 1) -1 else order.listFood.first().idFood
+    val idFood = if (order.orderDetails.size == 1) order.orderDetails.first().idFood else null
     val commentSuccess by orderViewModel::commentSuccess
     val localManager = LocalFocusManager.current
     val context = LocalContext.current
@@ -248,30 +249,33 @@ fun CommentList(
     }
     Button(
         onClick = {
+            val time = Calender().getCalender()
             if (rating != 0f) {
                 if (selectedImageUri != null) {
                     uploadImageToFirebase(selectedImageUri, onUri = {
                         downloadUri = it
-                        val comment = Comment(
-                            idFood = idFood,
-                            comment = commentTextField,
-                            rating = rating,
-                            imageUrl = downloadUri,
-                            nameUser = order.name,
+                        val comment = CreateComment(
                             idShop = order.idShop,
-                            idUser = order.idUser
+                            idOrder = order.idOrder,
+                            idFood = idFood,
+                            idUser = order.idUser,
+                            content = commentTextField,
+                            imagePath = downloadUri,
+                            rating = rating.toDouble(),
+                            time = time
                         )
                         orderViewModel.commentFood(comment = comment)
                     })
                 } else {
-                    val comment = Comment(
-                        idFood = idFood,
-                        comment = commentTextField,
-                        rating = rating,
-                        imageUrl = "",
-                        nameUser = order.name,
+                    val comment = CreateComment(
                         idShop = order.idShop,
-                        idUser = order.idUser
+                        idOrder = order.idOrder,
+                        idFood = idFood,
+                        idUser = order.idUser,
+                        content = commentTextField,
+                        imagePath = null,
+                        rating = rating.toDouble(),
+                        time = time
                     )
                     orderViewModel.commentFood(comment = comment)
                     if (commentSuccess == false) {
@@ -279,7 +283,6 @@ fun CommentList(
                     } else {
                         Toast.makeText(context, "Gửi comment thành công", Toast.LENGTH_SHORT).show()
                     }
-                    orderViewModel.isCommented(orderFood = order)
                     navController.navigateUp()
                 }
             } else {

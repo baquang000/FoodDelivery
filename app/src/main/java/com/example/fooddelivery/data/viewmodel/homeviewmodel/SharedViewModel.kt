@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Calender
-import com.example.fooddelivery.data.model.Comment
 import com.example.fooddelivery.data.model.CreateOrder
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class SharedViewModel : ViewModel() {
     private val _foodDetailStateFlow = MutableStateFlow<List<FoodDetails>>(emptyList())
@@ -47,10 +45,6 @@ class SharedViewModel : ViewModel() {
     // reward for driver
     private val rewardForDriver = MutableStateFlow(0)
 
-    //save comment value
-    private val _commentStateFlow = MutableStateFlow<List<Comment>>(emptyList())
-    val commentStateFlow: StateFlow<List<Comment>> = _commentStateFlow.asStateFlow()
-
     private var _countFoodInCart =
         MutableStateFlow(0)
     var countFoodInCart: StateFlow<Int> = _countFoodInCart.asStateFlow()
@@ -59,16 +53,19 @@ class SharedViewModel : ViewModel() {
     var totalPrice: StateFlow<Float> = _totalPrice.asStateFlow()
 
     private val _idShopStateFlow = MutableStateFlow("")
-    //val idShopStateFlow: StateFlow<String> = _idShopStateFlow.asStateFlow()
 
     private val _nameShop = MutableStateFlow("")
     val nameShop: StateFlow<String> = _nameShop.asStateFlow()
 
     private val tag = ViewModel::class.java.simpleName
 
+
+    //// update order when createOrderAndDetails
+    private val _isUpdateOrder = MutableStateFlow(false)
+    val isUpdateOrder = _isUpdateOrder.asStateFlow()
+
     init {
         fetchDiscountCodeFromFirebase()
-        getCommentFromFirebase()
     }
 
     private fun sumPrice() {
@@ -97,6 +94,7 @@ class SharedViewModel : ViewModel() {
         sumPrice()
     }
 
+    ///////////////
     private fun fetchDiscountCodeFromFirebase() {
         val emptyList = mutableListOf<DiscountCode>()
         discountCode.value = DiscountCodeState.Loading
@@ -170,10 +168,8 @@ class SharedViewModel : ViewModel() {
         deliverytoDoor: Boolean,
         diningSubtances: Boolean
     ) {
-        val foodList = _foodDetailStateFlow.value
         val timeOrder = Calender().getCalender()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        val idOrder = UUID.randomUUID().toString()
         if (userId != null) {
             val newOrder = CreateOrder(
                 deliverytoDoor = deliverytoDoor,
@@ -183,22 +179,16 @@ class SharedViewModel : ViewModel() {
                 noteOrder = noteOrder,
                 rewardForDriver = rewardForDriver,
                 sumPrice = _sumPrice.value.toDouble(),
-                time = timeOrder
+                time = timeOrder,
+                orderDetails = _foodDetailStateFlow.value
             )
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    RetrofitClient.orderAPIService.createOrder(idOrder, newOrder)
-                    foodList.forEach { food ->
-                        food.idFood?.let {
-                            RetrofitClient.orderDetailAPIService.createOrderDetail(
-                                idOrder,
-                                food
-                            )
-                        }
-                    }
+                    RetrofitClient.orderAPIService.createOrder(newOrder)
                 } catch (e: Exception) {
                     Log.e(tag, e.message.toString())
-                }finally {
+                } finally {
+                    _isUpdateOrder.value = !_isUpdateOrder.value
                     deleteListFood()
                 }
             }
@@ -217,30 +207,6 @@ class SharedViewModel : ViewModel() {
             }
             updatelist
         }
-    }
-
-    //getComment
-    private fun getCommentFromFirebase() {
-        val templist = mutableListOf<Comment>()
-        FirebaseDatabase.getInstance().getReference("comment")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (datasnap in snapshot.children) {
-                        val comment = datasnap.getValue(Comment::class.java)
-                        if (comment != null) {
-                            templist.add(comment)
-                        }
-                    }
-                    _commentStateFlow.value = templist
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(
-                        "SharedViewModel",
-                        "Error fetching comment in fun getCommentFromFirebase: ${error.message}"
-                    )
-                }
-            })
     }
 
     fun getIdShop(id: String) {
@@ -265,8 +231,5 @@ class SharedViewModel : ViewModel() {
         _idShopStateFlow.value = ""
     }
 
-    fun countCommentOfShop(idShop: String): Int {
-        return _commentStateFlow.value.filter { it.idShop == idShop }.size
-    }
 }
 
