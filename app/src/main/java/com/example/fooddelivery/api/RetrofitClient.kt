@@ -51,4 +51,10 @@ object RetrofitClient {
                 okHttpClient
             ).build().create(CommentAPIService::class.java)
     }
+    val authAPIService: AuthAPIService by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
+                okHttpClient
+            ).build().create(AuthAPIService::class.java)
+    }
 }

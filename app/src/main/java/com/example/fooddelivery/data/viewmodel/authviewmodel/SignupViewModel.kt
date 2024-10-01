@@ -7,11 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
+import com.example.fooddelivery.data.model.Auth
 import com.example.fooddelivery.data.model.SignUpUIState
 import com.example.fooddelivery.data.model.SignupUIEvent
 import com.example.fooddelivery.data.model.UserInfor
 import com.example.fooddelivery.data.rules.Validator
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -25,18 +25,17 @@ class SignupViewModel : ViewModel() {
     var isSuccess by mutableStateOf(false) //3.7
     private val tag = SignupViewModel::class.simpleName
 
-    fun onEvent(event: SignupUIEvent) {
+
+    suspend fun onEvent(event: SignupUIEvent) {
         validateDataWithRules()
         when (event) {
             is SignupUIEvent.emailChange -> {
                 signUpUIState.value = signUpUIState.value.copy(email = event.email)
-                printState()
             }
 
             is SignupUIEvent.PasswordChange -> {
                 signUpUIState.value =
                     signUpUIState.value.copy(password = event.password)
-                printState()
             }
 
             is SignupUIEvent.CurPasswordChange -> {
@@ -50,8 +49,8 @@ class SignupViewModel : ViewModel() {
         validateDataWithRules()
     }
 
-    private fun signUp() {
-        createUserInFirebase(
+    private suspend fun signUp() {
+        createUserWithApi(
             email = signUpUIState.value.email,
             password = signUpUIState.value.password
         )
@@ -79,49 +78,32 @@ class SignupViewModel : ViewModel() {
 
     }
 
-    private fun printState() {
-        Log.d(tag, "Inside_printState")
-        Log.d(tag, signUpUIState.value.toString())
-    }
-
-    private fun createUserInFirebase(email: String, password: String) {
+    private suspend fun createUserWithApi(email: String, password: String) {
         signInProgress.value = true
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                Log.d(tag, "Inside_addOnCompleteListener")
-                if (it.isSuccessful) {
-                    Log.d(
-                        tag, "isSuccessful = ${it.isSuccessful}"
-                    )
-                    signInProgress.value = false
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                val respon = RetrofitClient.authAPIService.register(Auth(email, password))
+                if (respon.isSuccessful) {
                     isSuccess = true // 3.7
-                    // Lấy ID của người dùng vừa đăng ký
-                    val firebaseUser = it.result?.user
-                    if (firebaseUser != null) {
-                        val userId = firebaseUser.uid
-                        // Sử dụng userId để lưu thông tin người dùng hoặc thực hiện các hành động khác
-                        val user = UserInfor(
-                            idUser = userId,
-                            name = "",
-                            email = email,
-                            numberPhone = "",
-                            address = "",
-                            dateOfBirth = ""
-                        )
-                        viewModelScope.launch(Dispatchers.IO) {
-                            RetrofitClient.userAPIService.createUser(user)
-                        }
-                    } else {
-                        // Xử lý trường hợp không lấy được ID người dùng
-                        Log.e(tag, "Failed to get user ID")
-                    }
+                    val user = respon.body()!!.data
+                    val newUser = UserInfor(
+                        idUser = user.id,
+                        name = null,
+                        email = email,
+                        numberPhone = null,
+                        address = null,
+                        dateOfBirth = null
+                    )
+                    RetrofitClient.userAPIService.createUser(newUser)
+                } else {
+                    errormessage = respon.body()?.message
+                    isError = true
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.d(tag, "Inside_addOnFailureListener")
-                signInProgress.value = false
-                isError = true
-                errormessage = exception.localizedMessage ?: "An error occurred."
-            }
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
+        } finally {
+            signInProgress.value = false
+        }
     }
 }

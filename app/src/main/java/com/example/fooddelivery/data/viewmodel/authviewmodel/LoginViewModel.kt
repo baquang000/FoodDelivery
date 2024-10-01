@@ -5,12 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.api.RetrofitClient
+import com.example.fooddelivery.data.model.Auth
 import com.example.fooddelivery.data.model.LoginUIEvent
 import com.example.fooddelivery.data.model.LoginUIState
 import com.example.fooddelivery.data.rules.Validator
-import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
 
@@ -22,7 +26,7 @@ class LoginViewModel : ViewModel() {
     val navigationHome = _navigationHome.asStateFlow()
     var isFailer by mutableStateOf(false)
     var errormessage by mutableStateOf<String?>(null)
-    fun onEvent(event: LoginUIEvent) {
+    suspend fun onEvent(event: LoginUIEvent) {
         when (event) {
             is LoginUIEvent.EmailChange -> {
                 loginUIState.value = loginUIState.value.copy(email = event.email)
@@ -39,26 +43,31 @@ class LoginViewModel : ViewModel() {
         validateLoginUIDataWithRules()
     }
 
-    private fun login() {
+    private suspend fun login() {
         loginInProgress.value = true
         val email = loginUIState.value.email
         val password = loginUIState.value.password
-        FirebaseAuth.getInstance()
-            .signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.d(tag, "${it.isSuccessful}")
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                val respon = RetrofitClient.authAPIService.login(Auth(email, password))
+                if (respon.isSuccessful) {
                     loginInProgress.value = false
                     _navigationHome.value = true
-
+                }else {
+                    // Handle unsuccessful login (e.g., invalid credentials)
+                    loginInProgress.value = false
+                    val errorBody = respon.errorBody()?.string() ?: "Login failed"
+                    isFailer = true
+                    errormessage = errorBody
+                    // Optionally: Show a toast or update UI with the error message
                 }
             }
-            .addOnFailureListener {
-                Log.d(tag, "${it.message}")
-                isFailer = true
-                errormessage = it.localizedMessage ?: "An error occurred."
-                loginInProgress.value = false
-            }
+        } catch (e: Exception) {
+            Log.e(tag, "${e.message}")
+            isFailer = true
+            errormessage = e.localizedMessage ?: "An error occurred."
+            loginInProgress.value = false
+        }
     }
 
     private fun validateLoginUIDataWithRules() {
@@ -77,7 +86,7 @@ class LoginViewModel : ViewModel() {
 
     }
 
-    fun googleLoginSuccess(){
+    fun googleLoginSuccess() {
         _navigationHome.value = true
     }
 }

@@ -24,7 +24,7 @@ class ShopViewModel : ViewModel() {
     val commentStateFlow = _commentStateFlow.asStateFlow()
 
     private val _isLoadComment = MutableStateFlow(false)
-    val isLoadComment = _isLoadShop.asStateFlow()
+    val isLoadComment = _isLoadComment.asStateFlow()
     private val _countComent = MutableStateFlow(0)
     val countComent = _countComent.asStateFlow()
 

@@ -117,11 +117,11 @@ fun CartScreen(
     }
     LaunchedEffect(key1 = userInfor) {
         userInfor?.let {
-            name = it.name
-            numberphone = it.numberPhone
-            address = it.address
+            name = it.name.toString()
+            numberphone = it.numberPhone.toString()
+            address = it.address.toString()
             email = it.email
-            dateOfBirth = it.dateOfBirth
+            dateOfBirth = it.dateOfBirth.toString()
         }
     }
 

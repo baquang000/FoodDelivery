@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.SignupUIEvent
 import com.example.fooddelivery.data.viewmodel.authviewmodel.SignupViewModel
 import com.example.fooddelivery.navigation.AuthRouteScreen
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -54,6 +56,7 @@ fun SignUpScreen(
     var ischeck by remember {
         mutableStateOf(false)
     }
+    val coroutineScope = rememberCoroutineScope()
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -100,19 +103,25 @@ fun SignUpScreen(
                 lableText = stringResource(id = R.string.email),
                 errorStatus = signupViewModel.signUpUIState.value.emailError
             ) {
-                signupViewModel.onEvent(SignupUIEvent.emailChange(it))
+                coroutineScope.launch {
+                    signupViewModel.onEvent(SignupUIEvent.emailChange(it))
+                }
             }
             MyPasswordTextFieldComponents(
                 lableText = stringResource(id = R.string.Pass_Word),
                 errorStatus = signupViewModel.signUpUIState.value.passwordError
             ) {
-                signupViewModel.onEvent(SignupUIEvent.PasswordChange(it))
+                coroutineScope.launch {
+                    signupViewModel.onEvent(SignupUIEvent.PasswordChange(it))
+                }
             }
             MyPasswordTextFieldComponents(
                 lableText = stringResource(id = R.string.cur_Pass_Word),
                 errorStatus = signupViewModel.signUpUIState.value.curpasswordError
             ) {
-                signupViewModel.onEvent(SignupUIEvent.CurPasswordChange(it))
+                coroutineScope.launch {
+                    signupViewModel.onEvent(SignupUIEvent.CurPasswordChange(it))
+                }
             }
             Row(
                 modifier = Modifier
@@ -132,11 +141,13 @@ fun SignUpScreen(
                     value = "các điều khoản và điều kiện ", nomalFontsize = 14.sp,
                     nomalColor = Color.Blue,
                     modifier = Modifier.clickable {
-                        navController.navigate(route = AuthRouteScreen.Terms.route,
+                        navController.navigate(
+                            route = AuthRouteScreen.Terms.route,
                             navOptions = NavOptions
                                 .Builder()
                                 .setLaunchSingleTop(true)
-                                .build())
+                                .build()
+                        )
                     }
                 )
             }
@@ -144,9 +155,10 @@ fun SignUpScreen(
                 value = stringResource(id = R.string.Dang_Ky),
                 isEnable = signupViewModel.allValicationPass.value && ischeck
             ) {
-                signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
+                coroutineScope.launch {
+                    signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
+                }
             }
-
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center
@@ -164,11 +176,13 @@ fun SignUpScreen(
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Red,
                     modifier = Modifier.clickable {
-                        navController.navigate(AuthRouteScreen.Login.route,
+                        navController.navigate(
+                            AuthRouteScreen.Login.route,
                             navOptions = NavOptions
                                 .Builder()
                                 .setLaunchSingleTop(true)
-                                .build())
+                                .build()
+                        )
                     }
                 )
             }
@@ -190,11 +204,13 @@ fun SignUpScreen(
                 confirmButton = {
                     Button(onClick = {
                         isSuccess = false
-                        navController.navigate(route = AuthRouteScreen.Login.route,
+                        navController.navigate(
+                            route = AuthRouteScreen.Login.route,
                             navOptions = NavOptions
                                 .Builder()
                                 .setLaunchSingleTop(true)
-                                .build())
+                                .build()
+                        )
                     }) {
                         Text(text = "Ok")
                     }

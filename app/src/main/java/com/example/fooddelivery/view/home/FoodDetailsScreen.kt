@@ -298,7 +298,8 @@ fun FoodDetailsScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = comment.user.name, style = MaterialTheme.typography.titleMedium,
+                            text = comment.user.name.toString(),
+                            style = MaterialTheme.typography.titleMedium,
                         )
                         RatingBar(
                             modifier = Modifier.size(26.dp),

@@ -10,11 +10,11 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface CommentAPIService {
-    @POST("/comment")
+    @POST("/api/v1/comment")
     suspend fun createComment(
         @Body comment: CreateComment
     ): Response<ResultState>
 
-    @GET("/comment/shop/{idShop}")
+    @GET("/api/v1/comment/shop/{idShop}")
     suspend fun getCommentByShop(@Path("idShop") idShop: String): List<GetComment>
 }

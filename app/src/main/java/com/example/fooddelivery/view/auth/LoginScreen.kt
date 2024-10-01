@@ -154,13 +154,17 @@ fun LoginScreen(
                 lableText = stringResource(id = R.string.email),
                 errorStatus = loginViewModel.loginUIState.value.emailError,
             ) {
-                loginViewModel.onEvent(LoginUIEvent.EmailChange(it))
+                coroutineScope.launch {
+                    loginViewModel.onEvent(LoginUIEvent.EmailChange(it))
+                }
             }
             MyPasswordTextFieldComponents(
                 lableText = stringResource(id = R.string.Pass_Word),
                 errorStatus = loginViewModel.loginUIState.value.passwordError
             ) {
-                loginViewModel.onEvent(LoginUIEvent.PasswordChange(it))
+                coroutineScope.launch {
+                    loginViewModel.onEvent(LoginUIEvent.PasswordChange(it))
+                }
             }
             NormalTextComponents(
                 value = stringResource(R.string.ban_quen_mat_khau),
@@ -183,7 +187,9 @@ fun LoginScreen(
                 value = stringResource(id = R.string.Dang_nhap),
                 isEnable = loginViewModel.allValicationPass.value
             ) {
-                loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                coroutineScope.launch {
+                    loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                }
             }
             if (flowNavigationHome) {
                 navController.navigate(route = Graph.HOMEGRAPH) {

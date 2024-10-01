@@ -12,15 +12,15 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface OrderAPIService {
-    @POST("/order/")
+    @POST("/api/v1/order/")
     suspend fun createOrder(
         @Body order: CreateOrder,
     ): Response<ResultState>
 
-    @GET("/order/{idOrder}")
+    @GET("/api/v1/order/{idOrder}")
     suspend fun getOrderByUser(@Path("idOrder") idOrder: String): List<GetOrderItem>
 
-    @PUT("/order/user/{idUser}/{idOrder}")
+    @PUT("/api/v1/order/user/{idUser}/{idOrder}")
     suspend fun updateOrderStatus(
         @Path("idUser") idShop: String,
         @Path("idOrder") idOrder: String,

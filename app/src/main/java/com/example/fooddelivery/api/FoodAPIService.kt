@@ -6,14 +6,14 @@ import retrofit2.http.Headers
 import retrofit2.http.Path
 
 interface FoodAPIService {
-    @GET("/foods/getBest")
+    @GET("/api/v1/foods/getBest")
     suspend fun getBestFood(): List<Food>
 
-    @GET("/foods")
+    @GET("/api/v1/foods")
     suspend fun getAllFood(): List<Food>
 
     @Headers("accept: application/json")
-    @GET("/foods/category/{categoryId}")
+    @GET("/api/v1/foods/category/{categoryId}")
     suspend fun getCategory(@Path("categoryId") id: Int): List<Food>
 
 }

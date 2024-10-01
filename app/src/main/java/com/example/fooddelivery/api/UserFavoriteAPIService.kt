@@ -10,13 +10,13 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface UserFavoriteAPIService {
-    @POST("/user-favorite/")
+    @POST("/api/v1/user-favorite/")
     suspend fun createUserFavorite(@Body userGetFavorite: CreateFavorite): Response<CreateFavorite>
 
-    @GET("/user-favorite/{id}")
+    @GET("/api/v1/user-favorite/{id}")
     suspend fun getUserFavorite(@Path("id") id: String): List<GetFavorite>
 
-    @DELETE("/user-favorite/{idUser}/{idShop}")
+    @DELETE("/api/v1/user-favorite/{idUser}/{idShop}")
     suspend fun deleteUserFavorite(
         @Path("idUser") idUser: String,
         @Path("idShop") idShop: String
