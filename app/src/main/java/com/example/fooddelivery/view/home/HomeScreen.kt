@@ -82,11 +82,10 @@ fun HomeScreen(
     homeNavController: NavHostController = rememberNavController(),
     innerPadding: PaddingValues,
     homeViewModel: HomeViewModel = viewModel(),
-    sharedViewModel: SharedViewModel = viewModel()
+    sharedViewModel: SharedViewModel = viewModel(),
 ) {
     //loading bestfood
     val isLoading by homeViewModel.isLoadBestFood.collectAsStateWithLifecycle()
-
     val totalPrice = sharedViewModel.totalPrice.collectAsStateWithLifecycle()
     ///
     val countStateFlow by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()

@@ -26,9 +26,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
 
 @Composable
 fun MyApp() {
     RootNavGraph()
 }
+

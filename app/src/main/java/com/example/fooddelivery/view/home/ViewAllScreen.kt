@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +36,12 @@ fun ViewAllScreen(
     navController: NavController,
     viewAllViewModel: ViewAllViewModel = viewModel(),
     sharedViewModel: SharedViewModel,
-    innerPaddingValues: PaddingValues
+    innerPaddingValues: PaddingValues,
+    token: String
 ) {
+    LaunchedEffect(Unit) {
+        viewAllViewModel.getToken(token)
+    }
     val allFood by viewAllViewModel.allFood.collectAsStateWithLifecycle()
     val isLoading by viewAllViewModel.isLoadAllFood.collectAsStateWithLifecycle()
     Box {

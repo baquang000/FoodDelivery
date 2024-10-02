@@ -155,7 +155,7 @@ fun LoginScreen(
                 errorStatus = loginViewModel.loginUIState.value.emailError,
             ) {
                 coroutineScope.launch {
-                    loginViewModel.onEvent(LoginUIEvent.EmailChange(it))
+                    loginViewModel.onEvent(LoginUIEvent.EmailChange(it), context)
                 }
             }
             MyPasswordTextFieldComponents(
@@ -163,7 +163,7 @@ fun LoginScreen(
                 errorStatus = loginViewModel.loginUIState.value.passwordError
             ) {
                 coroutineScope.launch {
-                    loginViewModel.onEvent(LoginUIEvent.PasswordChange(it))
+                    loginViewModel.onEvent(LoginUIEvent.PasswordChange(it), context)
                 }
             }
             NormalTextComponents(
@@ -188,7 +188,7 @@ fun LoginScreen(
                 isEnable = loginViewModel.allValicationPass.value
             ) {
                 coroutineScope.launch {
-                    loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                    loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked, context = context)
                 }
             }
             if (flowNavigationHome) {
@@ -383,6 +383,8 @@ fun LoginTwitterButton(
             .height(50.dp)
     )
 }*/
+
+
 
 @Preview(
     showBackground = true

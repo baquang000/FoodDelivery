@@ -1,5 +1,6 @@
 package com.example.fooddelivery.data.viewmodel.authviewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,10 +12,13 @@ import com.example.fooddelivery.data.model.Auth
 import com.example.fooddelivery.data.model.LoginUIEvent
 import com.example.fooddelivery.data.model.LoginUIState
 import com.example.fooddelivery.data.rules.Validator
+import com.example.fooddelivery.untils.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 
 class LoginViewModel : ViewModel() {
 
@@ -26,7 +30,7 @@ class LoginViewModel : ViewModel() {
     val navigationHome = _navigationHome.asStateFlow()
     var isFailer by mutableStateOf(false)
     var errormessage by mutableStateOf<String?>(null)
-    suspend fun onEvent(event: LoginUIEvent) {
+    suspend fun onEvent(event: LoginUIEvent, context: Context) {
         when (event) {
             is LoginUIEvent.EmailChange -> {
                 loginUIState.value = loginUIState.value.copy(email = event.email)
@@ -37,13 +41,13 @@ class LoginViewModel : ViewModel() {
             }
 
             is LoginUIEvent.LoginButtonClicked -> {
-                login()
+                login(context = context)
             }
         }
         validateLoginUIDataWithRules()
     }
 
-    private suspend fun login() {
+    private suspend fun login(context: Context) {
         loginInProgress.value = true
         val email = loginUIState.value.email
         val password = loginUIState.value.password
@@ -51,9 +55,20 @@ class LoginViewModel : ViewModel() {
             viewModelScope.launch(Dispatchers.IO) {
                 val respon = RetrofitClient.authAPIService.login(Auth(email, password))
                 if (respon.isSuccessful) {
+                    val token = respon.body()?.data?.accessToken
+                        ?: return@launch // Handle missing token gracefully (e.g., show error)
+                    val cryptoManager = TokenManager()
+                    val bytes = token.encodeToByteArray()
+                    val file = File(context.filesDir, "token.txt")
+                    if (!file.exists()) {
+                        file.createNewFile()
+                    }
+                    val fos = FileOutputStream(file)
+                    cryptoManager.encrypt(bytes = bytes, outputStream = fos).decodeToString()
+
                     loginInProgress.value = false
                     _navigationHome.value = true
-                }else {
+                } else {
                     // Handle unsuccessful login (e.g., invalid credentials)
                     loginInProgress.value = false
                     val errorBody = respon.errorBody()?.string() ?: "Login failed"

@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -27,6 +28,7 @@ import com.example.fooddelivery.navigation.SEARCH_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
+import com.example.fooddelivery.untils.TokenManager
 import com.example.fooddelivery.view.home.CartScreen
 import com.example.fooddelivery.view.home.FoodDetailsScreen
 import com.example.fooddelivery.view.home.HomeScreen
@@ -42,6 +44,8 @@ import com.example.fooddelivery.view.home.categoryScreen.MeatScreen
 import com.example.fooddelivery.view.home.categoryScreen.MoreScreen
 import com.example.fooddelivery.view.home.categoryScreen.PizzaScreen
 import com.example.fooddelivery.view.home.categoryScreen.SushiScreen
+import java.io.File
+import java.io.FileInputStream
 
 @Composable
 fun HomeNavGraph(
@@ -51,8 +55,13 @@ fun HomeNavGraph(
     userInforViewModel: UserInforViewModel,
     innerPadding: PaddingValues,
 ) {
-    val shopViewModel : ShopViewModel = viewModel()
-    val favoriteViewModel : FavoriteViewModel = viewModel()
+    val shopViewModel: ShopViewModel = viewModel()
+    val favoriteViewModel: FavoriteViewModel = viewModel()
+    val cryptoManager = TokenManager()
+    val context = LocalContext.current
+    val files = File(context.filesDir, "token.txt")
+    val token =
+        cryptoManager.decrypt(inputStream = FileInputStream(files)).decodeToString()
     NavHost(
         navController = homeNavController,
         startDestination = HomeRouteScreen.Home.route,
@@ -89,7 +98,7 @@ fun HomeNavGraph(
             HomeScreen(
                 sharedViewModel = sharedViewModel,
                 homeNavController = homeNavController,
-                innerPadding = innerPadding
+                innerPadding = innerPadding,
             )
         }
         favoriteNavGraph(
@@ -176,7 +185,8 @@ fun HomeNavGraph(
             ViewAllScreen(
                 navController = homeNavController,
                 sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
+                innerPaddingValues = innerPadding,
+                token = token
             )
         }
         composable(route = HomeRouteScreen.FoodDetails.route,
