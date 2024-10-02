@@ -10,6 +10,38 @@ const val IMAGEPATH_ARGUMENT_KEY = "imagepath"
 const val ID_ARGUMENT_KEY = "id"
 const val ID_SHOP_ARGUMENT_KEY = "idshop"
 
+object Graph {
+    const val ROOTGRAPH = "rootGraph"
+    const val AUTHGRAPH = "authGraph"
+    const val HOMEGRAPH = "homeGraph"
+    const val SHOPGRAPH = "shopGraph"
+    const val FAVORITEGRAPH = "favoriteGraph"
+    const val PROFILEGRAPH = "profileGraph"
+}
+
+sealed class AuthRouteScreen(val route: String) {
+    data object Intro : AuthRouteScreen(route = "Intro_screen")
+    data object LoginUser : AuthRouteScreen(route = "LoginUser_screen")
+    data object LoginShop : AuthRouteScreen(route = "LoginShop_screen")
+    data object SignUpUser : AuthRouteScreen(route = "SignUpUser_screen")
+    data object SignUpShop : AuthRouteScreen(route = "SignUpShop_screen")
+    data object Terms : AuthRouteScreen(route = "Terms_screen")
+    data object ResetPass : AuthRouteScreen(route = "ResetPass_screen")
+    data object LoginPhone : AuthRouteScreen(route = "Login_With_Phone_screen")
+    data object OtpScreen : AuthRouteScreen(route = "OTP_Screen")
+}
+
+sealed class ProfileRouteScreen(val route: String) {
+    data object UserInfor : ProfileRouteScreen(route = "UserInfor_screen")
+    data object HisFood : ProfileRouteScreen(route = "HisFood_screen")
+    data object OrderFood : ProfileRouteScreen(route = "OrderFood_screen")
+    data object ChangePass : ProfileRouteScreen(route = "ChangePass_screen")
+    data object Comment : ProfileRouteScreen(route = "Comment_screen")
+}
+
+sealed class FavoriteRouteScreen(val route: String) {
+    data object Favorite : FavoriteRouteScreen(route = "FavoriteRoute_Screen")
+}
 
 sealed class HomeRouteScreen(val route: String) {
     data object Home : HomeRouteScreen(route = "Home_Screen")
@@ -56,32 +88,33 @@ sealed class HomeRouteScreen(val route: String) {
     }
 }
 
-object Graph {
-    const val ROOTGRAPH = "rootGraph"
-    const val AUTHGRAPH = "authGraph"
-    const val HOMEGRAPH = "homeGraph"
-    const val FAVORITEGRAPH = "favoriteGraph"
-    const val PROFILEGRAPH = "profileGraph"
+sealed class ShopRouteScreen(val route: String) {
+    data object Home : ShopRouteScreen(route = "Home_Screen")
+    data object ViewAll : ShopRouteScreen(route = "ViewAll_Screen")
+    data object AddFood : ShopRouteScreen(route = "AddFood_Screen")
+    data object ComfirmOrder : ShopRouteScreen(route = "ComfirmOrder_Screen")
+    data object DeliveringOrder : ShopRouteScreen(route = "DeliveringOrder_Screen")
+    data object DeliveredOrder : ShopRouteScreen(route = "DeliveredOrder_Screen")
+    data object CancelOrder : ShopRouteScreen(route = "CancelOrder_Screen")
+    data object FoodDetails :
+        ShopRouteScreen(route = "Food_Details_Screen?title={$TITLE_ARGUMENT_KEY}&price={$PRICE_ARGUMENT_KEY}&star={$STAR_ARGUMENT_KEY}&timevalue={$TIMEVALUE_ARGUMENT_KEY}&description={$DESCRIPTION_ARGUMENT_KEY}&imagepath={$IMAGEPATH_ARGUMENT_KEY}&id={$ID_ARGUMENT_KEY}") {
+        fun sendFood(
+            title: String = "",
+            price: Int = 0,
+            star: Double = 0.0,
+            timevalue: Int = 0,
+            description: String = "",
+            imagepath: String = "",
+            id: Int = 0
+        ): String {
+            return "Food_Details_Screen?title=$title&price=$price&star=$star&timevalue=$timevalue&description=$description&imagepath=$imagepath&id=$id"
+        }
+    }
+
+    data object ProfileAdmin : ShopRouteScreen(route = "Frofile_Screen")
+
+    data object DiscountCode : ShopRouteScreen(route = "DiscountCode_Screen")
+
+    data object ChangePass : ShopRouteScreen(route = "ChangePass_Screen")
 }
 
-sealed class AuthRouteScreen(val route: String) {
-    data object Intro : AuthRouteScreen(route = "Intro_screen")
-    data object Login : AuthRouteScreen(route = "Login_screen")
-    data object SignUp : AuthRouteScreen(route = "SignUp_screen")
-    data object Terms : AuthRouteScreen(route = "Terms_screen")
-    data object ResetPass : AuthRouteScreen(route = "ResetPass_screen")
-    data object LoginPhone : AuthRouteScreen(route = "Login_With_Phone_screen")
-    data object OtpScreen : AuthRouteScreen(route = "OTP_Screen")
-}
-
-sealed class ProfileRouteScreen(val route: String) {
-    data object UserInfor : ProfileRouteScreen(route = "UserInfor_screen")
-    data object HisFood : ProfileRouteScreen(route = "HisFood_screen")
-    data object OrderFood : ProfileRouteScreen(route = "OrderFood_screen")
-    data object ChangePass : ProfileRouteScreen(route = "ChangePass_screen")
-    data object Comment : ProfileRouteScreen(route = "Comment_screen")
-}
-
-sealed class FavoriteRouteScreen(val route: String) {
-    data object Favorite : FavoriteRouteScreen(route = "FavoriteRoute_Screen")
-}

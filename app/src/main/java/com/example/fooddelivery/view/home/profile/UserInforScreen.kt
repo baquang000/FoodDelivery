@@ -40,7 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 
 @Composable
 fun UserInforScreen(

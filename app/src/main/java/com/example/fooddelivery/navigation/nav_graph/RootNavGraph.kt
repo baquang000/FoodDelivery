@@ -10,9 +10,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.OrderFoodViewModel
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.OrderFoodViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.view.home.MainScreen
 
@@ -68,6 +68,6 @@ fun RootNavGraph() {
             sharedViewModel = sharedViewModel,
             orderViewModel = orderViewModel,
         )
-
+        shopNavGraph(rootNavController = rootNavController)
     }
 }

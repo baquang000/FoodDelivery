@@ -7,9 +7,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.ShopViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.FavoriteViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.ShopViewModel
 import com.example.fooddelivery.navigation.FavoriteRouteScreen
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.HomeRouteScreen

@@ -32,7 +32,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.HistoryFoodViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.HistoryFoodViewModel
 
 @Composable
 fun HistoryFoodScreen(

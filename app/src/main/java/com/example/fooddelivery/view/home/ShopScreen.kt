@@ -57,9 +57,9 @@ import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.ShopViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.FavoriteViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.ShopViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.navigation.ID_SHOP_ARGUMENT_KEY
 import kotlinx.coroutines.launch
@@ -71,7 +71,7 @@ fun ShopScreen(
     navBackStackEntry: NavBackStackEntry,
     innerPaddingValues: PaddingValues,
     sharedViewModel: SharedViewModel,
-    shopViewModel: ShopViewModel ,
+    shopViewModel: ShopViewModel,
     favoriteViewModel: FavoriteViewModel,
 ) {
     val idshop = navBackStackEntry.arguments?.getString(ID_SHOP_ARGUMENT_KEY) ?: ""

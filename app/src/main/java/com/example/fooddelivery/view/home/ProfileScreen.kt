@@ -36,7 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.ProfileViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.ProfileViewModel
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.ProfileRouteScreen
 

@@ -75,8 +75,8 @@ import com.example.fooddelivery.components.MyDropdownMenuWithDiscountCode
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.UserInforViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

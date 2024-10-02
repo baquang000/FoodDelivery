@@ -17,6 +17,7 @@ data class GetOrderItem(
     val user: User
 )
 
+
 data class OrderDetail(
     val id: String,
     val idFood: Int,
@@ -36,21 +37,13 @@ data class User(
     val numberPhone: String
 )
 
-
-
-
-
-
 ///update
-
 data class UpdateOrder(
-    val statusOrder: String
+    val statusOrder: String,
+    val time: String
 )
 
-
 ////create order
-
-
 data class CreateOrder(
     val deliverytoDoor: Boolean,
     val diningSubtances: Boolean,

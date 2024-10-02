@@ -87,7 +87,7 @@ fun IntroScreen(
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                NormalTextComponents(value = stringResource(id = R.string.Sign_Up),
+                NormalTextComponents(value = stringResource(R.string.shop),
                     nomalFontsize = 16.sp,
                     nomalFontWeight = FontWeight.Bold,
                     nomalTextAlign = TextAlign.Start,
@@ -95,14 +95,14 @@ fun IntroScreen(
                         .padding(start = 24.dp, bottom = 24.dp)
                         .clickable {
                             navController.navigate(
-                                route = AuthRouteScreen.SignUp.route,
+                                route = AuthRouteScreen.LoginShop.route,
                                 navOptions = NavOptions
                                     .Builder()
                                     .setLaunchSingleTop(true)
                                     .build()
                             )
                         })
-                NormalTextComponents(value = stringResource(id = R.string.Login),
+                NormalTextComponents(value = stringResource(R.string.user),
                     nomalFontsize = 16.sp,
                     nomalFontWeight = FontWeight.Bold,
                     nomalTextAlign = TextAlign.Start,
@@ -110,7 +110,7 @@ fun IntroScreen(
                         .padding(end = 24.dp, bottom = 24.dp)
                         .clickable {
                             navController.navigate(
-                                route = AuthRouteScreen.Login.route,
+                                route = AuthRouteScreen.LoginUser.route,
                                 navOptions = NavOptions
                                     .Builder()
                                     .setLaunchSingleTop(true)

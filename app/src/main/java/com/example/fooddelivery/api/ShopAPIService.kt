@@ -1,10 +1,25 @@
 package com.example.fooddelivery.api
 
 import com.example.fooddelivery.data.model.GetShopItem
+import com.example.fooddelivery.data.model.ResultState
+import com.example.fooddelivery.data.model.Shop
+import com.example.fooddelivery.data.model.UpdateShopInfor
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ShopAPIService {
     @GET("/api/v1/shop/{idShop}")
     suspend fun getInforShop(@Path("idShop") idShop: String): List<GetShopItem>
+
+    @GET("/shop/infor/{id}")
+    suspend fun getInforOfShop(@Path("id") id: String): Shop
+
+    @PUT("/shop/{id}")
+    suspend fun updateInforShop(
+        @Path("id") id: String,
+        @Body updateShopInfor: UpdateShopInfor
+    ): Response<ResultState>
 }

@@ -58,7 +58,7 @@ import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.CreateComment
 import com.example.fooddelivery.data.model.GetOrderItem
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.OrderFoodViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.OrderFoodViewModel
 import com.google.firebase.storage.FirebaseStorage
 
 @Composable

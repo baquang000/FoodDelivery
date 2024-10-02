@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.ChangePassViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.ChangePassViewModel
 
 @Composable
 fun ChangePassScreen(

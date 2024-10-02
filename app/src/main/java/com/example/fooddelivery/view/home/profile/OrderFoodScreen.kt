@@ -49,13 +49,14 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
+import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.model.UpdateOrder
 import com.example.fooddelivery.data.model.tabItemOrder
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.profileviewmodel.OrderFoodViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.OrderFoodViewModel
 import com.example.fooddelivery.navigation.ProfileRouteScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -271,10 +272,11 @@ fun ConfirmOrder(
                     ) {
                         Button(
                             onClick = {
+                                val time = Calender().getCalender()
                                 coroutineScope.launch {
                                     orderViewModel.updateStatusWithApi(
                                         idOrder = order.idOrder,
-                                        orderStatus = UpdateOrder(OrderStatus.CANCEL.toString())
+                                        orderStatus = UpdateOrder(OrderStatus.CANCEL.toString(),time)
                                     )
                                 }
                             },
@@ -398,10 +400,11 @@ fun DeliveringOrder(
                     ) {
                         Button(
                             onClick = {
+                                val time = Calender().getCalender()
                                 coroutineScope.launch {
                                     orderViewModel.updateStatusWithApi(
                                         idOrder = order.idOrder,
-                                        orderStatus = UpdateOrder(OrderStatus.SUCCESS.toString())
+                                        orderStatus = UpdateOrder(OrderStatus.SUCCESS.toString(),time)
                                     )
                                 }
                             },

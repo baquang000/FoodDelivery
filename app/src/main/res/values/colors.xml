@@ -17,4 +17,6 @@
     <color name="btn_6">#92CEA4</color>
     <color name="btn_7">#DE70E0</color>
     <color name="btn_8">#9CA7DA</color>
+    <color name="card_color">#F4f4f4</color>
+    <color name="greencard">#F1FFED</color>
 </resources>

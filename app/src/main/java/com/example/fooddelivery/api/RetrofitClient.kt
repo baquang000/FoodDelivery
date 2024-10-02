@@ -57,4 +57,10 @@ object RetrofitClient {
                 okHttpClient
             ).build().create(AuthAPIService::class.java)
     }
+    val discountAPIService: DiscountAPIService by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
+                okHttpClient
+            ).build().create(DiscountAPIService::class.java)
+    }
 }

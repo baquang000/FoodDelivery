@@ -25,3 +25,24 @@ data class Order(
     val sumPrice: Int,
     val time: String
 )
+
+data class Shop(
+    val address: String,
+    val email: String,
+    val idShop: String,
+    val imageUrl: String,
+    val name: String,
+    val phoneNumber: String,
+    val starShop: Double,
+    val titleShop: String
+)
+
+
+data class UpdateShopInfor(
+    val address: String,
+    val email: String,
+    val imageUrl: String,
+    val name: String,
+    val phoneNumber: String,
+    val titleShop: String
+)

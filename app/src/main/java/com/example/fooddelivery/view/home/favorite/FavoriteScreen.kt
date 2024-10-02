@@ -37,7 +37,7 @@ import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.GetFavorite
-import com.example.fooddelivery.data.viewmodel.FavoriteViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.FavoriteViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import kotlinx.coroutines.launch
 

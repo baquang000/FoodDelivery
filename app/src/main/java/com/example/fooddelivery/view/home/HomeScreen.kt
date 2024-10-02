@@ -71,8 +71,8 @@ import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.LocationState
 import com.example.fooddelivery.data.model.PriceState
 import com.example.fooddelivery.data.model.TimeState
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.HomeViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.HomeViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import kotlinx.coroutines.launch
 

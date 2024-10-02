@@ -25,8 +25,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.FoodItem
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.ViewAllViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.ViewAllViewModel
 import com.example.fooddelivery.navigation.SEARCH_ARGUMENT_KEY
 
 @Composable

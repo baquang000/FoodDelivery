@@ -51,8 +51,8 @@ import com.example.fooddelivery.components.CustomSnackBar
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.homeviewmodel.ShopViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.ShopViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.navigation.ID_ARGUMENT_KEY
