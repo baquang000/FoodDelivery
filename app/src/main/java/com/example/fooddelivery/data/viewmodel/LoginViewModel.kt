@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel.user.authviewmodel
+package com.example.fooddelivery.data.viewmodel
 
 import android.content.Context
 import android.util.Log
@@ -56,7 +56,10 @@ class LoginViewModel : ViewModel() {
                 val respon = RetrofitClient.authAPIService.login(Auth(email, password))
                 if (respon.isSuccessful) {
                     val token = respon.body()?.data?.accessToken
+                        ?: return@launch
+                    val id = respon.body()?.data?.rest?.id
                         ?: return@launch // Handle missing token gracefully (e.g., show error)
+                    ID = id
                     val cryptoManager = TokenManager()
                     val bytes = token.encodeToByteArray()
                     val file = File(context.filesDir, "token.txt")
@@ -105,3 +108,5 @@ class LoginViewModel : ViewModel() {
         _navigationHome.value = true
     }
 }
+
+var ID = ""

@@ -80,14 +80,14 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     //google login
-    implementation (libs.androidx.credentials)
-    implementation (libs.credentials.play.services.auth)
-    implementation (libs.google.services)
-    implementation (libs.google.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.credentials.play.services.auth)
+    implementation(libs.google.services)
+    implementation(libs.google.googleid)
 
     //Facebook
-    implementation (libs.facebook.android.sdk)  // Latest Facebook SDK version
-    implementation (libs.facebook.login)
+    implementation(libs.facebook.android.sdk)  // Latest Facebook SDK version
+    implementation(libs.facebook.login)
 
     //retrofit
     implementation(libs.retrofit)
@@ -95,8 +95,11 @@ dependencies {
     // moshi
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi)
-    implementation (libs.converter.moshi)
+    implementation(libs.converter.moshi)
     //okhttp3
     implementation(libs.logging.interceptor)
+
+    ///socket io
+    implementation(libs.socket.io.client)
 
 }

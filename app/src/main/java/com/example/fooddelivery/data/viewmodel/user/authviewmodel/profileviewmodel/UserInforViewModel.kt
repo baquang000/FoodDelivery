@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.UserInfor
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,11 +21,8 @@ class UserInforViewModel : ViewModel() {
     private val tag = ViewModel::class.java.simpleName
 
     init {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            viewModelScope.launch(Dispatchers.IO) {
-                getUser(userId)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            getUser(id = ID)
         }
     }
 
@@ -38,34 +35,32 @@ class UserInforViewModel : ViewModel() {
         } finally {
             _isLoadUserInfor.value = false
         }
+
     }
 
-    fun saveUserData(
+    suspend fun saveUserData(
         name: String,
         numberPhone: String,
         address: String,
         email: String,
-        dateOfBirth: String
+        dateOfBirth: String,
+        id: String
     ) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            val user = UserInfor(
-                name = name,
-                numberPhone = numberPhone,
-                address = address,
-                email = email,
-                dateOfBirth = dateOfBirth,
-                idUser = userId
-            )
-            try {
-                viewModelScope.launch(Dispatchers.IO) {
-                    RetrofitClient.userAPIService.updateUser(userId, user)
-                }
-            } catch (e: Exception) {
-                Log.e(tag, e.message.toString())
+        val user = UserInfor(
+            name = name,
+            numberPhone = numberPhone,
+            address = address,
+            email = email,
+            dateOfBirth = dateOfBirth,
+            idUser = id
+        )
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                RetrofitClient.userAPIService.updateUser(id, user)
             }
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
         }
     }
-
 
 }

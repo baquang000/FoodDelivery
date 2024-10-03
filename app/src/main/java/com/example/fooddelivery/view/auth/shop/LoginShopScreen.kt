@@ -1,4 +1,4 @@
-package com.example.fooddelivery.view.auth.user
+package com.example.fooddelivery.view.auth.shop
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -10,52 +10,46 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.ButtonComponents
+import com.example.fooddelivery.components.DrawLineAndTextComponents
 import com.example.fooddelivery.components.MyPasswordTextFieldComponents
 import com.example.fooddelivery.components.MyTextFieldComponents
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.model.SignupUIEvent
-import com.example.fooddelivery.data.viewmodel.SignupViewModel
+import com.example.fooddelivery.data.model.LoginUIEvent
+import com.example.fooddelivery.data.viewmodel.LoginViewModel
 import com.example.fooddelivery.navigation.AuthRouteScreen
+import com.example.fooddelivery.navigation.Graph
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun SignUpUserScreen(
+fun LoginShopScreen(
     navController: NavController,
-    signupViewModel: SignupViewModel = viewModel()
+    loginViewModel: LoginViewModel = viewModel()
 ) {
-    var isSuccess by signupViewModel::isSuccess //3.7
-    val isError by signupViewModel::isError
-    val errormessage by signupViewModel::errormessage //
-    var ischeck by remember {
-        mutableStateOf(false)
-    }
+    val context = LocalContext.current
+    val errorMessage by loginViewModel::errormessage
+    val isFailer by loginViewModel::isFailer
+    val flowNavigationHome by loginViewModel.navigationHome.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -77,7 +71,7 @@ fun SignUpUserScreen(
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 NormalTextComponents(
-                    value = stringResource(R.string.food_sign_up_login),
+                    value = stringResource(R.string.shop_food),
                     nomalFontsize = 45.sp,
                     nomalFontWeight = FontWeight.Bold,
                     nomalColor = Color.Black,
@@ -90,94 +84,113 @@ fun SignUpUserScreen(
                     nomalColor = Color.Black,
                 )
             }
-            if (isError) {
+            if (isFailer) {
                 NormalTextComponents(
-                    value = errormessage.toString(),
+                    value = errorMessage.toString(),
                     nomalFontsize = 16.sp,
                     nomalFontWeight = FontWeight.Normal,
-                    nomalColor = Color.Red,
-                    modifier = Modifier.padding(top = 8.dp)
+                    nomalColor = Color.Red
                 )
             }
             MyTextFieldComponents(
                 lableText = stringResource(id = R.string.email),
-                errorStatus = signupViewModel.signUpUIState.value.emailError
+                errorStatus = loginViewModel.loginUIState.value.emailError,
             ) {
                 coroutineScope.launch {
-                    signupViewModel.onEvent(SignupUIEvent.emailChange(it))
+                    loginViewModel.onEvent(LoginUIEvent.EmailChange(it), context)
                 }
             }
             MyPasswordTextFieldComponents(
                 lableText = stringResource(id = R.string.Pass_Word),
-                errorStatus = signupViewModel.signUpUIState.value.passwordError
+                errorStatus = loginViewModel.loginUIState.value.passwordError
             ) {
                 coroutineScope.launch {
-                    signupViewModel.onEvent(SignupUIEvent.PasswordChange(it))
+                    loginViewModel.onEvent(LoginUIEvent.PasswordChange(it), context)
                 }
             }
-            MyPasswordTextFieldComponents(
-                lableText = stringResource(id = R.string.cur_Pass_Word),
-                errorStatus = signupViewModel.signUpUIState.value.curpasswordError
-            ) {
-                coroutineScope.launch {
-                    signupViewModel.onEvent(SignupUIEvent.CurPasswordChange(it))
-                }
-            }
-            Row(
+            NormalTextComponents(
+                value = stringResource(R.string.ban_quen_mat_khau),
+                nomalFontsize = 16.sp,
+                nomalFontWeight = FontWeight.Normal,
+                nomalColor = Color.Black,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Checkbox(checked = ischeck, onCheckedChange = {
-                    ischeck = it
-                })
-                NormalTextComponents(
-                    value = "Tôi đồng ý với ", nomalFontsize = 14.sp,
-                    nomalColor = Color.Black
-                )
-                NormalTextComponents(
-                    value = "các điều khoản và điều kiện ", nomalFontsize = 14.sp,
-                    nomalColor = Color.Blue,
-                    modifier = Modifier.clickable {
+                    .padding(top = 32.dp)
+                    .clickable {
                         navController.navigate(
-                            route = AuthRouteScreen.Terms.route,
+                            route = AuthRouteScreen.ResetPass.route,
                             navOptions = NavOptions
                                 .Builder()
                                 .setLaunchSingleTop(true)
                                 .build()
                         )
                     }
-                )
-            }
+            )
             ButtonComponents(
-                value = stringResource(id = R.string.Dang_Ky),
-                isEnable = signupViewModel.allValicationPass.value && ischeck
+                value = stringResource(id = R.string.Dang_nhap),
+                isEnable = loginViewModel.allValicationPass.value
             ) {
                 coroutineScope.launch {
-                    signupViewModel.onEvent(SignupUIEvent.RegisterButtonClicked)
+                    loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked, context = context)
                 }
+            }
+            if (flowNavigationHome) {
+                navController.navigate(route = Graph.SHOPGRAPH) {
+                    popUpTo(AuthRouteScreen.LoginShop.route) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+            DrawLineAndTextComponents()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp, vertical = 32.dp),
+                horizontalArrangement = Arrangement.Center
+            )
+            {
+                Image(
+                    painter = painterResource(id = R.drawable.facebook),
+                    contentDescription = "logo_facebook",
+                    modifier = Modifier
+                        .height(50.dp)
+                        .weight(1f)
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.google),
+                    contentDescription = "logo_google",
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.phone),
+                    contentDescription = "Phone login",
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
+                )
+
             }
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 NormalTextComponents(
-                    value = stringResource(R.string.Ban_co_tai_khoan),
+                    value = stringResource(R.string.ban_khong_co_tai_khoan),
                     nomalFontsize = 16.sp,
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Black,
                     modifier = Modifier.padding(end = 2.dp)
                 )
                 NormalTextComponents(
-                    value = stringResource(R.string.Dang_nhap),
+                    value = stringResource(id = R.string.Dang_Ky),
                     nomalFontsize = 16.sp,
                     nomalFontWeight = FontWeight.Normal,
                     nomalColor = Color.Red,
                     modifier = Modifier.clickable {
                         navController.navigate(
-                            AuthRouteScreen.LoginUser.route,
+                            AuthRouteScreen.SignUpShop.route,
                             navOptions = NavOptions
                                 .Builder()
                                 .setLaunchSingleTop(true)
@@ -187,43 +200,17 @@ fun SignUpUserScreen(
                 )
             }
         }
-        if (signupViewModel.signInProgress.value) {
+        if (loginViewModel.loginInProgress.value) {
             CircularProgressIndicator()
-        }
-        if (isSuccess) {
-            AlertDialog(onDismissRequest = { isSuccess = false },
-                title = {
-                    NormalTextComponents(
-                        value = stringResource(R.string.success),
-                        nomalColor = Color.Black
-                    )
-                },
-                text = {
-                    Text(text = stringResource(R.string.success_signup))
-                },
-                confirmButton = {
-                    Button(onClick = {
-                        isSuccess = false
-                        navController.navigate(
-                            route = AuthRouteScreen.LoginUser.route,
-                            navOptions = NavOptions
-                                .Builder()
-                                .setLaunchSingleTop(true)
-                                .build()
-                        )
-                    }) {
-                        Text(text = "Ok")
-                    }
-                })
         }
     }
 }
+
 
 @Preview(
     showBackground = true
 )
 @Composable
-fun SignUpScreenPreview() {
-    SignUpUserScreen(navController = rememberNavController())
+fun LoginScreenPreview() {
+    LoginShopScreen(navController = rememberNavController())
 }
-

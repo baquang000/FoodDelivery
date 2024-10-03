@@ -12,7 +12,7 @@ import com.example.fooddelivery.data.model.CreateComment
 import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.model.UpdateOrder
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,11 +43,10 @@ class OrderFoodViewModel : ViewModel() {
 
 
     suspend fun getOrderByUser() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             _isLoadingOrder.value = true
             try {
-                _orderFoodStateFlow.value = RetrofitClient.orderAPIService.getOrderByUser(userId)
+                _orderFoodStateFlow.value = RetrofitClient.orderAPIService.getOrderByUser(ID)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {
@@ -57,12 +56,11 @@ class OrderFoodViewModel : ViewModel() {
     }
 
     suspend fun updateStatusWithApi(idOrder: String, orderStatus: UpdateOrder) {
-        val idShop = FirebaseAuth.getInstance().currentUser?.uid
-        if (idShop != null) {
+        if (ID != "") {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
                     val response = RetrofitClient.orderAPIService.updateOrderStatus(
-                        idShop = idShop,
+                        idShop = ID,
                         idOrder = idOrder,
                         statusOrder = orderStatus
                     )

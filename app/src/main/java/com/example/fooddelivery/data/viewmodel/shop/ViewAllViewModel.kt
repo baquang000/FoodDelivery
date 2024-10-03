@@ -15,7 +15,7 @@ import com.example.fooddelivery.data.model.UpdateImageFood
 import com.example.fooddelivery.data.model.UpdatePriceFood
 import com.example.fooddelivery.data.model.UpdateShowFood
 import com.example.fooddelivery.data.model.UpdateTitleFood
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,11 +49,10 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun getAllFoodWithApi() {
-        val idShop = FirebaseAuth.getInstance().currentUser?.uid
-        if (idShop != null) {
+        if (ID != "") {
             _isLoadAllFood.value = true
             try {
-                _allFood.value = RetrofitClient.foodAPIService.getAllFood(idShop)
+                _allFood.value = RetrofitClient.foodAPIService.getAllFood(ID)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {
@@ -63,11 +62,10 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun updateIsBestFood(idFood: Int, isBestFood: Boolean) {
-        val idShop = FirebaseAuth.getInstance().currentUser?.uid
-        if (idShop != null) {
+        if (ID != "") {
             val update = UpdateBestFood(idFood = idFood, bestFood = isBestFood)
             try {
-                RetrofitClient.foodAPIService.updateBestFood(idShop, update)
+                RetrofitClient.foodAPIService.updateBestFood(ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -75,11 +73,10 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun updateIsShowFood(showFood: Boolean, id: Int) {
-        val idShop = FirebaseAuth.getInstance().currentUser?.uid
-        if (idShop != null) {
+        if (ID != "") {
             val update = UpdateShowFood(idFood = id, showFood = showFood)
             try {
-                RetrofitClient.foodAPIService.updateShowFood(idShop, update)
+                RetrofitClient.foodAPIService.updateShowFood(ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -91,14 +88,13 @@ class ViewAllViewModel : ViewModel() {
             isTitleEmpty = true
             return
         }
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             val update = UpdateTitleFood(
                 title = title,
                 idFood = id
             )
             try {
-                RetrofitClient.foodAPIService.updateTitleFood(userId, update)
+                RetrofitClient.foodAPIService.updateTitleFood(ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -110,14 +106,13 @@ class ViewAllViewModel : ViewModel() {
             isPriceInvalid = true
             return
         }
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             val update = UpdatePriceFood(
                 price = price,
                 idFood = id
             )
             try {
-                RetrofitClient.foodAPIService.updatePriceFood(userId, update)
+                RetrofitClient.foodAPIService.updatePriceFood(ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -125,14 +120,13 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun updateImagpath(imagePath: String, id: Int) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             val update = UpdateImageFood(
                 imagePath = imagePath,
                 idFood = id
             )
             try {
-                RetrofitClient.foodAPIService.updateImageFood(userId, update)
+                RetrofitClient.foodAPIService.updateImageFood(ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -145,14 +139,13 @@ class ViewAllViewModel : ViewModel() {
 
             return
         }
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             val update = UpdateDescriptionFood(
                 description = description,
                 idFood = id
             )
             try {
-                RetrofitClient.foodAPIService.updateDescriptionFood(userId, update)
+                RetrofitClient.foodAPIService.updateDescriptionFood(ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -161,11 +154,10 @@ class ViewAllViewModel : ViewModel() {
 
     //getComment
     private suspend fun getCommentWithApi() {
-        val idShop = FirebaseAuth.getInstance().currentUser?.uid
-        if (idShop != null) {
+        if (ID != "") {
             _isLoadComment.value = true
             try {
-                _commentStateFlow.value = RetrofitClient.commentAPIService.getCommentByShop(idShop)
+                _commentStateFlow.value = RetrofitClient.commentAPIService.getCommentByShop(ID)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {

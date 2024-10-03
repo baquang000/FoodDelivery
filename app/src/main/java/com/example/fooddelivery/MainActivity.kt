@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.fooddelivery.navigation.nav_graph.RootNavGraph
 import com.example.fooddelivery.ui.theme.FoodDeliveryTheme
+import com.example.fooddelivery.untils.SocketManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +26,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        SocketManager.initializeSocket()
+        SocketManager.connectSocket()
     }
 
+    override fun onDestroy() {
+        SocketManager.disconnectSocket()
+        super.onDestroy()
+    }
 }
 
 @Composable

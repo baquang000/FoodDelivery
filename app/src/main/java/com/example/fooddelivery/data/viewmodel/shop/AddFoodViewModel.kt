@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.CreateFood
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,6 @@ class AddFoodViewModel : ViewModel() {
     var isPriceInvalid by mutableStateOf(false)
     var isImageUrlEmpty by mutableStateOf(false)
     var isTimeInvalid by mutableStateOf(false)
-    private val _idShop = FirebaseAuth.getInstance().currentUser?.uid
     private val tag = ViewModel::class.java.simpleName
     private val _isLoadingAddFood = MutableStateFlow(false)
     val isLoadingAddFood = _isLoadingAddFood.asStateFlow()
@@ -36,7 +35,7 @@ class AddFoodViewModel : ViewModel() {
         time: Int
     ) {
         _isLoadingAddFood.value = true
-        if (_idShop != null) {
+        if (ID != "") {
             var priceId by mutableIntStateOf(0)
             var timeid by mutableIntStateOf(0)
             if (title.isEmpty()) {
@@ -104,7 +103,7 @@ class AddFoodViewModel : ViewModel() {
                 timeId = timeid,
                 timeValue = time,
                 title = title,
-                idShop = _idShop,
+                idShop = ID,
                 showFood = false,
             )
             viewModelScope.launch(Dispatchers.IO) {

@@ -43,7 +43,7 @@ import com.example.fooddelivery.components.MyPasswordTextFieldComponents
 import com.example.fooddelivery.components.MyTextFieldComponents
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.LoginUIEvent
-import com.example.fooddelivery.data.viewmodel.user.authviewmodel.LoginViewModel
+import com.example.fooddelivery.data.viewmodel.LoginViewModel
 import com.example.fooddelivery.navigation.AuthRouteScreen
 import com.example.fooddelivery.navigation.Graph
 import com.facebook.CallbackManager

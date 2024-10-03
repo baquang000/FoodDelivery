@@ -19,7 +19,6 @@ fun NavGraphBuilder.profileNavGraph(
     sharedViewModel: SharedViewModel,
     orderViewModel: OrderFoodViewModel,
 ) {
-
     navigation(
         startDestination = ProfileRouteScreen.UserInfor.route,
         route = Graph.PROFILEGRAPH

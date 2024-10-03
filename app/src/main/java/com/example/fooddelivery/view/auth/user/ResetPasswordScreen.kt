@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.viewmodel.user.authviewmodel.ResetPassViewModel
+import com.example.fooddelivery.data.viewmodel.ResetPassViewModel
 
 @Composable
 fun ResetPasswordScreen(

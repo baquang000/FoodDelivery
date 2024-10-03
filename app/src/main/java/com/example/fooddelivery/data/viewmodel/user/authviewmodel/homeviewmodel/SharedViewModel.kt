@@ -13,7 +13,8 @@ import com.example.fooddelivery.data.model.CreateOrder
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.untils.SocketManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -169,13 +170,12 @@ class SharedViewModel : ViewModel() {
         diningSubtances: Boolean
     ) {
         val timeOrder = Calender().getCalender()
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             val newOrder = CreateOrder(
                 deliverytoDoor = deliverytoDoor,
                 diningSubtances = diningSubtances,
                 idShop = _idShopStateFlow.value,
-                idUser = userId,
+                idUser = ID,
                 noteOrder = noteOrder,
                 rewardForDriver = rewardForDriver,
                 sumPrice = _sumPrice.value.toDouble(),
@@ -184,7 +184,10 @@ class SharedViewModel : ViewModel() {
             )
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    RetrofitClient.orderAPIService.createOrder(newOrder)
+                    val response = RetrofitClient.orderAPIService.createOrder(newOrder)
+                    if (response.isSuccessful) {
+                        SocketManager.emitOrder(isOrder = true)
+                    }
                 } catch (e: Exception) {
                     Log.e(tag, e.message.toString())
                 } finally {

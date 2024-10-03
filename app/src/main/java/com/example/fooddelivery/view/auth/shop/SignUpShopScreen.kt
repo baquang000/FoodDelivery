@@ -40,7 +40,7 @@ import com.example.fooddelivery.components.MyPasswordTextFieldComponents
 import com.example.fooddelivery.components.MyTextFieldComponents
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.model.SignupUIEvent
-import com.example.fooddelivery.data.viewmodel.user.authviewmodel.SignupViewModel
+import com.example.fooddelivery.data.viewmodel.SignupViewModel
 import com.example.fooddelivery.navigation.AuthRouteScreen
 import kotlinx.coroutines.launch
 

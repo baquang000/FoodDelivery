@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface DiscountAPIService {
-    @GET("/discount/{id}")
+    @GET("/api/v1/discount/{id}")
     suspend fun getByShop(@Path("id") idShop: String): List<GetDiscountItem>
 }

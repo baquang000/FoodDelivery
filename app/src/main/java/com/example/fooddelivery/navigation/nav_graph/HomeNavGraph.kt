@@ -16,7 +16,6 @@ import androidx.navigation.navArgument
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.FavoriteViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.ShopViewModel
-import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.HomeRouteScreen
@@ -52,7 +51,6 @@ fun HomeNavGraph(
     rootNavController: NavHostController,
     homeNavController: NavHostController,
     sharedViewModel: SharedViewModel,
-    userInforViewModel: UserInforViewModel,
     innerPadding: PaddingValues,
 ) {
     val shopViewModel: ShopViewModel = viewModel()
@@ -60,8 +58,7 @@ fun HomeNavGraph(
     val cryptoManager = TokenManager()
     val context = LocalContext.current
     val files = File(context.filesDir, "token.txt")
-    val token =
-        cryptoManager.decrypt(inputStream = FileInputStream(files)).decodeToString()
+    val token = cryptoManager.decrypt(inputStream = FileInputStream(files)).decodeToString()
     NavHost(
         navController = homeNavController,
         startDestination = HomeRouteScreen.Home.route,
@@ -226,7 +223,6 @@ fun HomeNavGraph(
             CartScreen(
                 navController = homeNavController,
                 sharedViewModel = sharedViewModel,
-                userInforViewModel = userInforViewModel,
                 innerPaddingValues = innerPadding,
             )
         }

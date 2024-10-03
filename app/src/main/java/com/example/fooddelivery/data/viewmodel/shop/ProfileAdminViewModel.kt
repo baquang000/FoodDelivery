@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Shop
 import com.example.fooddelivery.data.model.UpdateShopInfor
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,10 +23,9 @@ class ProfileAdminViewModel : ViewModel() {
     private val tag = ViewModel::class.java.simpleName
 
     init {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             viewModelScope.launch(Dispatchers.IO) {
-                getUserData(userId)
+                getUserData(ID)
             }
         }
     }
@@ -39,8 +38,7 @@ class ProfileAdminViewModel : ViewModel() {
         phoneNumber: String,
         imageUrl: String
     ) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             val update = UpdateShopInfor(
                 titleShop = titleShop,
                 name = nameShop,
@@ -50,7 +48,7 @@ class ProfileAdminViewModel : ViewModel() {
                 imageUrl = imageUrl
             )
             try {
-                RetrofitClient.shopAPIService.updateInforShop(userId, update)
+                RetrofitClient.shopAPIService.updateInforShop(ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }

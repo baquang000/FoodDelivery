@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel.user.authviewmodel
+package com.example.fooddelivery.data.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue

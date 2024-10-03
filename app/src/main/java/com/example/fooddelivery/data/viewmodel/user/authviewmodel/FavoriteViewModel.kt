@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.CreateFavorite
 import com.example.fooddelivery.data.model.GetFavorite
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,12 +27,11 @@ class FavoriteViewModel : ViewModel() {
     }
 
     suspend fun getFavoriteWithApi() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             _isLoadFavorite.value = true
             try {
                 _favoriteStateFlow.value =
-                    RetrofitClient.userFavoriteAPIService.getUserFavorite(userId)
+                    RetrofitClient.userFavoriteAPIService.getUserFavorite(ID)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {
@@ -43,11 +42,10 @@ class FavoriteViewModel : ViewModel() {
 
     suspend fun createFavorite(idShop:String) {
         _isLoadFavorite.value = true
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             val favorite = CreateFavorite(
                 idShop = idShop,
-                idUser = userId
+                idUser = ID
             )
             try {
                 RetrofitClient.userFavoriteAPIService.createUserFavorite(favorite)
@@ -61,11 +59,10 @@ class FavoriteViewModel : ViewModel() {
 
     suspend fun deleteFavorite(idShop: String) {
         _favoriteStateFlow.value = _favoriteStateFlow.value.filter { it.idShop != idShop }
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             _isLoadFavorite.value = true
             try {
-                RetrofitClient.userFavoriteAPIService.deleteUserFavorite(userId, idShop)
+                RetrofitClient.userFavoriteAPIService.deleteUserFavorite(ID, idShop)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {

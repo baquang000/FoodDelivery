@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.GetDiscountItem
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fooddelivery.data.viewmodel.ID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,10 +22,9 @@ class DiscountViewModel : ViewModel() {
     private val tag = ViewModel::class.java.simpleName
 
     init {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             viewModelScope.launch(Dispatchers.IO) {
-                getDiscountWithApi(idShop = userId)
+                getDiscountWithApi(idShop = ID)
             }
         }
     }

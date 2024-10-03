@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,15 +41,19 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
+import com.example.fooddelivery.data.viewmodel.ID
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserInforScreen(
     navController: NavController,
     userInforViewModel: UserInforViewModel = viewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val localFocusManager = LocalFocusManager.current
     val userInfor by userInforViewModel.userInfor.collectAsStateWithLifecycle()
+    val isLoading by userInforViewModel.isLoadUserInfor.collectAsStateWithLifecycle()
     var name by remember {
         mutableStateOf("")
     }
@@ -73,7 +78,6 @@ fun UserInforScreen(
             dateOfBirth = it.dateOfBirth.toString()
         }
     }
-    val isLoading by userInforViewModel.isLoadUserInfor.collectAsStateWithLifecycle()
     var isFixDetails by remember {
         mutableStateOf(false)
     }
@@ -225,13 +229,16 @@ fun UserInforScreen(
                 )
                 Button(
                     onClick = {
-                        userInforViewModel.saveUserData(
-                            name = name,
-                            numberPhone = numberphone,
-                            address = address,
-                            email = email,
-                            dateOfBirth = dateOfBirth
-                        )
+                        coroutineScope.launch {
+                            userInforViewModel.saveUserData(
+                                name = name,
+                                numberPhone = numberphone,
+                                address = address,
+                                email = email,
+                                dateOfBirth = dateOfBirth,
+                                id = ID
+                            )
+                        }
                         isFixDetails = !isFixDetails
                         readonlyTextField = !readonlyTextField
                     },

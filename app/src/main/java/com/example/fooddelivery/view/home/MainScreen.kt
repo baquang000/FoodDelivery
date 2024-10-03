@@ -9,7 +9,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.BottomNavigationBar
 import com.example.fooddelivery.navigation.bottomNavigationItemList
 import com.example.fooddelivery.navigation.nav_graph.HomeNavGraph
@@ -19,7 +18,6 @@ import com.example.fooddelivery.navigation.nav_graph.HomeNavGraph
 fun MainScreen(
     rootNavHostController: NavHostController,
     sharedViewModel: SharedViewModel,
-    userInforViewModel: UserInforViewModel,
     homeNavController: NavHostController = rememberNavController(),
 ) {
     val navBackStackEntry by homeNavController.currentBackStackEntryAsState()
@@ -53,7 +51,6 @@ fun MainScreen(
             rootNavController = rootNavHostController,
             innerPadding = innerPadding,
             sharedViewModel = sharedViewModel,
-            userInforViewModel = userInforViewModel,
         )
     }
 }

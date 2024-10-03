@@ -14,10 +14,10 @@ interface ShopAPIService {
     @GET("/api/v1/shop/{idShop}")
     suspend fun getInforShop(@Path("idShop") idShop: String): List<GetShopItem>
 
-    @GET("/shop/infor/{id}")
+    @GET("/api/v1/shop/infor/{id}")
     suspend fun getInforOfShop(@Path("id") id: String): Shop
 
-    @PUT("/shop/{id}")
+    @PUT("/api/v1/shop/{id}")
     suspend fun updateInforShop(
         @Path("id") id: String,
         @Body updateShopInfor: UpdateShopInfor

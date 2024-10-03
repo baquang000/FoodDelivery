@@ -27,7 +27,7 @@ interface OrderAPIService {
         @Body statusOrder: UpdateOrder
     ): Response<ResultState>
 
-    @GET("/order/shop/{idShop}")
+    @GET("/api/v1/order/shop/{idShop}")
     suspend fun getOrderByShop(@Path("idShop") idShop: String): List<GetOrderItem>
 
 }

@@ -12,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.OrderFoodViewModel
-import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.view.home.MainScreen
 
@@ -20,10 +19,8 @@ const val timeAnimation = 1500
 
 @Composable
 fun RootNavGraph() {
-
     val rootNavController: NavHostController = rememberNavController()
     val sharedViewModel: SharedViewModel = viewModel()
-    val userInforViewModel: UserInforViewModel = viewModel()
     val orderViewModel: OrderFoodViewModel = viewModel()
     NavHost(
         navController = rootNavController,
@@ -60,7 +57,6 @@ fun RootNavGraph() {
             MainScreen(
                 rootNavHostController = rootNavController,
                 sharedViewModel = sharedViewModel,
-                userInforViewModel = userInforViewModel
             )
         }
         profileNavGraph(

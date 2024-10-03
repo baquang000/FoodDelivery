@@ -8,6 +8,7 @@ import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.model.UpdateOrder
+import com.example.fooddelivery.data.viewmodel.ID
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,10 +36,9 @@ class HomeViewModel : ViewModel() {
     var cancelOrder = 0
 
     init {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
+        if (ID != "") {
             viewModelScope.launch(Dispatchers.IO) {
-                getOrderByUser(userId)
+                getOrderByUser(ID)
             }
         }
     }
@@ -57,13 +57,12 @@ class HomeViewModel : ViewModel() {
     }
 
     suspend fun updateStatusWithApi(idOrder: String, orderStatus: String) {
-        val idShop = FirebaseAuth.getInstance().currentUser?.uid
         val time = Calender().getCalender()
-        if (idShop != null) {
+        if (ID != "") {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
                     val response = RetrofitClient.orderAPIService.updateOrderStatus(
-                        idShop = idShop,
+                        idShop = ID,
                         idOrder = idOrder,
                         statusOrder = UpdateOrder(
                             statusOrder = orderStatus,
@@ -142,5 +141,6 @@ class HomeViewModel : ViewModel() {
 
     fun logout() {
         FirebaseAuth.getInstance().signOut()
+        ID = ""
     }
 }
