@@ -1,10 +1,12 @@
 package com.example.fooddelivery.view.shop.home.food
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,10 +56,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.fooddelivery.data.viewmodel.shop.ViewAllViewModel
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.shop.NormalTextComponents
 import com.example.fooddelivery.components.shop.RatingBar
+import com.example.fooddelivery.data.viewmodel.shop.ViewAllViewModel
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.ID_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.IMAGEPATH_ARGUMENT_KEY
@@ -66,6 +69,7 @@ import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun FoodDetailsScreen(
     navController: NavController,
@@ -116,11 +120,18 @@ fun FoodDetailsScreen(
     }
     val coroutineScope = rememberCoroutineScope()
     val localManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     val commentValue by viewAllViewModel.commentStateFlow.collectAsStateWithLifecycle() // comment
     val isLoadComment by viewAllViewModel.isLoadComment.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize().clickable(
+                indication = null, // Remove the grey ripple effect
+                interactionSource = MutableInteractionSource() // Required when setting indication to null
+            ) {
+                localManager.clearFocus()
+                keyboardController?.hide()
+            }
     ) {
         item {
             Row(

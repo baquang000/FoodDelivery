@@ -1,4 +1,4 @@
-package com.example.fooddelivery.view.auth.user
+package com.example.fooddelivery.view.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -64,6 +64,7 @@ import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
+
 @Composable
 fun FoodDetailsScreen(
     navController: NavController, navBackStackEntry: NavBackStackEntry,
@@ -104,10 +105,10 @@ fun FoodDetailsScreen(
     }
     //comment value
     val commentValue by shopViewModel.commentStateFlow.collectAsStateWithLifecycle()
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

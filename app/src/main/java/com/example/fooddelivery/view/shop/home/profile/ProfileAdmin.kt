@@ -1,5 +1,6 @@
 package com.example.fooddelivery.view.shop.home.profile
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -9,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -50,12 +53,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.fooddelivery.data.viewmodel.shop.ProfileAdminViewModel
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.shop.NormalTextComponents
+import com.example.fooddelivery.data.viewmodel.shop.ProfileAdminViewModel
 import com.example.fooddelivery.view.shop.home.food.uploadImageToFirebase
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun ProfileAdminScreen(
     navController: NavController,
@@ -118,6 +122,8 @@ fun ProfileAdminScreen(
             painterResource(id = R.drawable.image_false)
         else rememberAsyncImagePainter(imageUrl)
     }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     if (isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -127,7 +133,15 @@ fun ProfileAdminScreen(
         }
     } else {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    indication = null, // Remove the grey ripple effect
+                    interactionSource = MutableInteractionSource() // Required when setting indication to null
+                ) {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                }
         ) {
             Box {
                 Image(

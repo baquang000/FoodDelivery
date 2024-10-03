@@ -1,7 +1,9 @@
 package com.example.fooddelivery.view.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +49,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -77,6 +81,7 @@ import com.example.fooddelivery.navigation.HomeRouteScreen
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun HomeScreen(
     homeNavController: NavHostController = rememberNavController(),
@@ -104,10 +109,19 @@ fun HomeScreen(
         mutableStateOf("")
     }
     val nameShop by sharedViewModel.nameShop.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
+            .clickable(
+                indication = null, // Remove the grey ripple effect
+                interactionSource = MutableInteractionSource() // Required when setting indication to null
+            ) {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            }
     ) {
         Box(
             modifier = Modifier

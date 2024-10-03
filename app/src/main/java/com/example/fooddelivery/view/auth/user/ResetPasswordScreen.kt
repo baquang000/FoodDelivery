@@ -1,5 +1,8 @@
 package com.example.fooddelivery.view.auth.user
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +37,7 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.viewmodel.ResetPassViewModel
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun ResetPasswordScreen(
     navController: NavController,
@@ -47,10 +53,19 @@ fun ResetPasswordScreen(
     var isOpenDialog by remember {
         mutableStateOf(false)
     }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable(
+                indication = null, // Remove the grey ripple effect
+                interactionSource = MutableInteractionSource()
+            ) {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            },
     ) {
         HeadingResetPass(navController = navController)
         if (error) {
@@ -76,7 +91,7 @@ fun ResetPasswordScreen(
             onClick = {
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     error = true
-                }else{
+                } else {
                     resetPassViewModel.sendLinkResetPassword(email = email)
                     isOpenDialog = true
                     email = ""

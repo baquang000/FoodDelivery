@@ -13,6 +13,7 @@ import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.model.UpdateOrder
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.untils.SocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,9 +36,21 @@ class OrderFoodViewModel : ViewModel() {
 
     private val tag = ViewModel::class.java.simpleName
 
+    private val _isUpdateStatusOrder = MutableStateFlow(false) // Initial value is `false`
+
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getOrderByUser()
+        }
+        SocketManager.onUpdateStatusOrder { isOrder ->
+            _isUpdateStatusOrder.value = isOrder
+            if (isOrder) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    getOrderByUser()
+                    _isUpdateStatusOrder.value = false
+                }
+            }
         }
     }
 
@@ -66,6 +79,7 @@ class OrderFoodViewModel : ViewModel() {
                     )
                     if (response.isSuccessful) {
                         updateOrderStateFlow(idOrder = idOrder, newStatus = orderStatus.statusOrder)
+                        SocketManager.emitUpdateStatusOrder(true)
                     } else {
                         Log.e(
                             tag,
@@ -107,7 +121,7 @@ class OrderFoodViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     updateStatusWithApi(
                         idOrder = comment.idOrder,
-                        orderStatus = UpdateOrder(OrderStatus.FOODBACK.toString(),time),
+                        orderStatus = UpdateOrder(OrderStatus.FOODBACK.toString(), time),
                     )
                 } else {
                     Log.e(

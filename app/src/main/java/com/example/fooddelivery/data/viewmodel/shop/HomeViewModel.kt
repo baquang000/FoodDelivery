@@ -9,6 +9,7 @@ import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.model.UpdateOrder
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.untils.SocketManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,10 +36,34 @@ class HomeViewModel : ViewModel() {
     var countdeliveredOrder = 0
     var cancelOrder = 0
 
+    private val _isOrderFlow = MutableStateFlow(false) // Initial value is `false`
+
+
+    private val _isUpdateStatusOrder = MutableStateFlow(false) // Initial value is `false`
+
+
     init {
         if (ID != "") {
             viewModelScope.launch(Dispatchers.IO) {
                 getOrderByUser(ID)
+            }
+        }
+        SocketManager.onOrderReceived { isOrder ->
+            _isOrderFlow.value = isOrder
+            if (isOrder) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    getOrderByUser(ID)
+                    _isOrderFlow.value = false
+                }
+            }
+        }
+        SocketManager.onUpdateStatusOrder { isOrder ->
+            _isUpdateStatusOrder.value = isOrder
+            if (isOrder) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    getOrderByUser(ID)
+                    _isUpdateStatusOrder.value = false
+                }
             }
         }
     }
@@ -73,6 +98,7 @@ class HomeViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         updateOrderStateFlow(idOrder = idOrder, newStatus = orderStatus)
                         updateOrderCounts()
+                        SocketManager.emitUpdateStatusOrder(true)
                     } else {
                         Log.e(
                             tag,

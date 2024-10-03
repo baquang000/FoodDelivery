@@ -76,11 +76,11 @@ import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.DiscountCode
+import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.Location
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
-import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import java.text.DecimalFormat
@@ -123,7 +123,8 @@ fun MyTextFieldComponents(
             onTextSelected(it)
         },
         shape = RoundedCornerShape(50.dp),
-        modifier = Modifier.padding(top = 32.dp, start = 32.dp, end = 32.dp),
+        modifier = Modifier
+            .padding(top = 32.dp, start = 32.dp, end = 32.dp),
         label = {
             Text(text = lableText)
         },

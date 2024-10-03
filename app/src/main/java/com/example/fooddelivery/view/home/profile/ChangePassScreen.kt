@@ -1,5 +1,8 @@
 package com.example.fooddelivery.view.home.profile
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -41,11 +45,14 @@ import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.ChangePassViewModel
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun ChangePassScreen(
     navController: NavController,
     changePassViewModel: ChangePassViewModel = viewModel()
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     var curPass by changePassViewModel::currentPass
     var newPass by changePassViewModel::newPass
     var reNewPass by changePassViewModel::reNewPass
@@ -97,6 +104,13 @@ fun ChangePassScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .clickable(
+                indication = null, // Remove the grey ripple effect
+                interactionSource = MutableInteractionSource() // Required when setting indication to null
+            ) {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            }
             .padding(horizontal = 8.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.Start
     ) {

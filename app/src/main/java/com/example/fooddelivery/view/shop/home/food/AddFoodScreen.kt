@@ -1,5 +1,6 @@
 package com.example.fooddelivery.view.shop.home.food
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -7,6 +8,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +63,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun AddFoodScreen(
     navController: NavController = rememberNavController(),
@@ -112,8 +116,15 @@ fun AddFoodScreen(
         painterResource(id = R.drawable.image_false)
     }
     val localFocusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().clickable(
+            indication = null, // Remove the grey ripple effect
+            interactionSource = MutableInteractionSource() // Required when setting indication to null
+        ) {
+            localFocusManager.clearFocus()
+            keyboardController?.hide()
+        }
     ) {
         if (isLoading) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         LazyColumn(

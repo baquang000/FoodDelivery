@@ -40,11 +40,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.fooddelivery.data.viewmodel.shop.HomeViewModel
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.shop.NormalTextComponents
 import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
+import com.example.fooddelivery.data.viewmodel.shop.HomeViewModel
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
@@ -55,6 +55,7 @@ fun PendingOrderScreen(
 ) {
     val order by homeViewModel.orderStateFlow.collectAsStateWithLifecycle()
     val isLoading by homeViewModel.isLoadingOrder.collectAsStateWithLifecycle()
+
     Box {
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

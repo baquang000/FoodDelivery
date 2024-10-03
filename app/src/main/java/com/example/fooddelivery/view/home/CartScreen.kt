@@ -2,6 +2,7 @@
 
 package com.example.fooddelivery.view.home
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
@@ -13,6 +14,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,6 +61,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -85,6 +89,7 @@ import java.text.DecimalFormat
 import kotlin.time.Duration.Companion.seconds
 
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun CartScreen(
     navController: NavController,
@@ -162,8 +167,16 @@ fun CartScreen(
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val halfScreenHeight = screenHeight / 2
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().clickable(
+            indication = null, // Remove the grey ripple effect
+            interactionSource = MutableInteractionSource() // Required when setting indication to null
+        ) {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
     ) {
         LazyColumn(
             modifier = Modifier

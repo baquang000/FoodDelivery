@@ -14,7 +14,7 @@ import com.example.fooddelivery.view.auth.user.LoginWithPhoneNumber
 import com.example.fooddelivery.view.auth.user.OtpScreen
 import com.example.fooddelivery.view.auth.user.ResetPasswordScreen
 import com.example.fooddelivery.view.auth.user.SignUpUserScreen
-import com.example.fooddelivery.view.auth.user.TermsScreen
+import com.example.fooddelivery.view.auth.TermsScreen
 
 fun NavGraphBuilder.authNavGraph(
     rootNavController: NavHostController

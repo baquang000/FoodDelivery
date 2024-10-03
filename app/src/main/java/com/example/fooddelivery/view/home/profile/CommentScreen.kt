@@ -1,5 +1,6 @@
 package com.example.fooddelivery.view.home.profile
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -8,6 +9,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -86,6 +90,7 @@ fun CommentScreen(
     }
 }
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun CommentList(
     order: GetOrderItem,
@@ -118,8 +123,16 @@ fun CommentList(
     var isRating by remember {
         mutableStateOf(true)
     }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().clickable(
+            indication = null, // Remove the grey ripple effect
+            interactionSource = MutableInteractionSource() // Required when setting indication to null
+        ) {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
     ) {
         Column(
             modifier = Modifier
