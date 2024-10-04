@@ -7,33 +7,31 @@ data class Food(
     val idFood: Int,
     val idShop: String,
     val imagePath: String,
-    val locationId: Int,
-    val price: Int,
+    val price: Price,
     val priceId: Int,
     val showFood: Boolean,
-    val star: Double,
+    val star: String,
+    val time: Time,
     val timeId: Int,
-    val timeValue: Int,
     val title: String
 )
 
+
+//////////////create
 data class CreateFood(
     val bestFood: Boolean,
     val categoryId: Int,
     val description: String,
     val idShop: String,
     val imagePath: String,
-    val locationId: Int,
-    val price: Double,
-    val priceId: Int,
+    val price: String,
     val showFood: Boolean,
-    val star: Double,
-    val timeId: Int,
-    val timeValue: Int,
+    val star: String,
+    val timeValue: String,
     val title: String
 )
 
-
+//////////update
 data class UpdateShowFood(
     val idFood: Int,
     val showFood: Boolean

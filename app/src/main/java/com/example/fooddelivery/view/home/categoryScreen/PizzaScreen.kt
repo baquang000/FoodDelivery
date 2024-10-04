@@ -17,13 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
-import com.example.fooddelivery.components.FoodItem
+import com.example.fooddelivery.components.FoodItemInGird
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.category.PizzaViewModel
 
@@ -58,11 +57,10 @@ fun PizzaScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(pizza) { pizza ->
-                        FoodItem(
+                        FoodItemInGird(
                             food = pizza,
                             navController = navController,
                             buttonSize = 16.sp,
-                            spacerbuttonModifier = Modifier.padding(start = 4.dp),
                             sharedViewModel = sharedViewModel
                         )
                     }

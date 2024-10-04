@@ -27,6 +27,7 @@ import com.example.fooddelivery.navigation.SEARCH_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
+import com.example.fooddelivery.navigation.TYPE_ARGUMENT_KEY
 import com.example.fooddelivery.untils.TokenManager
 import com.example.fooddelivery.view.home.CartScreen
 import com.example.fooddelivery.view.home.FoodDetailsScreen
@@ -169,6 +170,10 @@ fun HomeNavGraph(
                 navArgument(SEARCH_ARGUMENT_KEY) {
                     type = NavType.StringType
                     defaultValue = ""
+                },
+                navArgument(TYPE_ARGUMENT_KEY) {
+                    type = NavType.StringType
+                    defaultValue = ""
                 }
             )
         ) { backStackEntry ->
@@ -183,7 +188,6 @@ fun HomeNavGraph(
                 navController = homeNavController,
                 sharedViewModel = sharedViewModel,
                 innerPaddingValues = innerPadding,
-                token = token
             )
         }
         composable(route = HomeRouteScreen.FoodDetails.route,

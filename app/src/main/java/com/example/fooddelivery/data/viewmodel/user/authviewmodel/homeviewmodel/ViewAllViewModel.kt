@@ -17,10 +17,16 @@ class ViewAllViewModel : ViewModel() {
     private val _isLoadAllFood = MutableStateFlow(false)
     val isLoadAllFood = _isLoadAllFood.asStateFlow()
 
-    private suspend fun getAllFoodWithApi(token: String) {
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            getAllFoodWithApi()
+        }
+    }
+
+    private suspend fun getAllFoodWithApi() {
         try {
-            val tokenBearer = "Bearer $token"
-            _allFood.value = RetrofitClient.foodAPIService.getAllFood(tokenBearer)
+            //val tokenBearer = "Bearer $token"
+            _allFood.value = RetrofitClient.foodAPIService.getAllFood()
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {
@@ -28,10 +34,10 @@ class ViewAllViewModel : ViewModel() {
         }
     }
 
-    fun getToken(token: String) {
+ /*   fun getToken(token: String) {
         Log.d("Token", token)
         viewModelScope.launch(Dispatchers.IO) {
             getAllFoodWithApi(token)
         }
-    }
+    }*/
 }

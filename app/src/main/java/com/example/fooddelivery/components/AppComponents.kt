@@ -83,7 +83,6 @@ import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
-import java.text.DecimalFormat
 
 @Composable
 fun NormalTextComponents(
@@ -331,8 +330,6 @@ fun FoodItem(
     food: Food, navController: NavController,
     sharedViewModel: SharedViewModel = viewModel(),
 ) {
-    val formatter = DecimalFormat("#.##")
-    val decimalFormat = DecimalFormat("#,###.##")
     if (food.showFood) {
         Card(
             modifier = modifier
@@ -389,7 +386,7 @@ fun FoodItem(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         NormalTextComponents(
-                            value = "${decimalFormat.format(food.price)}đ",
+                            value = "${food.price.price}đ",
                             nomalColor = Color.Black,
                             nomalFontWeight = FontWeight.Bold,
                             nomalFontsize = 18.sp,
@@ -410,7 +407,7 @@ fun FoodItem(
                                 modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
                             ) {
                                 NormalTextComponents(
-                                    value = formatter.format(food.star),
+                                    value = food.star,
                                     nomalColor = Color.Black,
                                     nomalFontsize = 18.sp,
                                 )
@@ -428,7 +425,7 @@ fun FoodItem(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 NormalTextComponents(
-                                    value = "${food.timeValue}p",
+                                    value = food.time.time + "p",
                                     nomalFontsize = 18.sp,
                                     nomalColor = Color.Black,
                                     modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
@@ -454,13 +451,13 @@ fun FoodItem(
                                     containerColor = Color.Red
                                 ), shape = RectangleShape, modifier = Modifier.clip(
                                     shape = RoundedCornerShape(
-                                        topStart = 15.dp, bottomEnd = 16.dp
+                                        topStart = 20.dp, bottomEnd = 20.dp
                                     )
                                 ), onClick = {
                                     val fooddetails = FoodDetails(
                                         title = food.title,
                                         imagePath = food.imagePath,
-                                        price = food.price.toFloat(),
+                                        price = food.price.price.toFloat(),
                                         quantity = 1,
                                         idFood = food.idFood
                                     )
@@ -486,6 +483,162 @@ fun FoodItem(
         }
     }
 }
+
+@Composable
+fun FoodItemInGird(
+    modifier: Modifier = Modifier,
+    buttonSize: TextUnit = 30.sp,
+    food: Food, navController: NavController,
+    sharedViewModel: SharedViewModel = viewModel(),
+) {
+    if (food.showFood) {
+        Card(
+            modifier = modifier
+                .size(width = 260.dp, height = 295.dp)
+                .background(Color.LightGray.copy(alpha = 0.3f))
+                .clip(shape = RoundedCornerShape(15.dp))
+                .padding(horizontal = 8.dp, vertical = 8.dp)
+                .clickable {
+                    navController.navigate(
+                        route = HomeRouteScreen.ShopRouteScreen.sendIdShop(
+                            food.idShop
+                        ),
+                        navOptions = NavOptions
+                            .Builder()
+                            .setLaunchSingleTop(true)
+                            .build()
+                    )
+                }
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                AsyncImage(
+                    model = food.imagePath,
+                    contentDescription = food.title,
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 180.dp)
+                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        NormalTextComponents(
+                            value = food.title,
+                            nomalColor = Color.Black,
+                            nomalFontsize = 18.sp,
+                            nomalFontWeight = FontWeight.Bold,
+                            nomalTextAlign = TextAlign.Center
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        NormalTextComponents(
+                            value = "${food.price.price}đ",
+                            nomalColor = Color.Black,
+                            nomalFontWeight = FontWeight.Bold,
+                            nomalFontsize = 18.sp,
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            NormalTextComponents(
+                                value = food.star,
+                                nomalColor = Color.Black,
+                                nomalFontsize = 18.sp,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.star),
+                                contentDescription = stringResource(
+                                    R.string.star_icon
+                                ),
+                                tint = Color.Yellow,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            NormalTextComponents(
+                                value = food.time.time + "p",
+                                nomalFontsize = 18.sp,
+                                nomalColor = Color.Black,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.time),
+                                contentDescription = stringResource(
+                                    id = R.string.time
+                                ),
+                                modifier = Modifier
+                                    .size(24.dp),
+                                tint = Color.Red
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Button(colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red
+                        ), shape = RectangleShape, modifier = Modifier.clip(
+                            shape = RoundedCornerShape(
+                                topStart = 20.dp, bottomEnd = 20.dp
+                            )
+                        ), onClick = {
+                            val fooddetails = FoodDetails(
+                                title = food.title,
+                                imagePath = food.imagePath,
+                                price = food.price.price.toFloat(),
+                                quantity = 1,
+                                idFood = food.idFood
+                            )
+                            sharedViewModel.getIdShop(food.idShop)
+                            sharedViewModel.addFoodDetail(foodDetails = fooddetails)
+                            navController.navigate(
+                                route = HomeRouteScreen.ShopRouteScreen.sendIdShop(
+                                    food.idShop
+                                )
+                            )
+                        }) {
+                            Text(
+                                text = "+", style = TextStyle(
+                                    fontSize = buttonSize, textAlign = TextAlign.Center
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -538,9 +691,13 @@ fun MyDropdownMenuWithLoc(modifier: Modifier = Modifier, location: MutableList<L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDropdownMenuWithTime(modifier: Modifier = Modifier, time: MutableList<Time>) {
+fun MyDropdownMenuWithTime(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    time: List<Time>
+) {
     val selected = remember {
-        mutableStateOf(time[0].Value)
+        mutableStateOf(time.firstOrNull()?.time ?: "")
     }
     val expand = remember {
         mutableStateOf(false)
@@ -550,7 +707,7 @@ fun MyDropdownMenuWithTime(modifier: Modifier = Modifier, time: MutableList<Time
             expand.value = !expand.value
         }) {
             OutlinedTextField(
-                value = selected.value.toString(), onValueChange = {},
+                value = selected.value, onValueChange = {},
                 readOnly = true,
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
@@ -575,10 +732,17 @@ fun MyDropdownMenuWithTime(modifier: Modifier = Modifier, time: MutableList<Time
                 onDismissRequest = { expand.value = false }) {
                 time.forEach {
                     DropdownMenuItem(text = {
-                        Text(text = it.Value.toString())
+                        Text(text = it.time)
                     }, onClick = {
-                        selected.value = it.Value
+                        selected.value = it.time
                         expand.value = false
+                        navController.navigate(
+                            HomeRouteScreen.Search.sendText(
+                                it.time, "time"
+                            )
+                        ) {
+                            launchSingleTop = true
+                        }
                     })
                 }
             }
@@ -588,9 +752,13 @@ fun MyDropdownMenuWithTime(modifier: Modifier = Modifier, time: MutableList<Time
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDropdownMenuWithPrice(modifier: Modifier = Modifier, price: MutableList<Price>) {
+fun MyDropdownMenuWithPrice(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    price: List<Price>
+) {
     val selected = remember {
-        mutableStateOf(price[0].Value)
+        mutableStateOf(price.firstOrNull()?.price ?: "")
     }
     val expand = remember {
         mutableStateOf(false)
@@ -600,7 +768,7 @@ fun MyDropdownMenuWithPrice(modifier: Modifier = Modifier, price: MutableList<Pr
             expand.value = !expand.value
         }) {
             OutlinedTextField(
-                value = selected.value.toString(), onValueChange = {},
+                value = selected.value, onValueChange = {},
                 readOnly = true,
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
@@ -625,10 +793,17 @@ fun MyDropdownMenuWithPrice(modifier: Modifier = Modifier, price: MutableList<Pr
                 onDismissRequest = { expand.value = false }) {
                 price.forEach {
                     DropdownMenuItem(text = {
-                        Text(text = it.Value.toString())
+                        Text(text = it.price)
                     }, onClick = {
-                        selected.value = it.Value
+                        selected.value = it.price
                         expand.value = false
+                        navController.navigate(
+                            HomeRouteScreen.Search.sendText(
+                                it.price, "price"
+                            )
+                        ) {
+                            launchSingleTop = true
+                        }
                     })
                 }
             }

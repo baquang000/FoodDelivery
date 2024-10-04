@@ -118,13 +118,15 @@ fun AddFoodScreen(
     val localFocusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     Box(
-        modifier = Modifier.fillMaxSize().clickable(
-            indication = null, // Remove the grey ripple effect
-            interactionSource = MutableInteractionSource() // Required when setting indication to null
-        ) {
-            localFocusManager.clearFocus()
-            keyboardController?.hide()
-        }
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null, // Remove the grey ripple effect
+                interactionSource = MutableInteractionSource() // Required when setting indication to null
+            ) {
+                localFocusManager.clearFocus()
+                keyboardController?.hide()
+            }
     ) {
         if (isLoading) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         LazyColumn(
@@ -431,7 +433,6 @@ fun AddFoodScreen(
                                         imageUrl = downloadUri,
                                         bestFood = isBestFood,
                                         category = categoryIndex,
-                                        loc = locIndex,
                                         time = timeText
                                     )
                                     titleText = ""

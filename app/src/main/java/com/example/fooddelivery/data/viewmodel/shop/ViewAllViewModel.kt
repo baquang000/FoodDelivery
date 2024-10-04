@@ -52,7 +52,7 @@ class ViewAllViewModel : ViewModel() {
         if (ID != "") {
             _isLoadAllFood.value = true
             try {
-                _allFood.value = RetrofitClient.foodAPIService.getAllFood(ID)
+                _allFood.value = RetrofitClient.foodAPIService.getFoodByShop(ID)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {

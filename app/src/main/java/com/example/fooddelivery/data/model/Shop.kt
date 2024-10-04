@@ -1,5 +1,8 @@
 package com.example.fooddelivery.data.model
 
+
+
+/////////Get shop
 data class GetShopItem(
     val address: String,
     val email: String,

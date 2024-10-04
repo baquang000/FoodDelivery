@@ -283,9 +283,9 @@ fun FoodItemInShop(
                 navController.navigate(
                     HomeRouteScreen.FoodDetails.sendFood(
                         title = food.title,
-                        price = food.price,
-                        star = food.star,
-                        timevalue = food.timeValue,
+                        price = food.price.price,
+                        star = food.star.toDouble(),
+                        timevalue = food.time.time,
                         description = food.description,
                         imagepath = encodeURL,
                         id = food.idFood,
@@ -338,7 +338,7 @@ fun FoodItemInShop(
                     .padding(end = 8.dp)
             ) {
                 Text(
-                    text = "${food.price} đ", style = MaterialTheme.typography.titleMedium.copy(
+                    text = "${food.price.price} đ", style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.Red
                     )
                 )
@@ -353,7 +353,7 @@ fun FoodItemInShop(
                                 val fooddetails = FoodDetails(
                                     title = food.title,
                                     imagePath = food.imagePath,
-                                    price = food.price.toFloat(),
+                                    price = food.price.price.toFloat(),
                                     quantity = 1,
                                     idFood = food.idFood
                                 )
@@ -384,7 +384,7 @@ fun FoodItemInShop(
                             val fooddetails = FoodDetails(
                                 title = food.title,
                                 imagePath = food.imagePath,
-                                price = food.price.toFloat(),
+                                price = food.price.price.toFloat(),
                                 quantity = 1,
                                 idFood = food.idFood
                             )

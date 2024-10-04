@@ -1,5 +1,7 @@
 package com.example.fooddelivery.view.home
 
+/*import com.example.fooddelivery.components.MyDropdownMenuWithPrice
+import com.example.fooddelivery.components.MyDropdownMenuWithTime*/
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,7 +56,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -68,13 +69,9 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.CustomSnackBarInHome
 import com.example.fooddelivery.components.FoodItem
 import com.example.fooddelivery.components.IconButtonWithText
-import com.example.fooddelivery.components.MyDropdownMenuWithLoc
 import com.example.fooddelivery.components.MyDropdownMenuWithPrice
 import com.example.fooddelivery.components.MyDropdownMenuWithTime
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.model.LocationState
-import com.example.fooddelivery.data.model.PriceState
-import com.example.fooddelivery.data.model.TimeState
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.HomeViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
@@ -168,7 +165,8 @@ fun HomeScreen(
                                         modifier = Modifier.clickable {
                                             homeNavController.navigate(
                                                 HomeRouteScreen.Search.sendText(
-                                                    searchText
+                                                    searchText,
+                                                    "titleFood"
                                                 )
                                             ) {
                                                 launchSingleTop = true
@@ -209,7 +207,8 @@ fun HomeScreen(
                                     onSearch = {
                                         homeNavController.navigate(
                                             HomeRouteScreen.Search.sendText(
-                                                searchText
+                                                searchText,
+                                                "titleFood"
                                             )
                                         )
                                     }
@@ -238,20 +237,22 @@ fun HomeScreen(
                             LazyRow()
                             {
                                 item {
-                                    SetLocationItems(
+                                    /*  SetLocationItems(
+                                          homeViewModel = homeViewModel,
+                                          modifier = Modifier
+                                              .widthIn(max = 200.dp)
+                                              .padding(horizontal = 8.dp)
+                                      )*/
+                                    SetTimeItems(
                                         homeViewModel = homeViewModel,
+                                        navController = homeNavController,
                                         modifier = Modifier
                                             .widthIn(max = 200.dp)
                                             .padding(horizontal = 8.dp)
                                     )
-                                    SetTimeIems(
+                                    SetPriceItems(
                                         homeViewModel = homeViewModel,
-                                        modifier = Modifier
-                                            .widthIn(max = 200.dp)
-                                            .padding(horizontal = 8.dp)
-                                    )
-                                    SetPriceIems(
-                                        homeViewModel = homeViewModel,
+                                        navController = homeNavController,
                                         modifier = Modifier
                                             .widthIn(max = 200.dp)
                                             .padding(horizontal = 8.dp)
@@ -408,73 +409,38 @@ fun HomeScreen(
 }
 
 @Composable
-fun SetPriceIems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
-    when (val result = homeViewModel.price.value) {
-        is PriceState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is PriceState.Success -> {
-            MyDropdownMenuWithPrice(price = result.data, modifier = modifier)
-
-        }
-
-        is PriceState.Failure -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = result.message, style = TextStyle(
-                        fontSize = 20.sp,
-                    )
-                )
-            }
-        }
-
-        else -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.error_loading_data), style = TextStyle(
-                        fontSize = 20.sp, color = Color.Red
-                    )
-                )
-            }
+fun SetPriceItems(
+    homeViewModel: HomeViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val price by homeViewModel.price.collectAsStateWithLifecycle()
+    val isload by homeViewModel.isLoadPrice.collectAsStateWithLifecycle()
+    Box {
+        if (isload) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else {
+            MyDropdownMenuWithPrice(
+                price = price,
+                navController = navController,
+                modifier = modifier
+            )
         }
     }
 }
 
 @Composable
-fun SetTimeIems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
-    when (val result = homeViewModel.time.value) {
-        is TimeState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is TimeState.Success -> {
-            MyDropdownMenuWithTime(time = result.data, modifier = modifier)
-
-        }
-
-        is TimeState.Failure -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = result.message, style = TextStyle(
-                        fontSize = 20.sp,
-                    )
-                )
-            }
-        }
-
-        else -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.error_loading_data), style = TextStyle(
-                        fontSize = 20.sp, color = Color.Red
-                    )
-                )
-            }
+fun SetTimeItems(
+    homeViewModel: HomeViewModel,
+    navController: NavController, modifier: Modifier = Modifier
+) {
+    val time by homeViewModel.time.collectAsStateWithLifecycle()
+    val isload by homeViewModel.isLoadTime.collectAsStateWithLifecycle()
+    Box {
+        if (isload) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else {
+            MyDropdownMenuWithTime(time = time, navController = navController, modifier = modifier)
         }
     }
 }
@@ -500,7 +466,7 @@ fun SetBestFood(
 
 }
 
-
+/*
 @Composable
 fun SetLocationItems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
     when (val result = homeViewModel.location.value) {
@@ -534,4 +500,4 @@ fun SetLocationItems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier
             }
         }
     }
-}
+}*/

@@ -79,7 +79,6 @@ fun NormalTextComponents(
 }
 
 
-
 @Composable
 fun FoodItem(
     modifier: Modifier = Modifier,
@@ -101,17 +100,17 @@ fun FoodItem(
             .clip(shape = RoundedCornerShape(15.dp))
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .clickable {
-                 navController.navigate(
-                     ShopRouteScreen.FoodDetails.sendFood(
-                         title = food.title,
-                         price = food.price,
-                         star = food.star,
-                         timevalue = food.timeValue,
-                         description = food.description,
-                         imagepath = encodeURL,
-                         id = food.idFood
-                     )
-                 )
+                navController.navigate(
+                    ShopRouteScreen.FoodDetails.sendFood(
+                        title = food.title,
+                        price = food.price.price,
+                        star = food.star.toDouble(),
+                        timevalue = food.time.time,
+                        description = food.description,
+                        imagepath = encodeURL,
+                        id = food.idFood
+                    )
+                )
             }
     ) {
         Column(
@@ -151,7 +150,7 @@ fun FoodItem(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     NormalTextComponents(
-                        value = "${food.price}đ",
+                        value = "${food.price.price}đ",
                         nomalColor = Color.Black,
                         nomalFontWeight = FontWeight.Bold,
                         nomalFontsize = 14.sp,
@@ -174,7 +173,7 @@ fun FoodItem(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             NormalTextComponents(
-                                value = food.star.toString(),
+                                value = food.star,
                                 nomalColor = Color.Black,
                                 nomalFontsize = 14.sp,
                             )
@@ -192,7 +191,7 @@ fun FoodItem(
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             NormalTextComponents(
-                                value = "${food.timeValue}p",
+                                value = "${food.time.time}p",
                                 nomalFontsize = 14.sp,
                                 nomalColor = Color.Black,
                             )
@@ -228,10 +227,10 @@ fun FoodItem(
                             Switch(checked = isBestFood, onCheckedChange = {
                                 isBestFood = it
                                 coroutineScope.launch {
-                                     viewAllViewModel.updateIsBestFood(
-                                         isBestFood = isBestFood,
-                                         idFood = food.idFood
-                                     )
+                                    viewAllViewModel.updateIsBestFood(
+                                        isBestFood = isBestFood,
+                                        idFood = food.idFood
+                                    )
                                 }
                             }, modifier = Modifier.size(width = 5.dp, height = 2.dp))
                         }

@@ -2,7 +2,6 @@ package com.example.fooddelivery.data.viewmodel.shop
 
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -31,13 +30,10 @@ class AddFoodViewModel : ViewModel() {
         imageUrl: String,
         bestFood: Boolean,
         category: Int,
-        loc: Int,
         time: Int
     ) {
         _isLoadingAddFood.value = true
         if (ID != "") {
-            var priceId by mutableIntStateOf(0)
-            var timeid by mutableIntStateOf(0)
             if (title.isEmpty()) {
                 isTitleEmpty = true
                 _isLoadingAddFood.value = false
@@ -52,20 +48,6 @@ class AddFoodViewModel : ViewModel() {
                 isPriceInvalid = true
                 _isLoadingAddFood.value = false
                 return
-            } else {
-                priceId = when (price) {
-                    in 0.0..150000.0 -> {
-                        0
-                    }
-
-                    in 150001.0..300000.0 -> {
-                        1
-                    }
-
-                    else -> {
-                        2
-                    }
-                }
             }
             if (imageUrl.isBlank()) {
                 isImageUrlEmpty = true
@@ -76,32 +58,15 @@ class AddFoodViewModel : ViewModel() {
                 isTimeInvalid = true
                 _isLoadingAddFood.value = false
                 return
-            } else {
-                timeid = when (time) {
-                    in 0..10 -> {
-                        0
-                    }
-
-                    in 11..30 -> {
-                        1
-                    }
-
-                    else -> {
-                        2
-                    }
-                }
             }
             val newFood = CreateFood(
                 bestFood = bestFood,
                 categoryId = category,
                 description = description,
                 imagePath = imageUrl,
-                locationId = loc,
-                price = price,
-                priceId = priceId,
-                star = 5.0,
-                timeId = timeid,
-                timeValue = time,
+                price = price.toString(),
+                star = 5.0.toString(),
+                timeValue = time.toString(),
                 title = title,
                 idShop = ID,
                 showFood = false,

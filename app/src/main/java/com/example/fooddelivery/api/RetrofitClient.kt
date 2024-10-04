@@ -64,4 +64,16 @@ object RetrofitClient {
                 okHttpClient
             ).build().create(DiscountAPIService::class.java)
     }
+    val priceAPIService: PriceAPIService by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
+                okHttpClient
+            ).build().create(PriceAPIService::class.java)
+    }
+    val timeAPIService: TimeAPIService by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
+                okHttpClient
+            ).build().create(TimeAPIService::class.java)
+    }
 }

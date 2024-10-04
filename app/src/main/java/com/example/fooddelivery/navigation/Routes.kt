@@ -1,6 +1,7 @@
 package com.example.fooddelivery.navigation
 
 const val SEARCH_ARGUMENT_KEY = "text"
+const val TYPE_ARGUMENT_KEY = "type"
 const val TITLE_ARGUMENT_KEY = "title"
 const val PRICE_ARGUMENT_KEY = "price"
 const val STAR_ARGUMENT_KEY = "star"
@@ -53,9 +54,10 @@ sealed class HomeRouteScreen(val route: String) {
     data object Shushi : HomeRouteScreen(route = "Shushi_Screen")
     data object Drink : HomeRouteScreen(route = "Drink_Screen")
     data object More : HomeRouteScreen(route = "More_Screen")
-    data object Search : HomeRouteScreen(route = "Search_Screen?text={$SEARCH_ARGUMENT_KEY}") {
-        fun sendText(text: String = ""): String {
-            return "Search_Screen?text=$text"
+    data object Search :
+        HomeRouteScreen(route = "Search_Screen?text={$SEARCH_ARGUMENT_KEY}&type={$TYPE_ARGUMENT_KEY}") {
+        fun sendText(text: String = "", type: String = ""): String {
+            return "Search_Screen?text=$text&type=$type"
         }
     }
 
@@ -64,9 +66,9 @@ sealed class HomeRouteScreen(val route: String) {
         HomeRouteScreen(route = "Food_Details_Screen?title={$TITLE_ARGUMENT_KEY}&price={$PRICE_ARGUMENT_KEY}&star={$STAR_ARGUMENT_KEY}&timevalue={$TIMEVALUE_ARGUMENT_KEY}&description={$DESCRIPTION_ARGUMENT_KEY}&imagepath={$IMAGEPATH_ARGUMENT_KEY}&id={$ID_ARGUMENT_KEY}&idshop={$ID_SHOP_ARGUMENT_KEY}") {
         fun sendFood(
             title: String = "",
-            price: Int = 0,
+            price: String = "",
             star: Double = 0.0,
-            timevalue: Int = 0,
+            timevalue: String = "",
             description: String = "",
             imagepath: String = "",
             id: Int = 0,
@@ -100,9 +102,9 @@ sealed class ShopRouteScreen(val route: String) {
         ShopRouteScreen(route = "Food_Details_Screen?title={$TITLE_ARGUMENT_KEY}&price={$PRICE_ARGUMENT_KEY}&star={$STAR_ARGUMENT_KEY}&timevalue={$TIMEVALUE_ARGUMENT_KEY}&description={$DESCRIPTION_ARGUMENT_KEY}&imagepath={$IMAGEPATH_ARGUMENT_KEY}&id={$ID_ARGUMENT_KEY}") {
         fun sendFood(
             title: String = "",
-            price: Int = 0,
+            price: String = "",
             star: Double = 0.0,
-            timevalue: Int = 0,
+            timevalue: String = "",
             description: String = "",
             imagepath: String = "",
             id: Int = 0
