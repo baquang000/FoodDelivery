@@ -27,7 +27,7 @@ class DrinkViewModel : ViewModel() {
     private suspend fun getDrinkWithApi() {
         _isLoadDrink.value = true
         try {
-            _drinkFood.value = RetrofitClient.foodAPIService.getCategory(6)
+            _drinkFood.value = RetrofitClient.foodAPIService.getCategory(7)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

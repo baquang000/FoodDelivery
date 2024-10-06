@@ -28,7 +28,7 @@ class ChickenViewModel : ViewModel() {
     private suspend fun getChickenWithApi() {
         _isLoadChicken.value = true
         try {
-            _chickenFood.value = RetrofitClient.foodAPIService.getCategory(2)
+            _chickenFood.value = RetrofitClient.foodAPIService.getCategory(3)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

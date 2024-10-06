@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.ChangePassViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
@@ -101,6 +103,7 @@ fun ChangePassScreen(
         stringResource(id = R.string.Hide_pass_word)
     }
     val localFocusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -302,7 +305,9 @@ fun ChangePassScreen(
         ) {
             Button(
                 onClick = {
-                    changePassViewModel.checkRulesPassWord()
+                    coroutineScope.launch {
+                        changePassViewModel.checkRulesPassWord()
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red,
@@ -314,9 +319,13 @@ fun ChangePassScreen(
         }
         if (isClickButton) {
             if (changePassSuccess) {
-                Text("Password changed successfully", color = Color.Green)
+                Text(
+                    "Password changed successfully",
+                    color = Color.Green,
+                    modifier = Modifier.padding(start = 15.dp)
+                )
             } else {
-                Text(errorMessage, color = Color.Red)
+                Text(errorMessage, color = Color.Red, modifier = Modifier.padding(start = 20.dp))
             }
         }
     }

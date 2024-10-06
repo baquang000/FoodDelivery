@@ -28,7 +28,7 @@ class BurgerViewModel : ViewModel() {
     private suspend fun getBurgerWithApi() {
         _isLoadBurger.value = true
         try {
-            _burgerFood.value = RetrofitClient.foodAPIService.getCategory(1)
+            _burgerFood.value = RetrofitClient.foodAPIService.getCategory(2)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Food
+import com.example.fooddelivery.data.model.GetCategory
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +16,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
     /*  val location: MutableState<LocationState> = mutableStateOf(LocationState.Empty)
-      val time: MutableState<TimeState> = mutableStateOf(TimeState.Empty)
-      val price: MutableState<PriceState> = mutableStateOf(PriceState.Empty)*/
+     */
 
     //Best food
     private val _bestFood = MutableStateFlow<List<Food>>(emptyList())
@@ -36,6 +36,12 @@ class HomeViewModel : ViewModel() {
     private val _isLoadTime = MutableStateFlow(false)
     val isLoadTime = _isLoadTime.asStateFlow()
 
+    ///category
+    private val _category = MutableStateFlow<List<GetCategory>>(emptyList())
+    val category = _category.asStateFlow()
+    private val _isLoadCategory = MutableStateFlow(false)
+    val isLoadCategory = _isLoadCategory.asStateFlow()
+
     ///tag
     private val tag = ViewModel::class.java.simpleName
 
@@ -45,6 +51,7 @@ class HomeViewModel : ViewModel() {
             getPriceWithApi()
             getTimeWithApi()
             getBestFoodWithApi()
+            getCategoryWithApi()
         }
     }
 
@@ -82,6 +89,18 @@ class HomeViewModel : ViewModel() {
             _isLoadTime.value = false
         }
     }
+
+    private suspend fun getCategoryWithApi() {
+        _isLoadCategory.value = true
+        try {
+            _category.value = RetrofitClient.categoryAPIService.getCategory()
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
+        } finally {
+            _isLoadCategory.value = false
+        }
+    }
+
     /*
         ///////////
         private fun fetchLocationFromFirebase() {

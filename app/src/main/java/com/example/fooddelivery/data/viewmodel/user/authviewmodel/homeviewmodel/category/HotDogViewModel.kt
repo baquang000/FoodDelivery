@@ -28,7 +28,7 @@ class HotDogViewModel : ViewModel() {
     private suspend fun getHotdogWithApi() {
         _isLoadHotdog.value = true
         try {
-            _hotdogFood.value = RetrofitClient.foodAPIService.getCategory(5)
+            _hotdogFood.value = RetrofitClient.foodAPIService.getCategory(6)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

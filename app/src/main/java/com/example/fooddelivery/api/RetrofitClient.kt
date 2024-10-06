@@ -76,4 +76,10 @@ object RetrofitClient {
                 okHttpClient
             ).build().create(TimeAPIService::class.java)
     }
+    val categoryAPIService: CategoryAPIService by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
+                okHttpClient
+            ).build().create(CategoryAPIService::class.java)
+    }
 }

@@ -16,3 +16,10 @@ data class Rest(
     val email: String,
     val id: String
 )
+
+
+data class changePassword(
+    val id:String,
+    val currentPassword:String,
+    val newPassword:String
+)

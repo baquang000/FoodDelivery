@@ -1,7 +1,5 @@
 package com.example.fooddelivery.components
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -55,7 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -289,9 +286,9 @@ fun DrawLineAndTextComponents() {
 
 @Composable
 fun IconButtonWithText(
-    backgroundColor: Color = colorResource(id = R.color.btn_1),
-    @DrawableRes iconId: Int = R.drawable.btn_1,
-    @StringRes textId: Int = R.string.Pizza,
+    backgroundColor: String,
+    iconPath: String,
+    name: String,
     eventOnclick: () -> Unit
 ) {
     Column(
@@ -301,20 +298,15 @@ fun IconButtonWithText(
         Box(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(10.dp))
-                .background(color = backgroundColor)
+                .background(color = Color(color = android.graphics.Color.parseColor(backgroundColor)))
                 .padding(12.dp)
         ) {
             IconButton(onClick = { eventOnclick() }) {
-                Icon(
-                    painter = painterResource(id = iconId),
-                    contentDescription = stringResource(
-                        id = R.string.Pizza
-                    )
-                )
+                AsyncImage(model = iconPath, contentDescription = name)
             }
         }
         NormalTextComponents(
-            value = stringResource(id = textId),
+            value = name,
             nomalFontsize = 18.sp,
             nomalColor = Color.Black,
             modifier = Modifier.padding(top = 8.dp)

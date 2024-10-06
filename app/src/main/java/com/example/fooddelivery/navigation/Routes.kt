@@ -51,7 +51,7 @@ sealed class HomeRouteScreen(val route: String) {
     data object Chicken : HomeRouteScreen(route = "Chicken_Screen")
     data object HotDog : HomeRouteScreen(route = "HotDog_Screen")
     data object Meat : HomeRouteScreen(route = "Meat_Screen")
-    data object Shushi : HomeRouteScreen(route = "Shushi_Screen")
+    data object Shushi : HomeRouteScreen(route = "Sushi_Screen")
     data object Drink : HomeRouteScreen(route = "Drink_Screen")
     data object More : HomeRouteScreen(route = "More_Screen")
     data object Search :
@@ -118,5 +118,19 @@ sealed class ShopRouteScreen(val route: String) {
     data object DiscountCode : ShopRouteScreen(route = "DiscountCode_Screen")
 
     data object ChangePass : ShopRouteScreen(route = "ChangePass_Screen")
+}
+
+fun getRouteForCategory(category: String): String {
+    return when (category) {
+        "Pizza" -> "Pizza_Screen"
+        "Burger" -> "Burger_Screen"
+        "Chicken" -> "Chicken_Screen"
+        "Sushi" -> "Sushi_Screen"
+        "Meat" -> "Meat_Screen"
+        "hot_dog" -> "HotDog_Screen"
+        "drink" -> "Drink_Screen"
+        "more" -> "More_Screen"
+        else -> "Home_Screen"
+    }
 }
 

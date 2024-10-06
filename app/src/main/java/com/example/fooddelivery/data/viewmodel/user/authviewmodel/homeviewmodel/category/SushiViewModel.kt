@@ -28,7 +28,7 @@ class SushiViewModel : ViewModel() {
     private suspend fun getSushiWithApi() {
         _isLoadSushi.value = true
         try {
-            _sushiFood.value = RetrofitClient.foodAPIService.getCategory(3)
+            _sushiFood.value = RetrofitClient.foodAPIService.getCategory(4)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

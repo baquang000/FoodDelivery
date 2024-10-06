@@ -12,6 +12,7 @@ import com.example.fooddelivery.data.model.Auth
 import com.example.fooddelivery.data.model.LoginUIEvent
 import com.example.fooddelivery.data.model.LoginUIState
 import com.example.fooddelivery.data.rules.Validator
+import com.example.fooddelivery.untils.MoshiGlobal
 import com.example.fooddelivery.untils.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,9 +75,12 @@ class LoginViewModel : ViewModel() {
                 } else {
                     // Handle unsuccessful login (e.g., invalid credentials)
                     loginInProgress.value = false
-                    val errorBody = respon.errorBody()?.string() ?: "LoginUser failed"
+                    val errorBody = respon.errorBody()?.string()
                     isFailer = true
-                    errormessage = errorBody
+                    errormessage = errorBody?.let {
+                        // Phân tích JSON để chỉ lấy thông điệp lỗi
+                        MoshiGlobal.errorResponse(it)
+                    } ?: "Unknown error"
                     // Optionally: Show a toast or update UI with the error message
                 }
             }

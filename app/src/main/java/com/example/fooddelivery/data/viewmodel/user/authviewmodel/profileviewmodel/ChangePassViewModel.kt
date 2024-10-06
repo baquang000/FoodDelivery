@@ -1,11 +1,17 @@
 package com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
+import androidx.lifecycle.viewModelScope
+import com.example.fooddelivery.api.RetrofitClient
+import com.example.fooddelivery.data.model.changePassword
+import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.untils.MoshiGlobal
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ChangePassViewModel : ViewModel() {
     var currentPass by mutableStateOf("")
@@ -16,7 +22,8 @@ class ChangePassViewModel : ViewModel() {
     var isClickButton by mutableStateOf(false)
     var changePassSuccess by mutableStateOf(false)
     var errorMessage by mutableStateOf("")
-    fun checkRulesPassWord() {
+    private val tag = ViewModel::class.java.simpleName
+    suspend fun checkRulesPassWord() {
         isClickButton = true
         isCurPassNull = currentPass.isEmpty()
         isNewPassequalRePass = newPass == reNewPass
@@ -25,31 +32,27 @@ class ChangePassViewModel : ViewModel() {
         }
     }
 
-    private fun changePass(currentPass: String, newPass: String) {
-        val user = FirebaseAuth.getInstance().currentUser
-        val email = user?.email
-        if (user != null && email != null) {
-            val credential = EmailAuthProvider.getCredential(email, currentPass)
-            user.reauthenticate(credential).addOnCompleteListener { authtask ->
-                if (authtask.isSuccessful) {
-                    user.updatePassword(newPass).addOnCompleteListener { updatetask ->
-                        if (updatetask.isSuccessful) {
-                            changePassSuccess = true
-                            errorMessage = "Thay đổi mật khẩu thành công"
-                        } else {
-                            changePassSuccess = false
-                            errorMessage =
-                                updatetask.exception?.message ?: "Error changing password"
-                        }
-                    }
+    private suspend fun changePass(currentPass: String, newPass: String) {
+        try {
+            val changePass =
+                changePassword(id = ID, currentPassword = currentPass, newPassword = newPass)
+            viewModelScope.launch(Dispatchers.IO) {
+                val response = RetrofitClient.authAPIService.changePassword(changePass)
+                if (response.isSuccessful) {
+                    changePassSuccess = true
                 } else {
                     changePassSuccess = false
-                    errorMessage = authtask.exception?.message ?: "Re-authentication failed"
+                    val errorBody = response.errorBody()?.string()
+                    errorMessage = errorBody?.let {
+                        // Phân tích JSON để chỉ lấy thông điệp lỗi
+                        MoshiGlobal.errorResponse(it)
+                    } ?: "Unknown error"
                 }
             }
-        } else {
+        } catch (e: Exception) {
+            Log.d(tag, "changePass: ${e.message}")
             changePassSuccess = false
-            errorMessage = "User not logged in"
+            errorMessage = e.message.toString()
         }
     }
 }

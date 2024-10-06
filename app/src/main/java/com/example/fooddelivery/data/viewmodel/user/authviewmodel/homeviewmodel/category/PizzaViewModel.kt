@@ -27,7 +27,7 @@ class PizzaViewModel : ViewModel() {
     private suspend fun getPizzaWithApi() {
         _isLoadPizza.value = true
         try {
-            _pizzaFood.value = RetrofitClient.foodAPIService.getCategory(0)
+            _pizzaFood.value = RetrofitClient.foodAPIService.getCategory(1)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

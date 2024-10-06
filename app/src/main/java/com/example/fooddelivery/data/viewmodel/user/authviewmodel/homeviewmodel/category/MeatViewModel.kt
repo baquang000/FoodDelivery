@@ -27,7 +27,7 @@ class MeatViewModel : ViewModel() {
     private suspend fun getMeatWithApi() {
         _isLoadMeat.value = true
         try {
-            _meatFood.value = RetrofitClient.foodAPIService.getCategory(4)
+            _meatFood.value = RetrofitClient.foodAPIService.getCategory(5)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

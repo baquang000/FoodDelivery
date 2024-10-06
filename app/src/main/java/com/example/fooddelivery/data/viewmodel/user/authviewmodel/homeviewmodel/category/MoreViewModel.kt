@@ -29,7 +29,7 @@ class MoreViewModel : ViewModel() {
     private suspend fun getMoreWithApi() {
         _isLoadMore.value = true
         try {
-            _moreFood.value = RetrofitClient.foodAPIService.getCategory(7)
+            _moreFood.value = RetrofitClient.foodAPIService.getCategory(8)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

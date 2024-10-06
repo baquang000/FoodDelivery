@@ -1,7 +1,5 @@
 package com.example.fooddelivery.view.home
 
-/*import com.example.fooddelivery.components.MyDropdownMenuWithPrice
-import com.example.fooddelivery.components.MyDropdownMenuWithTime*/
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,9 +49,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -75,6 +73,7 @@ import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.HomeViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
+import com.example.fooddelivery.navigation.getRouteForCategory
 import kotlinx.coroutines.launch
 
 
@@ -89,6 +88,9 @@ fun HomeScreen(
     //loading bestfood
     val isLoading by homeViewModel.isLoadBestFood.collectAsStateWithLifecycle()
     val totalPrice = sharedViewModel.totalPrice.collectAsStateWithLifecycle()
+    ///category
+    val category by homeViewModel.category.collectAsStateWithLifecycle()
+    val loadCategory by homeViewModel.isLoadCategory.collectAsStateWithLifecycle()
     ///
     val countStateFlow by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()
     val snackState = remember { SnackbarHostState() }
@@ -108,6 +110,8 @@ fun HomeScreen(
     val nameShop by sharedViewModel.nameShop.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -312,66 +316,28 @@ fun HomeScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.fillMaxHeight()
                             ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-                                    IconButtonWithText {
-                                        homeNavController.navigate(HomeRouteScreen.Pizza.route)
-                                    }
-                                    IconButtonWithText(
-                                        backgroundColor = colorResource(id = R.color.btn_2),
-                                        iconId = R.drawable.btn_2,
-                                        textId = R.string.Burger
-                                    ) {
-                                        homeNavController.navigate(HomeRouteScreen.Burger.route)
-                                    }
-                                    IconButtonWithText(
-                                        backgroundColor = colorResource(id = R.color.btn_3),
-                                        iconId = R.drawable.btn_3,
-                                        textId = R.string.Chicken
-                                    ) {
-                                        homeNavController.navigate(HomeRouteScreen.Chicken.route)
-                                    }
-                                    IconButtonWithText(
-                                        backgroundColor = colorResource(id = R.color.btn_4),
-                                        iconId = R.drawable.btn_4,
-                                        textId = R.string.Sushi
-                                    ) {
-                                        homeNavController.navigate(HomeRouteScreen.Shushi.route)
-                                    }
-                                }
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-                                    IconButtonWithText(
-                                        backgroundColor = colorResource(id = R.color.btn_5),
-                                        iconId = R.drawable.btn_5,
-                                        textId = R.string.Meat
-                                    ) {
-                                        homeNavController.navigate(HomeRouteScreen.Meat.route)
-                                    }
-                                    IconButtonWithText(
-                                        backgroundColor = colorResource(id = R.color.btn_6),
-                                        iconId = R.drawable.btn_6,
-                                        textId = R.string.hot_dog
-                                    ) {
-                                        homeNavController.navigate(HomeRouteScreen.HotDog.route)
-                                    }
-                                    IconButtonWithText(
-                                        backgroundColor = colorResource(id = R.color.btn_7),
-                                        iconId = R.drawable.btn_7,
-                                        textId = R.string.drink
-                                    ) {
-                                        homeNavController.navigate(HomeRouteScreen.Drink.route)
-                                    }
-                                    IconButtonWithText(
-                                        backgroundColor = colorResource(id = R.color.btn_8),
-                                        iconId = R.drawable.btn_8,
-                                        textId = R.string.more
-                                    ) {
-                                        homeNavController.navigate(HomeRouteScreen.More.route)
+                                if (loadCategory) {
+                                    CircularProgressIndicator(modifier = Modifier.padding(start = (screenWidthDp / 2).dp))
+                                } else {
+                                    category.chunked(4).forEach { categoryRow ->
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceEvenly
+                                        ) {
+                                            categoryRow.forEach { category ->
+                                                IconButtonWithText(
+                                                    backgroundColor = category.color,
+                                                    iconPath = category.iconPath,
+                                                    name = category.name
+                                                ) {
+                                                    homeNavController.navigate(
+                                                        getRouteForCategory(
+                                                            category = category.name
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -408,6 +374,7 @@ fun HomeScreen(
     }
 }
 
+
 @Composable
 fun SetPriceItems(
     homeViewModel: HomeViewModel,
@@ -440,7 +407,11 @@ fun SetTimeItems(
         if (isload) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
-            MyDropdownMenuWithTime(time = time, navController = navController, modifier = modifier)
+            MyDropdownMenuWithTime(
+                time = time,
+                navController = navController,
+                modifier = modifier
+            )
         }
     }
 }
@@ -463,7 +434,6 @@ fun SetBestFood(
             )
         }
     }
-
 }
 
 /*
