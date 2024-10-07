@@ -10,6 +10,7 @@ const val DESCRIPTION_ARGUMENT_KEY = "description"
 const val IMAGEPATH_ARGUMENT_KEY = "imagepath"
 const val ID_ARGUMENT_KEY = "id"
 const val ID_SHOP_ARGUMENT_KEY = "idshop"
+const val CATEGORY_ID_KEY = "idshop"
 
 object Graph {
     const val ROOTGRAPH = "rootGraph"
@@ -46,14 +47,15 @@ sealed class FavoriteRouteScreen(val route: String) {
 
 sealed class HomeRouteScreen(val route: String) {
     data object Home : HomeRouteScreen(route = "Home_Screen")
-    data object Pizza : HomeRouteScreen(route = "Pizza_Screen")
-    data object Burger : HomeRouteScreen(route = "Burger_Screen")
-    data object Chicken : HomeRouteScreen(route = "Chicken_Screen")
-    data object HotDog : HomeRouteScreen(route = "HotDog_Screen")
-    data object Meat : HomeRouteScreen(route = "Meat_Screen")
-    data object Shushi : HomeRouteScreen(route = "Sushi_Screen")
-    data object Drink : HomeRouteScreen(route = "Drink_Screen")
-    data object More : HomeRouteScreen(route = "More_Screen")
+    data object Category :
+        HomeRouteScreen(route = "Category_Screen?categoryId={$CATEGORY_ID_KEY}") {
+        fun sendIdCategory(
+            categoryId: Int = 0
+        ): String {
+            return "Category_Screen?categoryId=$categoryId"
+        }
+    }
+
     data object Search :
         HomeRouteScreen(route = "Search_Screen?text={$SEARCH_ARGUMENT_KEY}&type={$TYPE_ARGUMENT_KEY}") {
         fun sendText(text: String = "", type: String = ""): String {
@@ -120,17 +122,4 @@ sealed class ShopRouteScreen(val route: String) {
     data object ChangePass : ShopRouteScreen(route = "ChangePass_Screen")
 }
 
-fun getRouteForCategory(category: String): String {
-    return when (category) {
-        "Pizza" -> "Pizza_Screen"
-        "Burger" -> "Burger_Screen"
-        "Chicken" -> "Chicken_Screen"
-        "Sushi" -> "Sushi_Screen"
-        "Meat" -> "Meat_Screen"
-        "hot_dog" -> "HotDog_Screen"
-        "drink" -> "Drink_Screen"
-        "more" -> "More_Screen"
-        else -> "Home_Screen"
-    }
-}
 

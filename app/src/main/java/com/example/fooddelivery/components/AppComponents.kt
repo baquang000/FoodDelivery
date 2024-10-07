@@ -1,6 +1,7 @@
 package com.example.fooddelivery.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -286,7 +287,6 @@ fun DrawLineAndTextComponents() {
 
 @Composable
 fun IconButtonWithText(
-    backgroundColor: String,
     iconPath: String,
     name: String,
     eventOnclick: () -> Unit
@@ -298,10 +298,11 @@ fun IconButtonWithText(
         Box(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(10.dp))
-                .background(color = Color(color = android.graphics.Color.parseColor(backgroundColor)))
+                .border(width = 1.dp, color = Color.LightGray)
+                .background(color = Color.Transparent)
                 .padding(12.dp)
         ) {
-            IconButton(onClick = { eventOnclick() }) {
+            IconButton(onClick = { eventOnclick() }, modifier = Modifier.size(36.dp)) {
                 AsyncImage(model = iconPath, contentDescription = name)
             }
         }

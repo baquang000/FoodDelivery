@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.FavoriteViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.ShopViewModel
+import com.example.fooddelivery.navigation.CATEGORY_ID_KEY
 import com.example.fooddelivery.navigation.DESCRIPTION_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.HomeRouteScreen
@@ -36,14 +37,7 @@ import com.example.fooddelivery.view.home.ProfileScreen
 import com.example.fooddelivery.view.home.SearchScreen
 import com.example.fooddelivery.view.home.ShopScreen
 import com.example.fooddelivery.view.home.ViewAllScreen
-import com.example.fooddelivery.view.home.categoryScreen.BurgerScreen
-import com.example.fooddelivery.view.home.categoryScreen.ChickenScreen
-import com.example.fooddelivery.view.home.categoryScreen.DrinkScreen
-import com.example.fooddelivery.view.home.categoryScreen.HotDogScreen
-import com.example.fooddelivery.view.home.categoryScreen.MeatScreen
-import com.example.fooddelivery.view.home.categoryScreen.MoreScreen
-import com.example.fooddelivery.view.home.categoryScreen.PizzaScreen
-import com.example.fooddelivery.view.home.categoryScreen.SushiScreen
+import com.example.fooddelivery.view.home.categoryScreen.CategoryScreen
 import java.io.File
 import java.io.FileInputStream
 
@@ -109,60 +103,16 @@ fun HomeNavGraph(
         composable(route = HomeRouteScreen.ProfileRouteScreen.route) {
             ProfileScreen(innerPadding = innerPadding, navController = rootNavController)
         }
-        composable(route = HomeRouteScreen.Pizza.route) {
-            PizzaScreen(
+        composable(route = HomeRouteScreen.Category.route, arguments = listOf(
+            navArgument(CATEGORY_ID_KEY) {
+                type = NavType.IntType
+            }
+        )) { backStackEntry ->
+            CategoryScreen(
                 navController = homeNavController,
                 sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
-            )
-        }
-        composable(route = HomeRouteScreen.Burger.route) {
-            BurgerScreen(
-                navController = homeNavController,
-                sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
-            )
-        }
-        composable(route = HomeRouteScreen.Shushi.route) {
-            SushiScreen(
-                navController = homeNavController,
-                sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
-            )
-        }
-        composable(route = HomeRouteScreen.Meat.route) {
-            MeatScreen(
-                navController = homeNavController,
-                sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
-            )
-        }
-        composable(route = HomeRouteScreen.HotDog.route) {
-            HotDogScreen(
-                navController = homeNavController,
-                sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
-            )
-        }
-        composable(route = HomeRouteScreen.Drink.route) {
-            DrinkScreen(
-                navController = homeNavController,
-                sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
-            )
-        }
-        composable(route = HomeRouteScreen.More.route) {
-            MoreScreen(
-                navController = homeNavController,
-                sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
-            )
-        }
-        composable(route = HomeRouteScreen.Chicken.route) {
-            ChickenScreen(
-                navController = homeNavController,
-                sharedViewModel = sharedViewModel,
-                innerPaddingValues = innerPadding
+                innerPaddingValues = innerPadding,
+                backStackEntry = backStackEntry,
             )
         }
         composable(route = HomeRouteScreen.Search.route,

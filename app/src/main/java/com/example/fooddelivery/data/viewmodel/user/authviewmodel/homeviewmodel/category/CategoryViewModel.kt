@@ -10,29 +10,29 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ChickenViewModel : ViewModel() {
+class CategoryViewModel : ViewModel() {
     //Chicken
-    private val _chickenFood = MutableStateFlow<List<Food>>(emptyList())
-    val chickenFood = _chickenFood.asStateFlow()
-    private val _isLoadChicken = MutableStateFlow(false)
-    val isLoadChicken = _isLoadChicken.asStateFlow()
+    private val _categoryFood = MutableStateFlow<List<Food>>(emptyList())
+    val categoryFood = _categoryFood.asStateFlow()
+    private val _isLoadCategory = MutableStateFlow(false)
+    val isLoadCategory = _isLoadCategory.asStateFlow()
     private val tag = ViewModel::class.java.simpleName
 
-    init {
+
+     suspend fun initCategory(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            getChickenWithApi()
+            getCategoryWithApi(id)
         }
     }
 
-
-    private suspend fun getChickenWithApi() {
-        _isLoadChicken.value = true
+    private suspend fun getCategoryWithApi(id: Int) {
+        _isLoadCategory.value = true
         try {
-            _chickenFood.value = RetrofitClient.foodAPIService.getCategory(3)
+            _categoryFood.value = RetrofitClient.foodAPIService.getCategory(id)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {
-            _isLoadChicken.value = false
+            _isLoadCategory.value = false
         }
     }
 }

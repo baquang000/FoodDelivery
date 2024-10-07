@@ -12,6 +12,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,21 +21,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.FoodItemInGird
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
-import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.category.MoreViewModel
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.category.CategoryViewModel
+import com.example.fooddelivery.navigation.CATEGORY_ID_KEY
 
 @Composable
-fun MoreScreen(
+fun CategoryScreen(
     navController: NavController,
-    moreViewModel: MoreViewModel = viewModel(),
+    categoryViewModel: CategoryViewModel = viewModel(),
     sharedViewModel: SharedViewModel,
-    innerPaddingValues: PaddingValues
+    innerPaddingValues: PaddingValues,
+    backStackEntry: NavBackStackEntry,
 ) {
-    val more by moreViewModel.moreFood.collectAsStateWithLifecycle()
-    val isLoad by moreViewModel.isLoadMore.collectAsStateWithLifecycle()
+    val id = backStackEntry.arguments?.getInt(CATEGORY_ID_KEY) ?: 0
+    LaunchedEffect(key1 = Unit) {
+        categoryViewModel.initCategory(id)
+    }
+    val chicken by categoryViewModel.categoryFood.collectAsStateWithLifecycle()
+    val isLoad by categoryViewModel.isLoadCategory.collectAsStateWithLifecycle()
     Box {
         if (isLoad) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -56,9 +64,9 @@ fun MoreScreen(
                     columns = StaggeredGridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(more) { more ->
+                    items(chicken) { chicken ->
                         FoodItemInGird(
-                            food = more,
+                            food = chicken,
                             navController = navController,
                             buttonSize = 16.sp,
                             sharedViewModel = sharedViewModel
@@ -69,5 +77,3 @@ fun MoreScreen(
         }
     }
 }
-
-

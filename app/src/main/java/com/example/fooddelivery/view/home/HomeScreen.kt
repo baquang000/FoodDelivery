@@ -73,7 +73,6 @@ import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.HomeViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
-import com.example.fooddelivery.navigation.getRouteForCategory
 import kotlinx.coroutines.launch
 
 
@@ -326,13 +325,12 @@ fun HomeScreen(
                                         ) {
                                             categoryRow.forEach { category ->
                                                 IconButtonWithText(
-                                                    backgroundColor = category.color,
-                                                    iconPath = category.iconPath,
+                                                    iconPath = category.imagePath,
                                                     name = category.name
                                                 ) {
                                                     homeNavController.navigate(
-                                                        getRouteForCategory(
-                                                            category = category.name
+                                                        route = HomeRouteScreen.Category.sendIdCategory(
+                                                            category.categoryId
                                                         )
                                                     )
                                                 }
