@@ -22,14 +22,14 @@ class DiscountViewModel : ViewModel() {
     private val tag = ViewModel::class.java.simpleName
 
     init {
-        if (ID != "") {
+        if (ID != 0) {
             viewModelScope.launch(Dispatchers.IO) {
                 getDiscountWithApi(idShop = ID)
             }
         }
     }
 
-    private suspend fun getDiscountWithApi(idShop: String) {
+    private suspend fun getDiscountWithApi(idShop: Int) {
         _isLoadDiscount.value = true
         try {
             _discount.value = RetrofitClient.discountAPIService.getByShop(idShop)

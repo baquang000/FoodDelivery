@@ -53,7 +53,8 @@ class SharedViewModel : ViewModel() {
     private var _totalPrice = MutableStateFlow(0f)
     var totalPrice: StateFlow<Float> = _totalPrice.asStateFlow()
 
-    private val _idShopStateFlow = MutableStateFlow("")
+    private val _idShopStateFlow = MutableStateFlow(0)
+    val idShopStateFlow = _idShopStateFlow.asStateFlow()
 
     private val _nameShop = MutableStateFlow("")
     val nameShop: StateFlow<String> = _nameShop.asStateFlow()
@@ -170,7 +171,7 @@ class SharedViewModel : ViewModel() {
         diningSubtances: Boolean
     ) {
         val timeOrder = Calender().getCalender()
-        if (ID != "") {
+        if (ID != 0) {
             val newOrder = CreateOrder(
                 deliverytoDoor = deliverytoDoor,
                 diningSubtances = diningSubtances,
@@ -212,8 +213,8 @@ class SharedViewModel : ViewModel() {
         }
     }
 
-    fun getIdShop(id: String) {
-        if (_idShopStateFlow.value == "")
+    fun getIdShop(id: Int) {
+        if (_idShopStateFlow.value == 0)
             _idShopStateFlow.value = id
         else {
             if (_idShopStateFlow.value != id) {
@@ -231,7 +232,7 @@ class SharedViewModel : ViewModel() {
         _countFoodInCart.value = 0
         _nameShop.value = ""
         _totalPrice.value = 0f
-        _idShopStateFlow.value = ""
+        _idShopStateFlow.value = 0
     }
 
 }

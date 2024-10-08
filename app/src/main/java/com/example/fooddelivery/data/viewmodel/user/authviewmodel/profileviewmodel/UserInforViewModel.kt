@@ -26,7 +26,7 @@ class UserInforViewModel : ViewModel() {
         }
     }
 
-    private suspend fun getUser(id: String) {
+    private suspend fun getUser(id: Int) {
         _isLoadUserInfor.value = true
         try {
             _userInfor.value = RetrofitClient.userAPIService.getUser(id)
@@ -44,7 +44,7 @@ class UserInforViewModel : ViewModel() {
         address: String,
         email: String,
         dateOfBirth: String,
-        id: String
+        id: Int
     ) {
         val user = UserInfor(
             name = name,
@@ -52,7 +52,7 @@ class UserInforViewModel : ViewModel() {
             address = address,
             email = email,
             dateOfBirth = dateOfBirth,
-            idUser = id
+            id = id
         )
         try {
             viewModelScope.launch(Dispatchers.IO) {

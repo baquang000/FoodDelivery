@@ -16,5 +16,5 @@ interface CommentAPIService {
     ): Response<ResultState>
 
     @GET("/api/v1/comment/shop/{idShop}")
-    suspend fun getCommentByShop(@Path("idShop") idShop: String): List<GetComment>
+    suspend fun getCommentByShop(@Path("idShop") idShop: Int): List<GetComment>
 }

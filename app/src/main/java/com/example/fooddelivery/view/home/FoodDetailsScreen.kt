@@ -62,7 +62,6 @@ import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 
 
 @Composable
@@ -90,10 +89,9 @@ fun FoodDetailsScreen(
     var numberOfFood by remember {
         mutableIntStateOf(countFood)
     }
-    /////
-    val decimalFomat = DecimalFormat("#,###.##")
+    ////
     val title = navBackStackEntry.arguments?.getString(TITLE_ARGUMENT_KEY)
-    val price = navBackStackEntry.arguments?.getFloat(PRICE_ARGUMENT_KEY) ?: 0.0
+    val price = navBackStackEntry.arguments?.getString(PRICE_ARGUMENT_KEY) ?: "0"
     val star = navBackStackEntry.arguments?.getFloat(STAR_ARGUMENT_KEY) ?: 0.0
     val timevalue = navBackStackEntry.arguments?.getInt(TIMEVALUE_ARGUMENT_KEY)
     val description = navBackStackEntry.arguments?.getString(DESCRIPTION_ARGUMENT_KEY)
@@ -137,7 +135,7 @@ fun FoodDetailsScreen(
                             nomalTextAlign = TextAlign.Center
                         )
                         NormalTextComponents(
-                            value = "${decimalFomat.format(price)}đ",
+                            value = "${price}đ",
                             nomalColor = Color.Red,
                             nomalFontWeight = FontWeight.Bold,
                             nomalFontsize = 18.sp,

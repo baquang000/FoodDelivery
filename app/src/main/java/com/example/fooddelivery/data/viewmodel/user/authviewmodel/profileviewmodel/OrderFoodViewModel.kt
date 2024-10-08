@@ -31,7 +31,7 @@ class OrderFoodViewModel : ViewModel() {
 
     var commentSuccess by mutableStateOf<Boolean?>(null)
 
-    private val _idOrder = MutableStateFlow("")
+    private val _idOrder = MutableStateFlow(0)
     val idOrder = _idOrder.asStateFlow()
 
     private val tag = ViewModel::class.java.simpleName
@@ -56,7 +56,7 @@ class OrderFoodViewModel : ViewModel() {
 
 
     suspend fun getOrderByUser() {
-        if (ID != "") {
+        if (ID != 0) {
             _isLoadingOrder.value = true
             try {
                 _orderFoodStateFlow.value = RetrofitClient.orderAPIService.getOrderByUser(ID)
@@ -68,17 +68,21 @@ class OrderFoodViewModel : ViewModel() {
         }
     }
 
-    suspend fun updateStatusWithApi(idOrder: String, orderStatus: UpdateOrder) {
-        if (ID != "") {
+    suspend fun updateStatusWithApi(idOrder: Int, orderStatus: String) {
+        val time = Calender().getCalender()
+        if (ID != 0) {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val response = RetrofitClient.orderAPIService.updateOrderStatus(
-                        idShop = ID,
-                        idOrder = idOrder,
-                        statusOrder = orderStatus
+                    val response = RetrofitClient.orderAPIService.updateOrderByUser(
+                        idUser = ID,
+                        id = idOrder,
+                        statusOrder = UpdateOrder(
+                            orderStatus = orderStatus,
+                            time = time
+                        )
                     )
                     if (response.isSuccessful) {
-                        updateOrderStateFlow(idOrder = idOrder, newStatus = orderStatus.statusOrder)
+                        updateOrderStateFlow(idOrder = idOrder, newStatus = orderStatus)
                         SocketManager.emitUpdateStatusOrder(true)
                     } else {
                         Log.e(
@@ -93,9 +97,9 @@ class OrderFoodViewModel : ViewModel() {
         }
     }
 
-    private fun updateOrderStateFlow(idOrder: String, newStatus: String) {
+    private fun updateOrderStateFlow(idOrder: Int, newStatus: String) {
         val updatedOrderList = _orderFoodStateFlow.value.map { orderItem ->
-            if (orderItem.idOrder == idOrder) {
+            if (orderItem.id == idOrder) {
                 // If the order matches the ID, return a copy with the updated status
                 orderItem.copy(orderStatus = newStatus)
             } else {
@@ -109,19 +113,18 @@ class OrderFoodViewModel : ViewModel() {
     }
 
     ///////////// comment
-    fun setIdOrder(idOrder: String) {
+    fun setIdOrder(idOrder: Int) {
         _idOrder.value = idOrder
     }
 
     fun commentFood(comment: CreateComment) {
-        val time = Calender().getCalender()
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 val response = RetrofitClient.commentAPIService.createComment(comment)
                 if (response.isSuccessful) {
                     updateStatusWithApi(
                         idOrder = comment.idOrder,
-                        orderStatus = UpdateOrder(OrderStatus.FOODBACK.toString(), time),
+                        orderStatus = OrderStatus.FOODBACK.toString()
                     )
                 } else {
                     Log.e(

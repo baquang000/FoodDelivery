@@ -13,7 +13,7 @@ data class GetDiscountItem(
     val description: String,
     val endDate: String,
     val id: Int,
-    val idShop: String,
+    val idShop: Int,
     val isActive: Boolean,
     val maxDiscountAmount: String,
     val minOrderAmount: String,

@@ -36,43 +36,43 @@ interface FoodAPIService {
 
     @PUT("/api/v1/foods/showFood/{idShop}")
     suspend fun updateShowFood(
-        @Path("idShop") idShop: String,
+        @Path("idShop") idShop: Int,
         @Body showFood: UpdateShowFood
     ): Response<ResultState>
 
     @PUT("/api/v1/foods/bestFood/{idShop}")
     suspend fun updateBestFood(
-        @Path("idShop") idShop: String,
+        @Path("idShop") idShop: Int,
         @Body bestFood: UpdateBestFood
     ): Response<ResultState>
 
     @PUT("/api/v1/foods/title/{idShop}")
     suspend fun updateTitleFood(
-        @Path("idShop") idShop: String,
+        @Path("idShop") idShop: Int,
         @Body bestFood: UpdateTitleFood
     ): Response<ResultState>
 
 
     @PUT("/api/v1/foods/price/{idShop}")
     suspend fun updatePriceFood(
-        @Path("idShop") idShop: String,
+        @Path("idShop") idShop: Int,
         @Body bestFood: UpdatePriceFood
     ): Response<ResultState>
 
 
     @PUT("/api/v1/foods/description/{idShop}")
     suspend fun updateDescriptionFood(
-        @Path("idShop") idShop: String,
+        @Path("idShop") idShop: Int,
         @Body bestFood: UpdateDescriptionFood
     ): Response<ResultState>
 
 
     @PUT("/api/v1/foods/image/{idShop}")
     suspend fun updateImageFood(
-        @Path("idShop") idShop: String,
+        @Path("idShop") idShop: Int,
         @Body bestFood: UpdateImageFood
     ): Response<ResultState>
 
     @GET("/api/v1/foods/shop/{id}")
-    suspend fun getFoodByShop(@Path("id") id: String): List<Food>
+    suspend fun getFoodByShop(@Path("id") id: Int): List<Food>
 }

@@ -76,7 +76,6 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
-import com.example.fooddelivery.data.model.Location
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
@@ -452,7 +451,7 @@ fun FoodItem(
                                         imagePath = food.imagePath,
                                         price = food.price.price.toFloat(),
                                         quantity = 1,
-                                        idFood = food.idFood
+                                        idFood = food.id
                                     )
                                     sharedViewModel.getIdShop(food.idShop)
                                     sharedViewModel.addFoodDetail(foodDetails = fooddetails)
@@ -609,7 +608,7 @@ fun FoodItemInGird(
                                 imagePath = food.imagePath,
                                 price = food.price.price.toFloat(),
                                 quantity = 1,
-                                idFood = food.idFood
+                                idFood = food.id
                             )
                             sharedViewModel.getIdShop(food.idShop)
                             sharedViewModel.addFoodDetail(foodDetails = fooddetails)
@@ -633,54 +632,54 @@ fun FoodItemInGird(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyDropdownMenuWithLoc(modifier: Modifier = Modifier, location: MutableList<Location>) {
-    val selected = remember {
-        mutableStateOf(location[0].loc)
-    }
-    val expand = remember {
-        mutableStateOf(false)
-    }
-    Box(modifier = modifier) {
-        ExposedDropdownMenuBox(expanded = expand.value, onExpandedChange = {
-            expand.value = !expand.value
-        }) {
-            OutlinedTextField(
-                value = selected.value.toString(), onValueChange = {},
-                readOnly = true,
-                singleLine = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
-                },
-                modifier = Modifier.menuAnchor(
-                    type = MenuAnchorType.PrimaryNotEditable,
-                    enabled = true
-                ),
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.location),
-                        contentDescription = stringResource(
-                            id = R.string.location_icon
-                        ), modifier = Modifier.scale(1.5f)
-                    )
-                }
-            )
-            ExposedDropdownMenu(
-                expanded = expand.value,
-                onDismissRequest = { expand.value = false }) {
-                location.forEach {
-                    DropdownMenuItem(text = {
-                        Text(text = it.loc.toString())
-                    }, onClick = {
-                        selected.value = it.loc
-                        expand.value = false
-                    })
-                }
-            }
-        }
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun MyDropdownMenuWithLoc(modifier: Modifier = Modifier, location: MutableList<Location>) {
+//    val selected = remember {
+//        mutableStateOf(location[0].loc)
+//    }
+//    val expand = remember {
+//        mutableStateOf(false)
+//    }
+//    Box(modifier = modifier) {
+//        ExposedDropdownMenuBox(expanded = expand.value, onExpandedChange = {
+//            expand.value = !expand.value
+//        }) {
+//            OutlinedTextField(
+//                value = selected.value.toString(), onValueChange = {},
+//                readOnly = true,
+//                singleLine = true,
+//                trailingIcon = {
+//                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
+//                },
+//                modifier = Modifier.menuAnchor(
+//                    type = MenuAnchorType.PrimaryNotEditable,
+//                    enabled = true
+//                ),
+//                leadingIcon = {
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.location),
+//                        contentDescription = stringResource(
+//                            id = R.string.location_icon
+//                        ), modifier = Modifier.scale(1.5f)
+//                    )
+//                }
+//            )
+//            ExposedDropdownMenu(
+//                expanded = expand.value,
+//                onDismissRequest = { expand.value = false }) {
+//                location.forEach {
+//                    DropdownMenuItem(text = {
+//                        Text(text = it.loc.toString())
+//                    }, onClick = {
+//                        selected.value = it.loc
+//                        expand.value = false
+//                    })
+//                }
+//            }
+//        }
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

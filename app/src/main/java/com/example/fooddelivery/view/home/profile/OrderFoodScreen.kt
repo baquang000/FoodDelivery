@@ -49,11 +49,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
-import com.example.fooddelivery.data.model.UpdateOrder
 import com.example.fooddelivery.data.model.tabItemOrder
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.OrderFoodViewModel
@@ -272,11 +270,10 @@ fun ConfirmOrder(
                     ) {
                         Button(
                             onClick = {
-                                val time = Calender().getCalender()
                                 coroutineScope.launch {
                                     orderViewModel.updateStatusWithApi(
-                                        idOrder = order.idOrder,
-                                        orderStatus = UpdateOrder(OrderStatus.CANCEL.toString(),time)
+                                        idOrder = order.id,
+                                        orderStatus = OrderStatus.DELIVERY.toString()
                                     )
                                 }
                             },
@@ -400,11 +397,10 @@ fun DeliveringOrder(
                     ) {
                         Button(
                             onClick = {
-                                val time = Calender().getCalender()
                                 coroutineScope.launch {
                                     orderViewModel.updateStatusWithApi(
-                                        idOrder = order.idOrder,
-                                        orderStatus = UpdateOrder(OrderStatus.SUCCESS.toString(),time)
+                                        idOrder = order.id,
+                                        orderStatus = OrderStatus.SUCCESS.toString()
                                     )
                                 }
                             },
@@ -533,7 +529,7 @@ fun SuccessOrder(
                                 navController.navigate(route = ProfileRouteScreen.Comment.route) {
                                     launchSingleTop = true
                                 }
-                                orderViewModel.setIdOrder(idOrder = order.idOrder)
+                                orderViewModel.setIdOrder(idOrder = order.id)
                             },
                             shape = RectangleShape,
                             colors = ButtonDefaults.buttonColors(

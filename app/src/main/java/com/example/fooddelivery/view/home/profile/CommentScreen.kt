@@ -79,7 +79,7 @@ fun CommentScreen(
             CommentHeading(navController = navController)
         }
         items(orderList) { order ->
-            if (idOrder == order.idOrder) {
+            if (idOrder == order.id) {
                 CommentList(
                     order = order,
                     orderViewModel = orderViewModel,
@@ -269,7 +269,7 @@ fun CommentList(
                         downloadUri = it
                         val comment = CreateComment(
                             idShop = order.idShop,
-                            idOrder = order.idOrder,
+                            idOrder = order.id,
                             idFood = idFood,
                             idUser = order.idUser,
                             content = commentTextField,
@@ -282,7 +282,7 @@ fun CommentList(
                 } else {
                     val comment = CreateComment(
                         idShop = order.idShop,
-                        idOrder = order.idOrder,
+                        idOrder = order.id,
                         idFood = idFood,
                         idUser = order.idUser,
                         content = commentTextField,

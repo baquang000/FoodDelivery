@@ -14,11 +14,11 @@ interface UserFavoriteAPIService {
     suspend fun createUserFavorite(@Body userGetFavorite: CreateFavorite): Response<CreateFavorite>
 
     @GET("/api/v1/user-favorite/{id}")
-    suspend fun getUserFavorite(@Path("id") id: String): List<GetFavorite>
+    suspend fun getUserFavorite(@Path("id") id: Int): List<GetFavorite>
 
     @DELETE("/api/v1/user-favorite/{idUser}/{idShop}")
     suspend fun deleteUserFavorite(
-        @Path("idUser") idUser: String,
-        @Path("idShop") idShop: String
+        @Path("idUser") idUser: Int,
+        @Path("idShop") idShop: Int
     ): Response<Void>
 }

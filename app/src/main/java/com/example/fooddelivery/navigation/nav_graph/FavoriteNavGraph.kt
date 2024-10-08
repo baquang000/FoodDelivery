@@ -39,7 +39,7 @@ fun NavGraphBuilder.favoriteNavGraph(
             route = HomeRouteScreen.ShopRouteScreen.route,
             arguments = listOf(
                 navArgument(ID_SHOP_ARGUMENT_KEY) {
-                    type = NavType.StringType
+                    type = NavType.IntType
                 },
             )
         ) { navBackStackEntry ->

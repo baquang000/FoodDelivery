@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Auth
+import com.example.fooddelivery.data.model.Shop
 import com.example.fooddelivery.data.model.SignUpUIState
 import com.example.fooddelivery.data.model.SignupUIEvent
 import com.example.fooddelivery.data.model.UserInfor
@@ -87,14 +88,25 @@ class SignupViewModel : ViewModel() {
                     isSuccess = true // 3.7
                     val user = respon.body()!!.data
                     val newUser = UserInfor(
-                        idUser = user.id,
-                        name = null,
+                        id = user.id.toInt(),
+                        name = "",
                         email = email,
-                        numberPhone = null,
-                        address = null,
-                        dateOfBirth = null
+                        numberPhone = "",
+                        address = "",
+                        dateOfBirth = ""
+                    )
+                    val newShop = Shop(
+                        address = "",
+                        email = email,
+                        id = user.id.toInt(),
+                        imageUrl = "",
+                        name = "",
+                        phoneNumber = "",
+                        starShop = "5",
+                        titleShop = ""
                     )
                     RetrofitClient.userAPIService.createUser(newUser)
+                    RetrofitClient.shopAPIService.createShop(newShop)
                 } else {
                     errormessage = respon.body()?.message
                     isError = true

@@ -74,7 +74,7 @@ sealed class HomeRouteScreen(val route: String) {
             description: String = "",
             imagepath: String = "",
             id: Int = 0,
-            idshop: String
+            idshop: Int = 0
         ): String {
             return "Food_Details_Screen?title=$title&price=$price&star=$star&timevalue=$timevalue&description=$description&imagepath=$imagepath&id=$id&idshop=$idshop"
         }
@@ -85,9 +85,9 @@ sealed class HomeRouteScreen(val route: String) {
     data object ShopRouteScreen :
         HomeRouteScreen(route = "Shop_Screen?idshop={$ID_SHOP_ARGUMENT_KEY}") {
         fun sendIdShop(
-            idshop: String = ""
+            idShop: Int = 0
         ): String {
-            return "Shop_Screen?idshop=$idshop"
+            return "Shop_Screen?idshop=$idShop"
         }
     }
 }

@@ -89,7 +89,7 @@ fun FavoriteItem(
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .clickable {
                 navController.navigate(
-                    route = HomeRouteScreen.ShopRouteScreen.sendIdShop(idshop = shop.idShop),
+                    route = HomeRouteScreen.ShopRouteScreen.sendIdShop(idShop = shop.idShop),
                     navOptions = NavOptions
                         .Builder()
                         .setLaunchSingleTop(true)

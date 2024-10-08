@@ -19,7 +19,7 @@ data class Rest(
 
 
 data class changePassword(
-    val id:String,
+    val id:Int,
     val currentPassword:String,
     val newPassword:String
 )

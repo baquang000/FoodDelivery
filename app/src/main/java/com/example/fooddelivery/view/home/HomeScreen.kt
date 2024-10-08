@@ -330,7 +330,7 @@ fun HomeScreen(
                                                 ) {
                                                     homeNavController.navigate(
                                                         route = HomeRouteScreen.Category.sendIdCategory(
-                                                            category.categoryId
+                                                            category.id
                                                         )
                                                     )
                                                 }

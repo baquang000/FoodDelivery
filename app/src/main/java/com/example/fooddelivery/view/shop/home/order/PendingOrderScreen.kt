@@ -211,7 +211,7 @@ fun PendingOrderFood(order: GetOrderItem, homeViewModel: HomeViewModel) {
                 onClick = {
                     coroutineScope.launch {
                         homeViewModel.updateStatusWithApi(
-                            order.idOrder,
+                            order.id,
                             OrderStatus.DELIVERY.toString()
                         )
                     }
@@ -228,7 +228,8 @@ fun PendingOrderFood(order: GetOrderItem, homeViewModel: HomeViewModel) {
                 onClick = {
                     coroutineScope.launch {
                         homeViewModel.updateStatusWithApi(
-                            order.idOrder,
+
+                            order.id,
                             OrderStatus.CANCEL.toString()
                         )
                     }

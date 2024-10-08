@@ -60,7 +60,7 @@ class LoginViewModel : ViewModel() {
                         ?: return@launch
                     val id = respon.body()?.data?.rest?.id
                         ?: return@launch // Handle missing token gracefully (e.g., show error)
-                    ID = id
+                    ID = id.toInt()
                     val cryptoManager = TokenManager()
                     val bytes = token.encodeToByteArray()
                     val file = File(context.filesDir, "token.txt")
@@ -113,4 +113,4 @@ class LoginViewModel : ViewModel() {
     }
 }
 
-var ID = ""
+var ID = 0

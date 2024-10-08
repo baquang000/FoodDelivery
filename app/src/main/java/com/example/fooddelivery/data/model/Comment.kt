@@ -1,10 +1,10 @@
 package com.example.fooddelivery.data.model
 
 data class CreateComment(
-    val idShop: String,
-    val idUser: String,
+    val idShop: Int,
+    val idUser: Int,
     val idFood: Int?,
-    val idOrder: String,
+    val idOrder: Int,
     val content: String,
     val imagePath: String?,
     val rating: Double,
@@ -16,9 +16,9 @@ data class GetComment(
     val content: String,
     val id: String,
     val idFood: Int?,
-    val idOrder: String,
-    val idShop: String,
-    val idUser: String,
+    val idOrder: Int,
+    val idShop: Int,
+    val idUser: Int,
     val imagePath: String?,
     val rating: String,
     val time: String,

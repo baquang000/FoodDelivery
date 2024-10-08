@@ -4,7 +4,7 @@ data class UserInfor(
     val address: String?,
     val dateOfBirth: String?,
     val email: String,
-    val idUser: String,
+    val id: Int,
     val name: String?,
     val numberPhone: String?
 )

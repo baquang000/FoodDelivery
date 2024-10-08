@@ -23,7 +23,7 @@ class ProfileAdminViewModel : ViewModel() {
     private val tag = ViewModel::class.java.simpleName
 
     init {
-        if (ID != "") {
+        if (ID != 0) {
             viewModelScope.launch(Dispatchers.IO) {
                 getUserData(ID)
             }
@@ -38,7 +38,7 @@ class ProfileAdminViewModel : ViewModel() {
         phoneNumber: String,
         imageUrl: String
     ) {
-        if (ID != "") {
+        if (ID != 0) {
             val update = UpdateShopInfor(
                 titleShop = titleShop,
                 name = nameShop,
@@ -55,7 +55,7 @@ class ProfileAdminViewModel : ViewModel() {
         }
     }
 
-    private suspend fun getUserData(id: String) {
+    private suspend fun getUserData(id: Int) {
         _isLoadShopInfor.value = true
         try {
             _shopInfor.value = RetrofitClient.shopAPIService.getInforOfShop(id)
@@ -65,4 +65,6 @@ class ProfileAdminViewModel : ViewModel() {
             _isLoadShopInfor.value = false
         }
     }
+
+
 }

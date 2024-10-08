@@ -208,7 +208,7 @@ fun DeliveringOrderFood(order: GetOrderItem, homeViewModel: HomeViewModel) {
                 onClick = {
                     coroutineScope.launch {
                         homeViewModel.updateStatusWithApi(
-                            order.idOrder,
+                            order.id,
                              OrderStatus.SUCCESS.toString()
                         )
                     }

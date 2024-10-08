@@ -5,9 +5,9 @@ package com.example.fooddelivery.data.model
 data class GetOrderItem(
     val deliverytoDoor: Boolean,
     val diningSubtances: Boolean,
-    val idOrder: String,
-    val idShop: String,
-    val idUser: String,
+    val id: Int,
+    val idShop: Int,
+    val idUser: Int,
     val noteOrder: String,
     val orderDetails: List<OrderDetail>,
     val orderStatus: String,
@@ -21,7 +21,7 @@ data class GetOrderItem(
 data class OrderDetail(
     val id: String,
     val idFood: Int,
-    val idOrder: String,
+    val idOrder: Int,
     val imagePath: String,
     val price: Double,
     val quantity: Int,
@@ -32,14 +32,14 @@ data class User(
     val address: String,
     val dateOfBirth: String,
     val email: String,
-    val idUser: String,
+    val id: Int,
     val name: String,
     val numberPhone: String
 )
 
 ///update
 data class UpdateOrder(
-    val statusOrder: String,
+    val orderStatus: String,
     val time: String
 )
 
@@ -47,8 +47,8 @@ data class UpdateOrder(
 data class CreateOrder(
     val deliverytoDoor: Boolean,
     val diningSubtances: Boolean,
-    val idShop: String,
-    val idUser: String,
+    val idShop: Int,
+    val idUser: Int,
     val noteOrder: String,
     val orderDetails: List<FoodDetails>,
     val rewardForDriver: Int,

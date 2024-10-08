@@ -146,7 +146,7 @@ fun HomeNavGraph(
                     type = NavType.StringType
                 },
                 navArgument(PRICE_ARGUMENT_KEY) {
-                    type = NavType.FloatType
+                    type = NavType.StringType
                 },
                 navArgument(STAR_ARGUMENT_KEY) {
                     type = NavType.FloatType
@@ -184,7 +184,7 @@ fun HomeNavGraph(
             route = HomeRouteScreen.ShopRouteScreen.route,
             arguments = listOf(
                 navArgument(ID_SHOP_ARGUMENT_KEY) {
-                    type = NavType.StringType
+                    type = NavType.IntType
                 },
             )
         ) { navBackStackEntry ->

@@ -18,16 +18,23 @@ interface OrderAPIService {
     ): Response<ResultState>
 
     @GET("/api/v1/order/{idOrder}")
-    suspend fun getOrderByUser(@Path("idOrder") idOrder: String): List<GetOrderItem>
+    suspend fun getOrderByUser(@Path("idOrder") idOrder: Int): List<GetOrderItem>
 
-    @PUT("/api/v1/order/user/{idUser}/{idOrder}")
-    suspend fun updateOrderStatus(
-        @Path("idUser") idShop: String,
-        @Path("idOrder") idOrder: String,
+    @PUT("/api/v1/order/{idShop}/{id}")
+    suspend fun updateOrderByShop(
+        @Path("idShop") idShop: Int,
+        @Path("id") id: Int,
+        @Body statusOrder: UpdateOrder
+    ): Response<ResultState>
+
+    @PUT("/api/v1/order/user/{idUser}/{id}")
+    suspend fun updateOrderByUser(
+        @Path("idUser") idUser: Int,
+        @Path("id") id: Int,
         @Body statusOrder: UpdateOrder
     ): Response<ResultState>
 
     @GET("/api/v1/order/shop/{idShop}")
-    suspend fun getOrderByShop(@Path("idShop") idShop: String): List<GetOrderItem>
+    suspend fun getOrderByShop(@Path("idShop") idShop: Int): List<GetOrderItem>
 
 }

@@ -43,7 +43,7 @@ class HomeViewModel : ViewModel() {
 
 
     init {
-        if (ID != "") {
+        if (ID != 0) {
             viewModelScope.launch(Dispatchers.IO) {
                 getOrderByUser(ID)
             }
@@ -69,7 +69,7 @@ class HomeViewModel : ViewModel() {
     }
 
 
-    private suspend fun getOrderByUser(idShop: String) {
+    private suspend fun getOrderByUser(idShop: Int) {
         _isLoadingOrder.value = true
         try {
             _orderStateFlow.value = RetrofitClient.orderAPIService.getOrderByShop(idShop)
@@ -81,16 +81,16 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    suspend fun updateStatusWithApi(idOrder: String, orderStatus: String) {
+    suspend fun updateStatusWithApi(idOrder: Int, orderStatus: String) {
         val time = Calender().getCalender()
-        if (ID != "") {
+        if (ID != 0) {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val response = RetrofitClient.orderAPIService.updateOrderStatus(
+                    val response = RetrofitClient.orderAPIService.updateOrderByShop(
                         idShop = ID,
-                        idOrder = idOrder,
+                        id = idOrder,
                         statusOrder = UpdateOrder(
-                            statusOrder = orderStatus,
+                            orderStatus = orderStatus,
                             time = time
                         ),
 
@@ -112,9 +112,9 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private fun updateOrderStateFlow(idOrder: String, newStatus: String) {
+    private fun updateOrderStateFlow(idOrder: Int, newStatus: String) {
         val updatedOrderList = _orderStateFlow.value.map { orderItem ->
-            if (orderItem.idOrder == idOrder) {
+            if (orderItem.id == idOrder) {
                 // If the order matches the ID, return a copy with the updated status
                 orderItem.copy(orderStatus = newStatus)
             } else {
@@ -167,6 +167,6 @@ class HomeViewModel : ViewModel() {
 
     fun logout() {
         FirebaseAuth.getInstance().signOut()
-        ID = ""
+        ID = 0
     }
 }

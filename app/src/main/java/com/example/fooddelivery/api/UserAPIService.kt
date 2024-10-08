@@ -11,14 +11,14 @@ import retrofit2.http.Path
 
 interface UserAPIService {
     @GET("/api/v1/userinfor/{idUser}")
-    suspend fun getUser(@Path("idUser") idUser: String): UserInfor
+    suspend fun getUser(@Path("idUser") idUser: Int): UserInfor
 
     @POST("/api/v1/userinfor")
     suspend fun createUser(@Body userInfor: UserInfor): Response<ResultState>
 
     @PUT("/api/v1/userinfor/{idUser}")
     suspend fun updateUser(
-        @Path("idUser") idUser: String,
+        @Path("idUser") idUser: Int,
         @Body userInfor: UserInfor
     ): Response<UserInfor>
 }

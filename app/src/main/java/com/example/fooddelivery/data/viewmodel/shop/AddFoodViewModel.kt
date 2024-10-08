@@ -33,7 +33,7 @@ class AddFoodViewModel : ViewModel() {
         time: Int
     ) {
         _isLoadingAddFood.value = true
-        if (ID != "") {
+        if (ID != 0) {
             if (title.isEmpty()) {
                 isTitleEmpty = true
                 _isLoadingAddFood.value = false

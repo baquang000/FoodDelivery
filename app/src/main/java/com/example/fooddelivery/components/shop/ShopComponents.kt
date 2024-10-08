@@ -108,7 +108,7 @@ fun FoodItem(
                         timevalue = food.time.time,
                         description = food.description,
                         imagepath = encodeURL,
-                        id = food.idFood
+                        id = food.id
                     )
                 )
             }
@@ -229,7 +229,7 @@ fun FoodItem(
                                 coroutineScope.launch {
                                     viewAllViewModel.updateIsBestFood(
                                         isBestFood = isBestFood,
-                                        idFood = food.idFood
+                                        idFood = food.id
                                     )
                                 }
                             }, modifier = Modifier.size(width = 5.dp, height = 2.dp))
@@ -250,7 +250,7 @@ fun FoodItem(
                                 coroutineScope.launch {
                                     viewAllViewModel.updateIsShowFood(
                                         showFood = isShowFood,
-                                        id = food.idFood
+                                        id = food.id
                                     )
                                 }
                             }, modifier = Modifier.size(width = 5.dp, height = 2.dp))

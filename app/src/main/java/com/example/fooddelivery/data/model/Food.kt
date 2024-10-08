@@ -1,18 +1,19 @@
 package com.example.fooddelivery.data.model
 
+//get Food
 data class Food(
     val bestFood: Boolean,
-    val categoryId: Int,
     val description: String,
-    val idFood: Int,
-    val idShop: String,
+    val id: Int,
+    val idCategory: Int,
+    val idPrice: Int,
+    val idShop: Int,
+    val idTime: Int,
     val imagePath: String,
     val price: Price,
-    val priceId: Int,
     val showFood: Boolean,
     val star: String,
     val time: Time,
-    val timeId: Int,
     val title: String
 )
 
@@ -22,7 +23,7 @@ data class CreateFood(
     val bestFood: Boolean,
     val categoryId: Int,
     val description: String,
-    val idShop: String,
+    val idShop: Int,
     val imagePath: String,
     val price: String,
     val showFood: Boolean,
@@ -33,31 +34,31 @@ data class CreateFood(
 
 //////////update
 data class UpdateShowFood(
-    val idFood: Int,
+    val id: Int,
     val showFood: Boolean
 )
 
 data class UpdateBestFood(
-    val idFood: Int,
+    val id: Int,
     val bestFood: Boolean
 )
 
 data class UpdateTitleFood(
-    val idFood: Int,
+    val id: Int,
     val title: String
 )
 
 data class UpdatePriceFood(
-    val idFood: Int,
+    val id: Int,
     val price: Double
 )
 
 data class UpdateDescriptionFood(
-    val idFood: Int,
+    val id: Int,
     val description: String
 )
 
 data class UpdateImageFood(
-    val idFood: Int,
+    val id: Int,
     val imagePath: String
 )

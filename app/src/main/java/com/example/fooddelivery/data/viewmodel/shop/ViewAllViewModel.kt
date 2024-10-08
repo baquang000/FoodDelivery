@@ -49,7 +49,7 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun getAllFoodWithApi() {
-        if (ID != "") {
+        if (ID != 0) {
             _isLoadAllFood.value = true
             try {
                 _allFood.value = RetrofitClient.foodAPIService.getFoodByShop(ID)
@@ -62,8 +62,8 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun updateIsBestFood(idFood: Int, isBestFood: Boolean) {
-        if (ID != "") {
-            val update = UpdateBestFood(idFood = idFood, bestFood = isBestFood)
+        if (ID != 0) {
+            val update = UpdateBestFood(id = idFood, bestFood = isBestFood)
             try {
                 RetrofitClient.foodAPIService.updateBestFood(ID, update)
             } catch (e: Exception) {
@@ -73,8 +73,8 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun updateIsShowFood(showFood: Boolean, id: Int) {
-        if (ID != "") {
-            val update = UpdateShowFood(idFood = id, showFood = showFood)
+        if (ID != 0) {
+            val update = UpdateShowFood(id = id, showFood = showFood)
             try {
                 RetrofitClient.foodAPIService.updateShowFood(ID, update)
             } catch (e: Exception) {
@@ -88,10 +88,10 @@ class ViewAllViewModel : ViewModel() {
             isTitleEmpty = true
             return
         }
-        if (ID != "") {
+        if (ID != 0) {
             val update = UpdateTitleFood(
                 title = title,
-                idFood = id
+                id = id
             )
             try {
                 RetrofitClient.foodAPIService.updateTitleFood(ID, update)
@@ -106,10 +106,10 @@ class ViewAllViewModel : ViewModel() {
             isPriceInvalid = true
             return
         }
-        if (ID != "") {
+        if (ID != 0) {
             val update = UpdatePriceFood(
                 price = price,
-                idFood = id
+                id = id
             )
             try {
                 RetrofitClient.foodAPIService.updatePriceFood(ID, update)
@@ -120,10 +120,10 @@ class ViewAllViewModel : ViewModel() {
     }
 
     suspend fun updateImagpath(imagePath: String, id: Int) {
-        if (ID != "") {
+        if (ID != 0) {
             val update = UpdateImageFood(
                 imagePath = imagePath,
-                idFood = id
+                id = id
             )
             try {
                 RetrofitClient.foodAPIService.updateImageFood(ID, update)
@@ -139,10 +139,10 @@ class ViewAllViewModel : ViewModel() {
 
             return
         }
-        if (ID != "") {
+        if (ID != 0) {
             val update = UpdateDescriptionFood(
                 description = description,
-                idFood = id
+                id = id
             )
             try {
                 RetrofitClient.foodAPIService.updateDescriptionFood(ID, update)
@@ -154,7 +154,7 @@ class ViewAllViewModel : ViewModel() {
 
     //getComment
     private suspend fun getCommentWithApi() {
-        if (ID != "") {
+        if (ID != 0) {
             _isLoadComment.value = true
             try {
                 _commentStateFlow.value = RetrofitClient.commentAPIService.getCommentByShop(ID)

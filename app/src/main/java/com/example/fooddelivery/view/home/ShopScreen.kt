@@ -74,9 +74,13 @@ fun ShopScreen(
     shopViewModel: ShopViewModel,
     favoriteViewModel: FavoriteViewModel,
 ) {
-    val idshop = navBackStackEntry.arguments?.getString(ID_SHOP_ARGUMENT_KEY) ?: ""
-    LaunchedEffect(key1 = Unit, key2 = idshop) {
-        shopViewModel.setIdShop(idShop = idshop)
+    val idShop = navBackStackEntry.arguments?.getInt(ID_SHOP_ARGUMENT_KEY) ?: 0
+    val currentId by sharedViewModel.idShopStateFlow.collectAsStateWithLifecycle()
+    if (idShop != currentId) {
+        sharedViewModel.getIdShop(id = idShop)
+    }
+    LaunchedEffect(key1 = Unit, key2 = idShop) {
+        shopViewModel.setIdShop(idShop = idShop)
     }
     val totalPrice = sharedViewModel.totalPrice.collectAsStateWithLifecycle()
     val snackState = remember { SnackbarHostState() }
@@ -126,7 +130,7 @@ fun ShopScreen(
                             titleShop = shop.titleShop,
                             star = shop.starShop.toDouble(),
                             favoriteViewModel = favoriteViewModel,
-                            id = shop.idShop,
+                            id = shop.id,
                             countComment = countComment
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -172,7 +176,7 @@ fun ShopScreen(
 fun TitleShop(
     titleShop: String, star: Double,
     favoriteViewModel: FavoriteViewModel,
-    id: String,
+    id: Int,
     countComment: Int
 ) {
     LaunchedEffect(key1 = Unit) {
@@ -271,7 +275,7 @@ fun FoodItemInShop(
     val foodDetailStateFlow by sharedViewModel.foodDetailStateFlow.collectAsState()
     var numberOfFood by remember {
         mutableIntStateOf(
-            foodDetailStateFlow.find { it.idFood == food.idFood }?.quantity ?: 0
+            foodDetailStateFlow.find { it.idFood == food.id }?.quantity ?: 0
         )
     }
     val encodeURL = URLEncoder.encode(food.imagePath, "UTF-8")
@@ -288,8 +292,8 @@ fun FoodItemInShop(
                         timevalue = food.time.time,
                         description = food.description,
                         imagepath = encodeURL,
-                        id = food.idFood,
-                        idshop = food.idShop
+                        id = food.id,
+                        idshop = food.id
                     )
                 ) {
                     launchSingleTop = true
@@ -338,7 +342,8 @@ fun FoodItemInShop(
                     .padding(end = 8.dp)
             ) {
                 Text(
-                    text = "${food.price.price} đ", style = MaterialTheme.typography.titleMedium.copy(
+                    text = "${food.price.price} đ",
+                    style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.Red
                     )
                 )
@@ -355,7 +360,7 @@ fun FoodItemInShop(
                                     imagePath = food.imagePath,
                                     price = food.price.price.toFloat(),
                                     quantity = 1,
-                                    idFood = food.idFood
+                                    idFood = food.id
                                 )
                                 sharedViewModel.deleteFoodDetail(foodDetails = fooddetails)
                             },
@@ -386,7 +391,7 @@ fun FoodItemInShop(
                                 imagePath = food.imagePath,
                                 price = food.price.price.toFloat(),
                                 quantity = 1,
-                                idFood = food.idFood
+                                idFood = food.id
                             )
                             sharedViewModel.addFoodDetail(foodDetails = fooddetails)
                         },

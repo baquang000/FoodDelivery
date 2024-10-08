@@ -29,12 +29,12 @@ class ShopViewModel : ViewModel() {
     val countComent = _countComent.asStateFlow()
 
 
-    private val _idShopStateFlow = MutableStateFlow("")
+    private val _idShopStateFlow = MutableStateFlow(0)
 
     private val tag = ViewModel::class.java.simpleName
 
 
-    fun setIdShop(idShop: String) {
+    fun setIdShop(idShop: Int) {
         _idShopStateFlow.value = idShop
         viewModelScope.launch(Dispatchers.IO) {
             getShopProfile(idShop = _idShopStateFlow.value)
@@ -43,11 +43,11 @@ class ShopViewModel : ViewModel() {
         }
     }
 
-    private suspend fun getShopProfile(idShop: String) {
+    private suspend fun getShopProfile(idShop: Int) {
         _isLoadShop.value = true
         try {
             _shopProfileStateFlow.value =
-                RetrofitClient.shopAPIService.getInforShop(idShop = idShop)
+                RetrofitClient.shopAPIService.getShopAndFood(idShop = idShop)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {
@@ -56,19 +56,19 @@ class ShopViewModel : ViewModel() {
     }
 
     //getComment
-    private suspend fun getComment(idShop: String) {
+    private suspend fun getComment(idShop: Int) {
         _isLoadComment.value = true
         try {
             _commentStateFlow.value =
                 RetrofitClient.commentAPIService.getCommentByShop(idShop = idShop)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
-        }finally {
+        } finally {
             _isLoadComment.value = false
         }
     }
 
-    private fun countCommentOfShop(idShop: String) {
+    private fun countCommentOfShop(idShop: Int) {
         _countComent.value = _commentStateFlow.value.count { it.idShop == idShop }
     }
 }

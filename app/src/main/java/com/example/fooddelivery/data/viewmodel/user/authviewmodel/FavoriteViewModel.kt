@@ -27,7 +27,7 @@ class FavoriteViewModel : ViewModel() {
     }
 
     suspend fun getFavoriteWithApi() {
-        if (ID != "") {
+        if (ID != 0) {
             _isLoadFavorite.value = true
             try {
                 _favoriteStateFlow.value =
@@ -40,9 +40,9 @@ class FavoriteViewModel : ViewModel() {
         }
     }
 
-    suspend fun createFavorite(idShop:String) {
+    suspend fun createFavorite(idShop: Int) {
         _isLoadFavorite.value = true
-        if (ID != "") {
+        if (ID != 0) {
             val favorite = CreateFavorite(
                 idShop = idShop,
                 idUser = ID
@@ -57,9 +57,9 @@ class FavoriteViewModel : ViewModel() {
         }
     }
 
-    suspend fun deleteFavorite(idShop: String) {
+    suspend fun deleteFavorite(idShop: Int) {
         _favoriteStateFlow.value = _favoriteStateFlow.value.filter { it.idShop != idShop }
-        if (ID != "") {
+        if (ID != 0) {
             _isLoadFavorite.value = true
             try {
                 RetrofitClient.userFavoriteAPIService.deleteUserFavorite(ID, idShop)
