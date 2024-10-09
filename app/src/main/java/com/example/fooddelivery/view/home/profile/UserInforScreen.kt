@@ -248,7 +248,6 @@ fun UserInforScreen(
                                 email = email,
                                 dateOfBirth = dateOfBirth,
                                 id = ID,
-                                idAccount = userInfor!!.idAccount
                             )
                         }
                         isFixDetails = !isFixDetails
