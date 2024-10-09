@@ -1,5 +1,6 @@
 package com.example.fooddelivery.api
 
+import com.example.fooddelivery.data.model.CreateShop
 import com.example.fooddelivery.data.model.GetShopItem
 import com.example.fooddelivery.data.model.ResultState
 import com.example.fooddelivery.data.model.Shop
@@ -26,6 +27,6 @@ interface ShopAPIService {
 
     @POST("/api/v1/shop")
     suspend fun createShop(
-        @Body shop: Shop
+        @Body shop: CreateShop
     ): Response<ResultState>
 }

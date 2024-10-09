@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
-import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.CreateOrder
 import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.DiscountCodeState
@@ -170,7 +169,6 @@ class SharedViewModel : ViewModel() {
         deliverytoDoor: Boolean,
         diningSubtances: Boolean
     ) {
-        val timeOrder = Calender().getCalender()
         if (ID != 0) {
             val newOrder = CreateOrder(
                 deliverytoDoor = deliverytoDoor,
@@ -179,8 +177,7 @@ class SharedViewModel : ViewModel() {
                 idUser = ID,
                 noteOrder = noteOrder,
                 rewardForDriver = rewardForDriver,
-                sumPrice = _sumPrice.value.toDouble(),
-                time = timeOrder,
+                totalMoney = _sumPrice.value.toString(),
                 orderDetails = _foodDetailStateFlow.value
             )
             viewModelScope.launch(Dispatchers.IO) {

@@ -3,6 +3,8 @@ package com.example.fooddelivery.data.model
 //get Food
 data class Food(
     val bestFood: Boolean,
+    val createdAt: String,
+    val deletedAt: String?,
     val description: String,
     val id: Int,
     val idCategory: Int,
@@ -12,9 +14,11 @@ data class Food(
     val imagePath: String,
     val price: Price,
     val showFood: Boolean,
+    val sold: Int,
     val star: String,
     val time: Time,
-    val title: String
+    val title: String,
+    val updatedAt: String?
 )
 
 

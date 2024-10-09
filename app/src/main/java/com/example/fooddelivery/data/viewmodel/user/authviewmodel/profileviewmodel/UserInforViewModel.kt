@@ -44,7 +44,8 @@ class UserInforViewModel : ViewModel() {
         address: String,
         email: String,
         dateOfBirth: String,
-        id: Int
+        id: Int,
+        idAccount:Int
     ) {
         val user = UserInfor(
             name = name,
@@ -52,6 +53,7 @@ class UserInforViewModel : ViewModel() {
             address = address,
             email = email,
             dateOfBirth = dateOfBirth,
+            idAccount = id,
             id = id
         )
         try {

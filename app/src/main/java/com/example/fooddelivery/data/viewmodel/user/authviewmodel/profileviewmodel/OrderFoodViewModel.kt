@@ -73,12 +73,10 @@ class OrderFoodViewModel : ViewModel() {
         if (ID != 0) {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val response = RetrofitClient.orderAPIService.updateOrderByUser(
-                        idUser = ID,
+                    val response = RetrofitClient.orderAPIService.updateOrder(
                         id = idOrder,
                         statusOrder = UpdateOrder(
                             orderStatus = orderStatus,
-                            time = time
                         )
                     )
                     if (response.isSuccessful) {

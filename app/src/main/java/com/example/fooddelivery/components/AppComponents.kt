@@ -511,7 +511,7 @@ fun FoodItemInGird(
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 180.dp)
+                        .heightIn(max = 150.dp)
                 )
                 Column(
                     modifier = Modifier.fillMaxSize(),

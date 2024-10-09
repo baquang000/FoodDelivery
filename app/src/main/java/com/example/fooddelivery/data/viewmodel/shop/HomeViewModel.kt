@@ -86,12 +86,10 @@ class HomeViewModel : ViewModel() {
         if (ID != 0) {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val response = RetrofitClient.orderAPIService.updateOrderByShop(
-                        idShop = ID,
+                    val response = RetrofitClient.orderAPIService.updateOrder(
                         id = idOrder,
                         statusOrder = UpdateOrder(
                             orderStatus = orderStatus,
-                            time = time
                         ),
 
                         )
@@ -144,7 +142,7 @@ class HomeViewModel : ViewModel() {
                 }
 
                 OrderStatus.SUCCESS.toString() -> {
-                    totalPrice += order.sumPrice
+                    totalPrice += order.totalMoney.toFloat()
                     newDelivered++
                 }
 
@@ -153,7 +151,7 @@ class HomeViewModel : ViewModel() {
                 }
 
                 OrderStatus.FOODBACK.toString() -> {
-                    totalPrice += order.sumPrice
+                    totalPrice += order.totalMoney.toFloat()
                     newDelivered++
                 }
             }

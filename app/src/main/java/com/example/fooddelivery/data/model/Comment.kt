@@ -7,7 +7,7 @@ data class CreateComment(
     val idOrder: Int,
     val content: String,
     val imagePath: String?,
-    val rating: Double,
+    val rating: String,
     val time: String
 )
 

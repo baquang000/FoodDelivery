@@ -58,7 +58,6 @@ import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmod
 import com.example.fooddelivery.navigation.ProfileRouteScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 
 @Composable
 fun OrderFoodScreen(
@@ -66,7 +65,6 @@ fun OrderFoodScreen(
     orderViewModel: OrderFoodViewModel,
     sharedViewModel: SharedViewModel
 ) {
-    val decimalFomat = DecimalFormat("#,###.##")
     val pagerState = rememberPagerState { tabItemOrder.size }
     val coroutineScope = rememberCoroutineScope()
     ///order
@@ -130,14 +128,13 @@ fun OrderFoodScreen(
                     if (index == 0) {
                         ConfirmOrder(
                             orderViewModel = orderViewModel,
-                            decimalFomat = decimalFomat,
                             orderList = orderList,
                             coroutineScope = coroutineScope
                         )
                     }
                     if (index == 1) {
                         DeliveringOrder(
-                            orderViewModel = orderViewModel, decimalFomat = decimalFomat,
+                            orderViewModel = orderViewModel,
                             orderList = orderList,
                             coroutineScope = coroutineScope
                         )
@@ -145,7 +142,6 @@ fun OrderFoodScreen(
                     if (index == 2) {
                         SuccessOrder(
                             sharedViewModel = sharedViewModel,
-                            decimalFomat = decimalFomat,
                             navController = navController,
                             orderList = orderList,
                             orderViewModel = orderViewModel,
@@ -154,7 +150,6 @@ fun OrderFoodScreen(
                     if (index == 3) {
                         CanceledOrder(
                             sharedViewModel = sharedViewModel,
-                            decimalFomat = decimalFomat,
                             orderList = orderList,
                         )
                     }
@@ -167,7 +162,7 @@ fun OrderFoodScreen(
 @Composable
 fun ConfirmOrder(
     orderList: List<GetOrderItem>,
-    orderViewModel: OrderFoodViewModel, decimalFomat: DecimalFormat,
+    orderViewModel: OrderFoodViewModel,
     coroutineScope: CoroutineScope
 ) {
     LazyColumn(
@@ -253,11 +248,11 @@ fun ConfirmOrder(
                         horizontalArrangement = Arrangement.Absolute.SpaceBetween
                     ) {
                         Text(
-                            text = order.time,
+                            text = order.createdAt,
                             style = MaterialTheme.typography.titleMedium
                         )
                         NormalTextComponents(
-                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
+                            value = "Tổng: ${order.totalMoney}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )
@@ -295,7 +290,7 @@ fun ConfirmOrder(
 
 @Composable
 fun DeliveringOrder(
-    orderViewModel: OrderFoodViewModel, decimalFomat: DecimalFormat, orderList: List<GetOrderItem>,
+    orderViewModel: OrderFoodViewModel, orderList: List<GetOrderItem>,
     coroutineScope: CoroutineScope
 ) {
     LazyColumn(
@@ -380,11 +375,11 @@ fun DeliveringOrder(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = order.time,
+                            text = order.updatedAt.toString(),
                             style = MaterialTheme.typography.titleMedium
                         )
                         NormalTextComponents(
-                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
+                            value = "Tổng: ${order.totalMoney}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )
@@ -423,7 +418,6 @@ fun DeliveringOrder(
 @Composable
 fun SuccessOrder(
     sharedViewModel: SharedViewModel,
-    decimalFomat: DecimalFormat,
     navController: NavController,
     orderList: List<GetOrderItem>,
     orderViewModel: OrderFoodViewModel
@@ -509,11 +503,11 @@ fun SuccessOrder(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = order.time,
+                            text = order.updatedAt.toString(),
                             style = MaterialTheme.typography.titleMedium
                         )
                         NormalTextComponents(
-                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
+                            value = "Tổng: ${order.totalMoney}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )
@@ -578,7 +572,6 @@ fun SuccessOrder(
 @Composable
 fun CanceledOrder(
     sharedViewModel: SharedViewModel,
-    decimalFomat: DecimalFormat,
     orderList: List<GetOrderItem>,
 ) {
     val context = LocalContext.current
@@ -665,11 +658,11 @@ fun CanceledOrder(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = order.time,
+                            text = order.updatedAt.toString(),
                             style = MaterialTheme.typography.titleMedium
                         )
                         NormalTextComponents(
-                            value = "Tổng: ${decimalFomat.format(order.sumPrice)}đ",
+                            value = "Tổng: ${order.totalMoney}đ",
                             nomalColor = colorResource(id = R.color.black),
                             nomalFontsize = 14.sp
                         )

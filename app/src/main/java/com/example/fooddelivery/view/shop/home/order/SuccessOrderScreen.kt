@@ -184,9 +184,9 @@ fun DeliveredOrderFood(order: GetOrderItem) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = order.time, style = MaterialTheme.typography.titleMedium)
+            Text(text = order.updatedAt.toString(), style = MaterialTheme.typography.titleMedium)
             NormalTextComponents(
-                value = "Tổng: ${decimalFormat.format(order.sumPrice)}đ",
+                value = "Tổng: ${decimalFormat.format(order.totalMoney)}đ",
                 nomalColor = colorResource(id = R.color.black),
                 nomalFontsize = 14.sp
             )

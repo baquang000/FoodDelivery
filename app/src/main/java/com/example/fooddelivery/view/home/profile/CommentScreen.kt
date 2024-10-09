@@ -274,7 +274,7 @@ fun CommentList(
                             idUser = order.idUser,
                             content = commentTextField,
                             imagePath = downloadUri,
-                            rating = rating.toDouble(),
+                            rating = rating.toString(),
                             time = time
                         )
                         orderViewModel.commentFood(comment = comment)
@@ -287,7 +287,7 @@ fun CommentList(
                         idUser = order.idUser,
                         content = commentTextField,
                         imagePath = null,
-                        rating = rating.toDouble(),
+                        rating = rating.toString(),
                         time = time
                     )
                     orderViewModel.commentFood(comment = comment)

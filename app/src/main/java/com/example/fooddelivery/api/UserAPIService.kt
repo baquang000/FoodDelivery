@@ -1,5 +1,6 @@
 package com.example.fooddelivery.api
 
+import com.example.fooddelivery.data.model.CreateUserInfor
 import com.example.fooddelivery.data.model.ResultState
 import com.example.fooddelivery.data.model.UserInfor
 import retrofit2.Response
@@ -14,7 +15,7 @@ interface UserAPIService {
     suspend fun getUser(@Path("idUser") idUser: Int): UserInfor
 
     @POST("/api/v1/userinfor")
-    suspend fun createUser(@Body userInfor: UserInfor): Response<ResultState>
+    suspend fun createUser(@Body userInfor: CreateUserInfor): Response<ResultState>
 
     @PUT("/api/v1/userinfor/{idUser}")
     suspend fun updateUser(

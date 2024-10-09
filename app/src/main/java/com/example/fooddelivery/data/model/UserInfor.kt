@@ -6,5 +6,15 @@ data class UserInfor(
     val email: String,
     val id: Int,
     val name: String?,
-    val numberPhone: String?
+    val numberPhone: String?,
+    val idAccount: Int
+)
+
+data class CreateUserInfor(
+    val address: String?,
+    val dateOfBirth: String?,
+    val email: String,
+    val name: String?,
+    val numberPhone: String?,
+    val idAccount: Int
 )
