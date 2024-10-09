@@ -10,10 +10,8 @@ import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Auth
 import com.example.fooddelivery.data.model.CreateShop
 import com.example.fooddelivery.data.model.CreateUserInfor
-import com.example.fooddelivery.data.model.Shop
 import com.example.fooddelivery.data.model.SignUpUIState
 import com.example.fooddelivery.data.model.SignupUIEvent
-import com.example.fooddelivery.data.model.UserInfor
 import com.example.fooddelivery.data.rules.Validator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

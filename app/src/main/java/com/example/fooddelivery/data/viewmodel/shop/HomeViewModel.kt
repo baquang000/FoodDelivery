@@ -82,7 +82,6 @@ class HomeViewModel : ViewModel() {
     }
 
     suspend fun updateStatusWithApi(idOrder: Int, orderStatus: String) {
-        val time = Calender().getCalender()
         if (ID != 0) {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
