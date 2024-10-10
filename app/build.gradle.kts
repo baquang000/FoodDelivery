@@ -102,4 +102,7 @@ dependencies {
     ///socket io
     implementation(libs.socket.io.client)
 
+    //time
+    implementation (libs.datetime)
+    coreLibraryDesugaring (libs.desugar.jdk.libs)
 }

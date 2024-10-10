@@ -119,6 +119,17 @@ sealed class ShopRouteScreen(val route: String) {
 
     data object DiscountCode : ShopRouteScreen(route = "DiscountCode_Screen")
 
+    data object DiscountDetail :
+        ShopRouteScreen(route = "DiscountDetail_Screen?id={$ID_ARGUMENT_KEY}") {
+        fun sendId(
+            id: Int = 0
+        ): String {
+            return "DiscountDetail_Screen?id=$id"
+        }
+    }
+
+    data object AddDiscountCode : ShopRouteScreen(route = "AddDiscountCode_Screen")
+
     data object ChangePass : ShopRouteScreen(route = "ChangePass_Screen")
 }
 

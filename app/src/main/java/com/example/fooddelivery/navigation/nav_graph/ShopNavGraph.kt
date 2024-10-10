@@ -17,8 +17,10 @@ import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 import com.example.fooddelivery.view.home.profile.ChangePassScreen
 import com.example.fooddelivery.view.shop.home.HomeShopScreen
+import com.example.fooddelivery.view.shop.home.discount.AddDiscountScreen
+import com.example.fooddelivery.view.shop.home.discount.DiscountCodeScreen
+import com.example.fooddelivery.view.shop.home.discount.DiscountDetailScreen
 import com.example.fooddelivery.view.shop.home.food.AddFoodScreen
-import com.example.fooddelivery.view.shop.home.food.DiscountCodeScreen
 import com.example.fooddelivery.view.shop.home.food.FoodDetailsScreen
 import com.example.fooddelivery.view.shop.home.food.ViewAllScreen
 import com.example.fooddelivery.view.shop.home.order.CancelOrderScreen
@@ -30,6 +32,7 @@ import com.example.fooddelivery.view.shop.home.profile.ProfileAdminScreen
 fun NavGraphBuilder.shopNavGraph(
     rootNavController: NavHostController
 ) {
+
     navigation(
         route = Graph.SHOPGRAPH,
         startDestination = ShopRouteScreen.Home.route
@@ -93,6 +96,24 @@ fun NavGraphBuilder.shopNavGraph(
         }
         composable(route = ShopRouteScreen.ChangePass.route) {
             ChangePassScreen(navController = rootNavController)
+        }
+
+        composable(
+            route = ShopRouteScreen.DiscountDetail.route,
+            arguments = listOf(
+                navArgument(ID_ARGUMENT_KEY) {
+                    type = NavType.IntType
+                },
+            )
+        ) { navBackStackEntry ->
+            DiscountDetailScreen(
+                navController = rootNavController,
+                navBackStackEntry = navBackStackEntry,
+            )
+        }
+
+        composable(route = ShopRouteScreen.AddDiscountCode.route) {
+            AddDiscountScreen(navController = rootNavController)
         }
     }
 
