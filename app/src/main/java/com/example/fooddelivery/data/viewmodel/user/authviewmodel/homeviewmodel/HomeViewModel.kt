@@ -8,6 +8,7 @@ import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.GetCategory
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
+import com.example.fooddelivery.view.auth.user.idToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -58,7 +59,7 @@ class HomeViewModel : ViewModel() {
     private suspend fun getBestFoodWithApi() {
         _isLoadBestFood.value = true
         try {
-            _bestFood.value = RetrofitClient.foodAPIService.getBestFood()
+            _bestFood.value = RetrofitClient.foodAPIService.getBestFood(idToken)
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {

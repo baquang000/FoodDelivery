@@ -12,19 +12,21 @@ import com.example.fooddelivery.data.model.UpdateTitleFood
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface FoodAPIService {
+
     @GET("/api/v1/foods/getBest")
-    suspend fun getBestFood(): List<Food>
+    suspend fun getBestFood(@Header("Authorization") token: String): List<Food>
 
     @GET("/api/v1/foods")
     suspend fun getAllFood(): List<Food>
 
-    //@Header("Authorization") token: String
+
     @Headers("accept: application/json")
     @GET("/api/v1/foods/category/{categoryId}")
     suspend fun getCategory(@Path("categoryId") id: Int): List<Food>

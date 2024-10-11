@@ -17,3 +17,13 @@ data class DataRegister(
     val id: String,
     val role: String
 )
+
+data class RegisterUuidDto(
+    val email: String,
+    val password: String = "LoginWithUUid",
+    val uuid: String
+)
+
+data class ForgetPassDto(
+    val email: String
+)

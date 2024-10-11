@@ -22,6 +22,27 @@ data class Food(
 )
 
 
+data class FoodItem(
+    val bestFood: Boolean,
+    val createdAt: String,
+    val deletedAt: Any,
+    val description: String,
+    val id: Int,
+    val idCategory: Int,
+    val idPrice: Int,
+    val idShop: Int,
+    val idTime: Int,
+    val imagePath: String,
+    val price: Any,
+    val showFood: Boolean,
+    val sold: Int,
+    val star: String,
+    val time: Time,
+    val title: String,
+    val updatedAt: String
+)
+
+
 //////////////create
 data class CreateFood(
     val bestFood: Boolean,

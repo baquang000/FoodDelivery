@@ -1,7 +1,6 @@
 package com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,15 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.CreateOrder
-import com.example.fooddelivery.data.model.DiscountCode
-import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
+import com.example.fooddelivery.data.model.GetDiscountItem
+import com.example.fooddelivery.data.model.TypeDiscount
 import com.example.fooddelivery.data.viewmodel.ID
 import com.example.fooddelivery.untils.SocketManager
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,14 +20,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Suppress("UNREACHABLE_CODE")
 class SharedViewModel : ViewModel() {
     private val _foodDetailStateFlow = MutableStateFlow<List<FoodDetails>>(emptyList())
     val foodDetailStateFlow: StateFlow<List<FoodDetails>> = _foodDetailStateFlow.asStateFlow()
 
-    val discountCode: MutableState<DiscountCodeState> = mutableStateOf(DiscountCodeState.Empty)
-
-    private val _discountCodeValue = MutableStateFlow(0f)
-    val discountCodeValue: StateFlow<Float> = _discountCodeValue.asStateFlow()
 
     private val _sumPrice = MutableStateFlow(0f)
     val sumPrice: StateFlow<Float> = _sumPrice.asStateFlow()
@@ -60,23 +52,50 @@ class SharedViewModel : ViewModel() {
 
     private val tag = ViewModel::class.java.simpleName
 
+    private var _priceDiscount = MutableStateFlow(0f)
+    var priceDiscount: StateFlow<Float> = _priceDiscount.asStateFlow()
 
     //// update order when createOrderAndDetails
     private val _isUpdateOrder = MutableStateFlow(false)
     val isUpdateOrder = _isUpdateOrder.asStateFlow()
 
-    init {
-        fetchDiscountCodeFromFirebase()
+    private var discountCode by mutableStateOf<GetDiscountItem?>(null)
+
+
+    fun sendDiscount(discount: GetDiscountItem) {
+        discountCode = discount
+        sumPrice()
+    }
+
+    fun notChooseDiscount(option: Int) {
+        if (option == -1) {
+            discountCode = null
+            sumPrice()
+        }
     }
 
     private fun sumPrice() {
         _totalPrice.value =
             _foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }.toFloat()
-        val discountvalue = _discountCodeValue.value
-        _sumPrice.value = if (discountvalue == 15000f) {
-            _totalPrice.value + 15000 - discountvalue + priceTaxandDelivery.value + rewardForDriver.value
+        if (discountCode != null) {
+            if (discountCode!!.typeDiscount == TypeDiscount.PERCENTAGE.toString()) {
+                _priceDiscount.value = if (
+                    (_totalPrice.value * (discountCode!!.percentage.toFloat() / 100)) >= discountCode!!.maxDiscountAmount.toFloat()
+                ) {
+                    discountCode!!.maxDiscountAmount.toFloat()
+                } else {
+                    _totalPrice.value * (discountCode!!.percentage.toFloat() / 100)
+                }
+                _sumPrice.value =
+                    _totalPrice.value - _priceDiscount.value + priceTaxandDelivery.value + rewardForDriver.value + 15000
+            } else {
+                _priceDiscount.value = discountCode!!.percentage.toFloat()
+                _sumPrice.value =
+                    _totalPrice.value - _priceDiscount.value + priceTaxandDelivery.value + rewardForDriver.value + 15000
+            }
         } else {
-            _totalPrice.value - _totalPrice.value * discountvalue + 15000 + priceTaxandDelivery.value + rewardForDriver.value
+            _sumPrice.value =
+                _totalPrice.value + priceTaxandDelivery.value + rewardForDriver.value + 15000
         }
     }
 
@@ -90,33 +109,6 @@ class SharedViewModel : ViewModel() {
         sumPrice()
     }
 
-    fun getDiscountCodeValue(value: Float) {
-        _discountCodeValue.value = value
-        sumPrice()
-    }
-
-    ///////////////
-    private fun fetchDiscountCodeFromFirebase() {
-        val emptyList = mutableListOf<DiscountCode>()
-        discountCode.value = DiscountCodeState.Loading
-        FirebaseDatabase.getInstance().getReference("DiscountCode").orderByChild("isshow")
-            .equalTo(true)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (dataSnap in snapshot.children) {
-                        val discountCodeList = dataSnap.getValue(DiscountCode::class.java)
-                        if (discountCodeList != null) {
-                            emptyList.add(discountCodeList)
-                        }
-                    }
-                    discountCode.value = DiscountCodeState.Success(emptyList)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    discountCode.value = DiscountCodeState.Failure(error.message)
-                }
-            })
-    }
 
     fun addFoodDetail(foodDetails: FoodDetails) {
         _foodDetailStateFlow.update { currentList ->
@@ -167,7 +159,7 @@ class SharedViewModel : ViewModel() {
         noteOrder: String,
         rewardForDriver: Int,
         deliverytoDoor: Boolean,
-        diningSubtances: Boolean
+        diningSubtances: Boolean,
     ) {
         if (ID != 0) {
             val newOrder = CreateOrder(
@@ -178,7 +170,8 @@ class SharedViewModel : ViewModel() {
                 noteOrder = noteOrder,
                 rewardForDriver = rewardForDriver,
                 totalMoney = _sumPrice.value.toString(),
-                orderDetails = _foodDetailStateFlow.value
+                orderDetails = _foodDetailStateFlow.value,
+                idDiscount = discountCode?.id ?: 0
             )
             viewModelScope.launch(Dispatchers.IO) {
                 try {
@@ -187,7 +180,8 @@ class SharedViewModel : ViewModel() {
                         SocketManager.emitOrder(isOrder = true)
                     }
                 } catch (e: Exception) {
-                    Log.e(tag, e.message.toString())
+                    throw e
+                    e.printStackTrace()
                 } finally {
                     _isUpdateOrder.value = !_isUpdateOrder.value
                     deleteListFood()
@@ -231,6 +225,5 @@ class SharedViewModel : ViewModel() {
         _totalPrice.value = 0f
         _idShopStateFlow.value = 0
     }
-
 }
 

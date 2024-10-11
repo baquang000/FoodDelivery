@@ -10,13 +10,14 @@ data class GetOrderItem(
     val id: Int,
     val idShop: Int,
     val idUser: Int,
+    val idDiscount:Int,
     val noteOrder: String,
     val orderDetails: List<OrderDetail>,
     val orderStatus: String,
     val rewardForDriver: Int,
     val totalMoney: String,
     val updatedAt: String?,
-    val user: User
+    val user: User,
 )
 
 data class OrderDetail(
@@ -75,7 +76,8 @@ data class CreateOrder(
     val noteOrder: String,
     val orderDetails: List<FoodDetails>,
     val rewardForDriver: Int,
-    val totalMoney: String
+    val totalMoney: String,
+    val idDiscount:Int
 )
 
 

@@ -120,11 +120,11 @@ sealed class ShopRouteScreen(val route: String) {
     data object DiscountCode : ShopRouteScreen(route = "DiscountCode_Screen")
 
     data object DiscountDetail :
-        ShopRouteScreen(route = "DiscountDetail_Screen?id={$ID_ARGUMENT_KEY}") {
+        ShopRouteScreen(route = "ShopDiscountDetail_Screen?id={$ID_ARGUMENT_KEY}") {
         fun sendId(
             id: Int = 0
         ): String {
-            return "DiscountDetail_Screen?id=$id"
+            return "ShopDiscountDetail_Screen?id=$id"
         }
     }
 

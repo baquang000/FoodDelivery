@@ -141,4 +141,5 @@
     <string name="empty_discount">không được để trống tên hoặc giá trị</string>
     <string name="default_web_client_id">199183915166-onm05imcssrjv2ksbkh9h5dl97spbt0d.apps.googleusercontent.com</string>
     <string name="title_shop">Tên cửa hàng</string>
+    <string name="forget_pass">Quên mật khẩu</string>
 </resources>

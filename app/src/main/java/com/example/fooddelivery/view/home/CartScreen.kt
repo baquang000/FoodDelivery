@@ -25,19 +25,23 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Discount
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Switch
@@ -65,7 +69,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -76,13 +79,13 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.ExpandableTextField
-import com.example.fooddelivery.components.MyDropdownMenuWithDiscountCode
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.data.model.DiscountCodeState
 import com.example.fooddelivery.data.model.FoodDetails
+import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.DiscountUserViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
+import com.example.fooddelivery.view.shop.home.discount.BodyDiscountScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -95,6 +98,7 @@ fun CartScreen(
     navController: NavController,
     sharedViewModel: SharedViewModel,
     userInforViewModel: UserInforViewModel = viewModel(),
+    discountUserViewModel: DiscountUserViewModel = viewModel(),
     innerPaddingValues: PaddingValues,
 ) {
     val context = LocalContext.current
@@ -102,7 +106,6 @@ fun CartScreen(
     val foodDetailsList = foodDetailStateFlow.value
     val sumPrice = sharedViewModel.sumPrice.collectAsState()
     val isErrorDelete by sharedViewModel::isErrorDelete
-    val discountValue by sharedViewModel.discountCodeValue.collectAsStateWithLifecycle()
     val totalPrice = foodDetailStateFlow.value.sumOf { it.price * it.quantity.toDouble() }.toFloat()
     //userInfor
     val userInfor by userInforViewModel.userInfor.collectAsStateWithLifecycle()
@@ -130,7 +133,8 @@ fun CartScreen(
             dateOfBirth = it.dateOfBirth.toString()
         }
     }
-
+    // discount
+    val discountCode by discountUserViewModel.discountUser.collectAsStateWithLifecycle()
     //switch giao hang tan cua
     var switchDeliverytoDoor by remember {
         mutableStateOf(false)
@@ -157,26 +161,39 @@ fun CartScreen(
     var openNoteOrder by remember {
         mutableStateOf(false)
     }
+    var openDiscount by remember {
+        mutableStateOf(false)
+    }
     var textNoteOrder by remember {
         mutableStateOf("")
     }
     var cancelOrDoneOrder by remember {
         mutableStateOf<Boolean?>(null)
     }
+    val priceDiscount by sharedViewModel.priceDiscount.collectAsStateWithLifecycle()
     // Tinh chieu cao screen
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val halfScreenHeight = screenHeight / 2
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    //val discountUsage by discountUserViewModel.discountUsage.collectAsStateWithLifecycle()
+    val discountActive =
+        discountCode.filter { it.isActive && totalPrice >= it.minOrderAmount.toFloat() }
+    //val lengthDiscount = discountUsage.filter { it.idUser == ID && it.idDiscount == discountActive.forEach( }
+    var selectedOption by remember {
+        mutableIntStateOf(-1)
+    }
     Box(
-        modifier = Modifier.fillMaxSize().clickable(
-            indication = null, // Remove the grey ripple effect
-            interactionSource = MutableInteractionSource() // Required when setting indication to null
-        ) {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null, // Remove the grey ripple effect
+                interactionSource = MutableInteractionSource() // Required when setting indication to null
+            ) {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            }
     ) {
         LazyColumn(
             modifier = Modifier
@@ -385,11 +402,8 @@ fun CartScreen(
                                     nomalFontWeight = FontWeight.Normal
                                 )
                                 NormalTextComponents(
-                                    value = if (discountValue == 15000f) {
-                                        "15,000đ"
-                                    } else {
-                                        "${decimalFomat.format(discountValue * totalPrice)}đ"
-                                    }, nomalColor = Color.Black,
+                                    value = priceDiscount.toString(),
+                                    nomalColor = Color.Black,
                                     nomalFontsize = 16.sp,
                                     nomalFontWeight = FontWeight.Normal
                                 )
@@ -462,13 +476,61 @@ fun CartScreen(
                 }
             }
             item {
-                SetDiscountCodeItems(
-                    sharedViewModel = sharedViewModel,
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 12.dp, top = 12.dp)
-                        .background(color = MaterialTheme.colorScheme.onSecondary)
-                )
+                        .padding(vertical = 8.dp, horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Discount,
+                            contentDescription = stringResource(
+                                R.string.discount_code
+                            ),
+                            tint = Color.Magenta,
+                            modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.discount_code),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.clickable {
+                            openDiscount = !openDiscount
+                        }
+                    ) {
+                        Text(
+                            text = if (selectedOption != -1) {
+                                if (discountActive[selectedOption - 1].name.length > 10) discountActive[selectedOption - 1].name.take(
+                                    10
+                                ) + "..."
+                                else discountActive[selectedOption - 1].name
+                            } else "",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Red,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.next_button),
+                            contentDescription = stringResource(
+                                R.string.next_button
+                            ),
+                            tint = Color.Black,
+                            modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                        )
+                    }
+                }
             }
             item {
                 Column(
@@ -860,6 +922,148 @@ fun CartScreen(
                 }, label = "note_order"
             )
         }
+        if (openDiscount) {
+            AnimatedContent(
+                targetState = true,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.Gray.copy(0.5f)),
+                content = { open ->
+                    if (open) {
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = halfScreenHeight)
+                                    .background(color = Color.Transparent)
+                            ) {
+                                Spacer(
+                                    modifier = Modifier
+                                        .height(100.dp)
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            Color.White
+                                        )
+                                        .padding(vertical = 8.dp, horizontal = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.discount_code),
+                                        style = MaterialTheme.typography.titleMedium.copy(
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.cancel),
+                                        style = MaterialTheme.typography.titleMedium.copy(
+                                            fontWeight = FontWeight.Normal,
+                                            color = Color.Black
+                                        ),
+                                        modifier = Modifier
+                                            .padding(start = 120.dp)
+                                            .clickable {
+                                                openDiscount = false
+                                                selectedOption = -1
+                                                sharedViewModel.notChooseDiscount(selectedOption)
+                                            }
+                                    )
+                                }
+                                HorizontalDivider(
+                                    thickness = 1.dp,
+                                    color = Color.Gray,
+                                    modifier = Modifier.padding(
+                                        horizontal = 2.dp,
+                                        vertical = 4.dp
+                                    )
+                                )
+                                if (discountActive.isEmpty()) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(color = Color.White),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = "Hiện không có mã giảm giá",
+                                            color = Color.Black,
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                } else {
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(color = Color.White)
+                                    ) {
+                                        items(discountActive) { discountCode ->
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                            ) {
+                                                BodyDiscountScreen(
+                                                    discount = discountCode,
+                                                    onClick = {},
+                                                    modifier = Modifier.weight(3f)
+                                                )
+                                                RadioButton(
+                                                    selected = selectedOption == discountCode.id,
+                                                    onClick = { selectedOption = discountCode.id },
+                                                    modifier = Modifier.weight(0.5f)
+                                                )
+                                            }
+                                        }
+                                        item {
+                                            HorizontalDivider(
+                                                thickness = 1.dp,
+                                                color = Color.Gray,
+                                                modifier = Modifier.padding(
+                                                    horizontal = 2.dp,
+                                                    vertical = 4.dp
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            Button(
+                                onClick = {
+                                    openDiscount = false
+                                    sharedViewModel.sendDiscount(discountActive[selectedOption - 1])
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Red,
+                                    contentColor = Color.White
+                                ),
+                                shape = RoundedCornerShape(4.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                                    .align(Alignment.BottomCenter)
+                            ) {
+                                Text(text = "Xác nhận")
+                            }
+                        }
+                    }
+                },
+                transitionSpec = {
+                    slideInVertically(
+                        initialOffsetY = {
+                            if (openDiscount) it else -it
+                        }
+                    ) togetherWith slideOutVertically(
+                        targetOffsetY = {
+                            if (openDiscount) -it else it
+                        }
+                    )
+                }, label = stringResource(id = R.string.discount_code)
+            )
+        }
     }
 }
 
@@ -1048,41 +1252,3 @@ fun SwipeToDismissItem(
     }
 }
 
-@Composable
-fun SetDiscountCodeItems(sharedViewModel: SharedViewModel, modifier: Modifier = Modifier) {
-    when (val result = sharedViewModel.discountCode.value) {
-        is DiscountCodeState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is DiscountCodeState.Success -> {
-            MyDropdownMenuWithDiscountCode(
-                discountcode = result.data,
-                modifier = modifier,
-                sharedViewModel = sharedViewModel
-            )
-        }
-
-        is DiscountCodeState.Failure -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = result.message, style = TextStyle(
-                        fontSize = 20.sp,
-                    )
-                )
-            }
-        }
-
-        else -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.error_loading_data), style = TextStyle(
-                        fontSize = 20.sp, color = Color.Red
-                    )
-                )
-            }
-        }
-    }
-}

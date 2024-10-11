@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+@Suppress("UNREACHABLE_CODE")
 class DiscountViewModel : ViewModel() {
 
     private val _discount = MutableStateFlow<List<GetDiscountItem>>(emptyList())
@@ -33,7 +34,6 @@ class DiscountViewModel : ViewModel() {
     private val _isLoadAdd = MutableStateFlow(false)
     val isLoadAdd = _isLoadAdd.asStateFlow()
 
-    private val tag = ViewModel::class.java.simpleName
     var isFailer by mutableStateOf(false)
     var isSuccess by mutableStateOf(false)
     var errormessage by mutableStateOf<String?>(null)
@@ -51,7 +51,8 @@ class DiscountViewModel : ViewModel() {
         try {
             _discount.value = RetrofitClient.discountAPIService.getByShop(idShop)
         } catch (e: Exception) {
-            Log.e(tag, e.message.toString())
+            throw e
+            e.printStackTrace()
         } finally {
             _isLoadDiscount.value = false
         }
@@ -62,7 +63,8 @@ class DiscountViewModel : ViewModel() {
         try {
             _discountDetails.value = RetrofitClient.discountAPIService.getSingle(id)
         } catch (e: Exception) {
-            Log.e(tag, e.message.toString())
+            throw e
+            e.printStackTrace()
         } finally {
             _isLoadDiscountDetails.value = false
         }
@@ -84,9 +86,11 @@ class DiscountViewModel : ViewModel() {
                 } ?: "Unknown error"
             }
         } catch (e: Exception) {
-            Log.e(tag, e.message.toString())
-        }finally {
+            throw e
+            e.printStackTrace()
+        } finally {
             _isLoadAdd.value = false
         }
     }
+
 }

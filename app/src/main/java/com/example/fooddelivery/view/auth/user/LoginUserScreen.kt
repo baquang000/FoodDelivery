@@ -337,6 +337,10 @@ fun LoginFacebookButton(
                     val credential = FacebookAuthProvider.getCredential(token)
                     val authResult = Firebase.auth.signInWithCredential(credential).await()
                     if (authResult.user != null) {
+                        val tokenF = authResult.user?.getIdToken(true)?.await()?.token
+                        if (tokenF != null) {
+                            idToken = token
+                        }
                         onAuthComplete()
                     } else {
                         onAuthError(IllegalStateException("Unable to sign in with Facebook"))
@@ -398,6 +402,7 @@ fun LoginTwitterButton(
             .height(50.dp)
     )
 }*/
+var idToken = ""
 
 @Preview(
     showBackground = true

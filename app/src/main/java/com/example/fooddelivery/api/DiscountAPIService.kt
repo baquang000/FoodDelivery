@@ -18,4 +18,8 @@ interface DiscountAPIService {
 
     @POST("/api/v1/discount")
     suspend fun createDiscount(@Body discount: CreateDiscount) : Response<ResultState>
+
+    @GET("/api/v1/discount/user/{id}")
+    suspend fun getByUser(@Path("id") id:Int): List<GetDiscountItem>
+
 }

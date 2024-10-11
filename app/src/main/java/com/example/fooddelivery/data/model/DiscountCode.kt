@@ -1,13 +1,5 @@
 package com.example.fooddelivery.data.model
-
-data class DiscountCode(
-    val id: Int = 0,
-    val name: String = "",
-    val value: Float = 0f,
-    val isshow: Boolean = false
-)
-
-
+//get
 data class GetDiscountItem(
     val createdAt: String,
     val deletedAt: String?,
@@ -27,6 +19,7 @@ data class GetDiscountItem(
     val updatedAt: String
 )
 
+//create
 data class CreateDiscount(
     val description: String,
     val endDate: String,

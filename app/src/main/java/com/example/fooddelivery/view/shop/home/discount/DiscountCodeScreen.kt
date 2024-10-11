@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -165,6 +166,10 @@ fun DiscountCodeScreen(
 @Composable
 fun BodyDiscountScreen(
     discount: GetDiscountItem,
+    paddingCard: Dp = 12.dp,
+    paddingRow : Dp = 10.dp,
+    paddingColumn : Dp = 14.dp,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Card(
@@ -176,21 +181,21 @@ fun BodyDiscountScreen(
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 12.dp)
+            .padding(horizontal = paddingCard, vertical = paddingCard)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 10.dp),
+                .padding(vertical = 10.dp, horizontal = paddingRow),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.padding(vertical = 2.dp, horizontal = 14.dp)
+                modifier = Modifier.padding(vertical = 2.dp, horizontal = paddingColumn)
             ) {
                 Text(
                     text = discount.name, style = TextStyle(

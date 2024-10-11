@@ -22,4 +22,5 @@ interface UserAPIService {
         @Path("idUser") idUser: Int,
         @Body userInfor: UserInfor
     ): Response<UserInfor>
+
 }

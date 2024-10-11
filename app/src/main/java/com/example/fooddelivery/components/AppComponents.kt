@@ -42,7 +42,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -73,7 +72,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
-import com.example.fooddelivery.data.model.DiscountCode
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.Price
@@ -803,68 +801,7 @@ fun MyDropdownMenuWithPrice(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyDropdownMenuWithDiscountCode(
-    modifier: Modifier = Modifier, discountcode: MutableList<DiscountCode>,
-    sharedViewModel: SharedViewModel
-) {
-    val valueDiscount = remember {
-        mutableFloatStateOf(discountcode.firstOrNull()?.value ?: 0f)
-    }
-    val selected = remember {
-        mutableStateOf(discountcode.firstOrNull()?.name ?: "")
-    }
-    val expand = remember {
-        mutableStateOf(false)
-    }
-    sharedViewModel.getDiscountCodeValue(value = valueDiscount.floatValue)
-    Box(modifier = modifier) {
-        ExposedDropdownMenuBox(
-            expanded = expand.value, onExpandedChange = {
-                expand.value = !expand.value
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = selected.value, onValueChange = {},
-                readOnly = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
-                },
-                modifier = Modifier
-                    .menuAnchor(
-                        type = MenuAnchorType.PrimaryNotEditable,
-                        enabled = true
-                    )
-                    .fillMaxWidth(),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.dollar),
-                        contentDescription = stringResource(
-                            id = R.string.price
-                        ),
-                        modifier = Modifier.scale(1.5f),
-                    )
-                }
-            )
-            ExposedDropdownMenu(
-                expanded = expand.value,
-                onDismissRequest = { expand.value = false }) {
-                discountcode.forEach {
-                    DropdownMenuItem(text = {
-                        Text(text = it.name)
-                    }, onClick = {
-                        selected.value = it.name
-                        expand.value = false
-                        valueDiscount.floatValue = it.value
-                    })
-                }
-            }
-        }
-    }
-}
+
 
 @Composable
 fun RatingBar(
