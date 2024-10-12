@@ -86,6 +86,7 @@ import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.UserInforViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
 import com.example.fooddelivery.view.shop.home.discount.BodyDiscountScreen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -101,6 +102,7 @@ fun CartScreen(
     discountUserViewModel: DiscountUserViewModel = viewModel(),
     innerPaddingValues: PaddingValues,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val foodDetailStateFlow = sharedViewModel.foodDetailStateFlow.collectAsStateWithLifecycle()
     val foodDetailsList = foodDetailStateFlow.value
@@ -123,6 +125,11 @@ fun CartScreen(
     }
     var dateOfBirth by remember {
         mutableStateOf("")
+    }
+    LaunchedEffect(key1 = Unit) {
+        coroutineScope.launch(Dispatchers.IO) {
+            discountUserViewModel.getDiscountUserWithApi()
+        }
     }
     LaunchedEffect(key1 = userInfor) {
         userInfor?.let {
@@ -184,6 +191,7 @@ fun CartScreen(
     var selectedOption by remember {
         mutableIntStateOf(-1)
     }
+    val selectedDiscount = discountActive.find { it.id == selectedOption }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -511,11 +519,11 @@ fun CartScreen(
                         }
                     ) {
                         Text(
-                            text = if (selectedOption != -1) {
-                                if (discountActive[selectedOption - 1].name.length > 10) discountActive[selectedOption - 1].name.take(
+                            text = if (selectedDiscount != null) {
+                                if (selectedDiscount.name.length > 10) selectedDiscount.name.take(
                                     10
                                 ) + "..."
-                                else discountActive[selectedOption - 1].name
+                                else selectedDiscount.name
                             } else "",
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Red,
@@ -1034,7 +1042,9 @@ fun CartScreen(
                             Button(
                                 onClick = {
                                     openDiscount = false
-                                    sharedViewModel.sendDiscount(discountActive[selectedOption - 1])
+                                    if (selectedDiscount != null) {
+                                        sharedViewModel.sendDiscount(selectedDiscount)
+                                    }
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.Red,

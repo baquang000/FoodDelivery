@@ -1,24 +1,34 @@
 package com.example.fooddelivery.view.home
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Output
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LockClock
+import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PunchClock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +36,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -40,154 +52,116 @@ import com.example.fooddelivery.data.viewmodel.ProfileViewModel
 import com.example.fooddelivery.navigation.Graph
 import com.example.fooddelivery.navigation.ProfileRouteScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    innerPadding: PaddingValues,
     navController: NavController,
     profileViewModel: ProfileViewModel = viewModel()
 ) {
     var openDialog by remember {
         mutableStateOf(false)
     }
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-    ) {
-        Column(
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(id = R.string.profile),
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 150.dp)
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Blue.copy(alpha = 0.5f)
+                ),
+            )
+        }
+    ) { padding ->
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 5.dp, vertical = 5.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(padding)
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 50.dp)
-                    .clickable {
-                        navController.navigate(ProfileRouteScreen.UserInfor.route) {
-                            launchSingleTop = true
-                        }
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
+                ItemProfileWithIcon(
                     imageVector = Icons.Filled.Person,
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-                Text(
-                    text = stringResource(R.string.private_info_user),
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = TextStyle(
-                        fontSize = 22.sp,
-                        color = Color.Black
-                    )
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 50.dp)
-                    .clickable {
-                        navController.navigate(route = ProfileRouteScreen.HisFood.route) {
-                            launchSingleTop = true
-                        }
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.History,
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-                Text(
-                    text = stringResource(R.string.history_user),
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = TextStyle(
-                        fontSize = 22.sp,
-                        color = Color.Black
-                    )
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 50.dp)
-                    .clickable {
+                    label = R.string.private_info_user,
+                    tintColor = Color.Magenta
+                ) {
+                    navController.navigate(ProfileRouteScreen.UserInfor.route) {
+                        launchSingleTop = true
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(shape = RoundedCornerShape(12.dp))
+                        .background(Color.LightGray.copy(alpha = 0.2f))
+                ) {
+                    ItemProfileWithPainter(
+                        leadIcon = R.drawable.basket,
+                        label = R.string.order_screen,
+                        tintColor = Color.Unspecified
+                    ) {
                         navController.navigate(route = ProfileRouteScreen.OrderFood.route) {
                             launchSingleTop = true
                         }
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.basket),
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-                Text(
-                    text = stringResource(R.string.order_screen),
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = TextStyle(
-                        fontSize = 22.sp,
-                        color = Color.Black
-                    )
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 50.dp)
-                    .clickable {
+                    }
+                    ItemProfileWithIcon(
+                        imageVector = Icons.Filled.FavoriteBorder,
+                        label = R.string.favorite_user,
+                        tintColor = Color.Magenta
+                    ) {
+
+                    }
+                    ItemProfileWithIcon(
+                        imageVector = Icons.Filled.NotificationsNone,
+                        label = R.string.notification,
+                        tintColor = Color(0xFFEE9A00)
+                    ) {
+
+                    }
+                    ItemProfileWithPainter(
+                        leadIcon = R.drawable.wallet,
+                        label = R.string.payment_method,
+                        tintColor = Color.Unspecified
+                    ) {}
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(shape = RoundedCornerShape(12.dp))
+                        .background(Color.LightGray.copy(alpha = 0.3f))
+                ) {
+                    ItemProfileWithPainter(
+                        leadIcon = R.drawable.help,
+                        label = R.string.faqs,
+                        tintColor = Color(0xFFEE0000)
+                    ) {}
+                    ItemProfileWithIcon(
+                        tintColor = Color(0xFFFF00FF)
+                    ) {
                         navController.navigate(route = ProfileRouteScreen.ChangePass.route) {
                             launchSingleTop = true
                         }
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.PunchClock,
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-                Text(
-                    text = stringResource(R.string.change_pass_user),
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = TextStyle(
-                        fontSize = 22.sp,
-                        color = Color.Black
-                    )
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 50.dp)
-                    .clickable {
-                        openDialog = true
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Output,
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-                Text(
-                    text = stringResource(R.string.logout),
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = TextStyle(
-                        fontSize = 22.sp,
-                        color = Color.Black
-                    )
-                )
+                    }
+                    ItemProfileWithPainter(
+                        leadIcon = R.drawable.settings_icon,
+                        label = R.string.setting,
+                        tintColor = Color.Unspecified
+                    ) {}
+                }
+                ItemProfileWithPainter {
+                    openDialog = true
+                }
             }
             if (openDialog) {
                 AlertDialog(onDismissRequest = { openDialog = false },
@@ -229,5 +203,121 @@ fun ProfileScreen(
                     })
             }
         }
+    }
+}
+
+
+@Composable
+fun ItemProfileWithPainter(
+    @DrawableRes leadIcon: Int = R.drawable.logout,
+    @StringRes label: Int = R.string.logout,
+    tintColor: Color = Color.Red.copy(alpha = 0.8f),
+    openDialog: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(12.dp))
+            .background(Color.LightGray.copy(alpha = 0.3f))
+            .padding(horizontal = 12.dp, vertical = 2.dp)
+            .heightIn(min = 50.dp)
+            .clickable {
+                openDialog()
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp) // Điều chỉnh kích thước hình tròn
+                    .clip(CircleShape) // Tạo hình tròn
+                    .background(Color.White),
+                contentAlignment = Alignment.Center// Đặt nền trắng
+            ) {
+                Icon(
+                    painter = painterResource(id = leadIcon),
+                    contentDescription = null,
+                    tint = tintColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Text(
+                text = stringResource(label),
+                modifier = Modifier.padding(start = 8.dp),
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    color = Color.Black
+                )
+            )
+        }
+        Icon(
+            painter = painterResource(id = R.drawable.next_button),
+            contentDescription = stringResource(
+                id = R.string.next_button
+            ),
+            modifier = Modifier
+                .size(24.dp)
+        )
+    }
+}
+
+
+@Composable
+fun ItemProfileWithIcon(
+    imageVector: ImageVector = Icons.Filled.LockClock,
+    @StringRes label: Int = R.string.change_pass_user,
+    tintColor: Color = Color(0xFF00F5FF),
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(12.dp))
+            .background(Color.LightGray.copy(alpha = 0.3f))
+            .padding(horizontal = 12.dp, vertical = 2.dp)
+            .heightIn(min = 50.dp)
+            .clickable {
+                onClick()
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp) // Điều chỉnh kích thước hình tròn
+                    .clip(CircleShape) // Tạo hình tròn
+                    .background(Color.White),
+                contentAlignment = Alignment.Center// Đặt nền trắng
+            ) {
+                Icon(
+                    imageVector = imageVector,
+                    contentDescription = null,
+                    tint = tintColor
+                )
+            }
+            Text(
+                text = stringResource(label),
+                modifier = Modifier.padding(start = 8.dp),
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    color = Color.Black
+                )
+            )
+        }
+        Icon(
+            painter = painterResource(id = R.drawable.next_button),
+            contentDescription = stringResource(
+                id = R.string.next_button
+            ),
+            modifier = Modifier
+                .padding(start = 80.dp)
+                .size(24.dp)
+        )
     }
 }

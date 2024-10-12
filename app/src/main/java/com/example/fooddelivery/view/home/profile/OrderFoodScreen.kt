@@ -2,6 +2,7 @@ package com.example.fooddelivery.view.home.profile
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,19 +21,23 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -40,7 +45,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,6 +63,7 @@ import com.example.fooddelivery.navigation.ProfileRouteScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderFoodScreen(
     navController: NavController,
@@ -74,84 +79,91 @@ fun OrderFoodScreen(
     LaunchedEffect(isUpdate) {
         orderViewModel.getOrderByUser()
     }
-    Box {
-        if (isLoadingOrder) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else {
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp, horizontal = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    IconButton(
-                        onClick = {
-                            navController.navigateUp()
-                        },
-                        modifier = Modifier.padding(end = 80.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow),
-                            contentDescription = stringResource(
-                                id = R.string.arrow
-                            ),
-                            modifier = Modifier.size(width = 24.dp, height = 24.dp)
-                        )
-                    }
-                    NormalTextComponents(
-                        value = stringResource(id = R.string.order_screen),
-                        nomalFontsize = 24.sp,
-                        nomalColor = colorResource(id = R.color.black),
-                        nomalFontWeight = FontWeight.Bold
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(id = R.string.order_screen),
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 150.dp)
                     )
-                }
-                TabRow(selectedTabIndex = pagerState.currentPage) {
-                    tabItemOrder.forEachIndexed { index, tabItem ->
-                        Tab(
-                            selected = true,
-                            onClick = {
-                                coroutineScope.launch { pagerState.animateScrollToPage(index) }
-                            },
-                            text = { Text(text = tabItem.title) },
-                        )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Red.copy(alpha = 0.8f)
+                ),
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow),
+                        contentDescription = stringResource(
+                            id = R.string.arrow
+                        ),
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(24.dp)
+                            .clickable {
+                                navController.navigateUp()
+                            }
+                    )
+                },
+            )
+        }
+    ) { padding ->
+        Box {
+            if (isLoadingOrder) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
+                    TabRow(selectedTabIndex = pagerState.currentPage) {
+                        tabItemOrder.forEachIndexed { index, tabItem ->
+                            Tab(
+                                selected = true,
+                                onClick = {
+                                    coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                                },
+                                text = { Text(text = tabItem.title) },
+                            )
+                        }
                     }
-                }
-                HorizontalPager(
-                    modifier = Modifier.weight(1f),
-                    state = pagerState
-                ) { index ->
-                    //Some screen
-                    if (index == 0) {
-                        ConfirmOrder(
-                            orderViewModel = orderViewModel,
-                            orderList = orderList,
-                            coroutineScope = coroutineScope
-                        )
-                    }
-                    if (index == 1) {
-                        DeliveringOrder(
-                            orderViewModel = orderViewModel,
-                            orderList = orderList,
-                            coroutineScope = coroutineScope
-                        )
-                    }
-                    if (index == 2) {
-                        SuccessOrder(
-                            sharedViewModel = sharedViewModel,
-                            navController = navController,
-                            orderList = orderList,
-                            orderViewModel = orderViewModel,
-                        )
-                    }
-                    if (index == 3) {
-                        CanceledOrder(
-                            sharedViewModel = sharedViewModel,
-                            orderList = orderList,
-                        )
+                    HorizontalPager(
+                        modifier = Modifier.weight(1f),
+                        state = pagerState
+                    ) { index ->
+                        //Some screen
+                        if (index == 0) {
+                            ConfirmOrder(
+                                orderViewModel = orderViewModel,
+                                orderList = orderList,
+                                coroutineScope = coroutineScope
+                            )
+                        }
+                        if (index == 1) {
+                            DeliveringOrder(
+                                orderViewModel = orderViewModel,
+                                orderList = orderList,
+                                coroutineScope = coroutineScope
+                            )
+                        }
+                        if (index == 2) {
+                            SuccessOrder(
+                                sharedViewModel = sharedViewModel,
+                                navController = navController,
+                                orderList = orderList,
+                                orderViewModel = orderViewModel,
+                            )
+                        }
+                        if (index == 3) {
+                            CanceledOrder(
+                                sharedViewModel = sharedViewModel,
+                                orderList = orderList,
+                            )
+                        }
                     }
                 }
             }

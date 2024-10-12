@@ -165,11 +165,11 @@ fun DiscountCodeScreen(
 
 @Composable
 fun BodyDiscountScreen(
+    modifier: Modifier = Modifier,
     discount: GetDiscountItem,
     paddingCard: Dp = 12.dp,
     paddingRow : Dp = 10.dp,
     paddingColumn : Dp = 14.dp,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Card(

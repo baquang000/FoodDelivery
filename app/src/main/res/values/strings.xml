@@ -62,7 +62,7 @@
     <string name="change_pass_user">Thay đổi mật khẩu</string>
     <string name="logout">Đăng xuất</string>
     <string name="name_user">Họ tên</string>
-    <string name="address_user">địa chỉ</string>
+    <string name="address_user">Địa chỉ</string>
     <string name="save">Lưu</string>
     <string name="is_saving">Đang lưu</string>
     <string name="save_failed">Lưu thất bại</string>
@@ -142,4 +142,8 @@
     <string name="default_web_client_id">199183915166-onm05imcssrjv2ksbkh9h5dl97spbt0d.apps.googleusercontent.com</string>
     <string name="title_shop">Tên cửa hàng</string>
     <string name="forget_pass">Quên mật khẩu</string>
+    <string name="notification">Thông báo</string>
+    <string name="payment_method">Phương thức thanh toán</string>
+    <string name="setting">Cài đặt</string>
+    <string name="faqs">FAQs</string>
 </resources>

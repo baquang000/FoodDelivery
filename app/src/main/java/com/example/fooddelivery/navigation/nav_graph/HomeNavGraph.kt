@@ -101,7 +101,7 @@ fun HomeNavGraph(
             innerPadding = innerPadding
         )
         composable(route = HomeRouteScreen.ProfileRouteScreen.route) {
-            ProfileScreen(innerPadding = innerPadding, navController = rootNavController)
+            ProfileScreen(navController = rootNavController)
         }
         composable(route = HomeRouteScreen.Category.route, arguments = listOf(
             navArgument(CATEGORY_ID_KEY) {

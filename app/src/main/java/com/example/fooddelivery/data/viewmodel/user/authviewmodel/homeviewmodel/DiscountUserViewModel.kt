@@ -24,7 +24,7 @@ class DiscountUserViewModel : ViewModel() {
         }
     }
 
-    private suspend fun getDiscountUserWithApi() {
+     suspend fun getDiscountUserWithApi() {
         _isLoadDiscount.value = true
         try {
             _discountUser.value = RetrofitClient.discountAPIService.getByUser(id = ID)
