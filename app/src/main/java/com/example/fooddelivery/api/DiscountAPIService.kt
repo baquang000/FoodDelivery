@@ -3,6 +3,7 @@ package com.example.fooddelivery.api
 import com.example.fooddelivery.data.model.CreateDiscount
 import com.example.fooddelivery.data.model.GetDiscountItem
 import com.example.fooddelivery.data.model.ResultState
+import com.example.fooddelivery.data.model.TDiscountSingle
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,12 +15,12 @@ interface DiscountAPIService {
     suspend fun getByShop(@Path("id") idShop: Int): List<GetDiscountItem>
 
     @GET("/api/v1/discount/single/{id}")
-    suspend fun getSingle(@Path("id") id: Int): GetDiscountItem
+    suspend fun getSingle(@Path("id") id: Int): Response<TDiscountSingle>
 
     @POST("/api/v1/discount")
-    suspend fun createDiscount(@Body discount: CreateDiscount) : Response<ResultState>
+    suspend fun createDiscount(@Body discount: CreateDiscount): Response<ResultState>
 
     @GET("/api/v1/discount/user/{id}")
-    suspend fun getByUser(@Path("id") id:Int): List<GetDiscountItem>
+    suspend fun getByUser(@Path("id") id: Int): List<GetDiscountItem>
 
 }

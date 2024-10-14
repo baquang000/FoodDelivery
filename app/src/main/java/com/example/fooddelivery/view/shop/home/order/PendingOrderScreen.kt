@@ -1,6 +1,7 @@
 package com.example.fooddelivery.view.shop.home.order
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,16 +18,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -46,8 +53,8 @@ import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.viewmodel.shop.HomeViewModel
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PendingOrderScreen(
     homeViewModel: HomeViewModel = viewModel(),
@@ -55,23 +62,53 @@ fun PendingOrderScreen(
 ) {
     val order by homeViewModel.orderStateFlow.collectAsStateWithLifecycle()
     val isLoading by homeViewModel.isLoadingOrder.collectAsStateWithLifecycle()
-
-    Box {
-        if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = colorResource(id = R.color.gray_background)),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    HeadingPending(navController = navController)
+    val filteredOrders by remember(order) {
+        derivedStateOf { order.filter { it.orderStatus == OrderStatus.PENDING.toString() } }
+    }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(id = R.string.pending_order),
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 45.dp)
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Green
+                ),
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow),
+                        contentDescription = stringResource(
+                            id = R.string.arrow
+                        ),
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(24.dp)
+                            .clickable {
+                                navController.navigateUp()
+                            }
+                    )
                 }
-                items(order) { order ->
-                    if (order.orderStatus == OrderStatus.PENDING.toString()) {
+            )
+        }
+    ) { paddingValues ->
+        Box {
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(color = colorResource(id = R.color.gray_background)),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(filteredOrders, key = { it.id }) { order ->
                         PendingOrderFood(
                             order = order,
                             homeViewModel = homeViewModel
@@ -84,46 +121,7 @@ fun PendingOrderScreen(
 }
 
 @Composable
-fun HeadingPending(
-    navController: NavController
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, start = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton(onClick = {
-            navController.navigateUp()
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.arrow),
-                contentDescription = stringResource(
-                    id = R.string.arrow_icon
-                ),
-                modifier = Modifier.size(width = 24.dp, height = 24.dp)
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            NormalTextComponents(
-                value = stringResource(id = R.string.order_comfirm),
-                nomalColor = colorResource(id = R.color.black),
-                nomalFontsize = 28.sp,
-                modifier = Modifier.padding(end = 24.dp)
-            )
-        }
-    }
-
-}
-
-@Composable
 fun PendingOrderFood(order: GetOrderItem, homeViewModel: HomeViewModel) {
-    val decimalFormat = DecimalFormat("#,###.##")
     val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier
@@ -196,7 +194,7 @@ fun PendingOrderFood(order: GetOrderItem, homeViewModel: HomeViewModel) {
         ) {
             Text(text = order.createdAt, style = MaterialTheme.typography.titleMedium)
             NormalTextComponents(
-                value = "Tổng: ${decimalFormat.format(order.totalMoney)}đ",
+                value = "Tổng: ${order.totalMoney}đ",
                 nomalColor = colorResource(id = R.color.black),
                 nomalFontsize = 14.sp
             )

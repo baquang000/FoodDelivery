@@ -1,5 +1,7 @@
 package com.example.fooddelivery.navigation.nav_graph
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,6 +19,7 @@ import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 import com.example.fooddelivery.view.home.profile.ChangePassScreen
 import com.example.fooddelivery.view.shop.home.HomeShopScreen
+import com.example.fooddelivery.view.shop.home.analysis.AnalysisScreen
 import com.example.fooddelivery.view.shop.home.discount.AddDiscountScreen
 import com.example.fooddelivery.view.shop.home.discount.DiscountCodeScreen
 import com.example.fooddelivery.view.shop.home.discount.DiscountDetailScreen
@@ -29,6 +32,7 @@ import com.example.fooddelivery.view.shop.home.order.DeliveringOrderScreen
 import com.example.fooddelivery.view.shop.home.order.PendingOrderScreen
 import com.example.fooddelivery.view.shop.home.profile.ProfileAdminScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.shopNavGraph(
     rootNavController: NavHostController
 ) {
@@ -114,6 +118,10 @@ fun NavGraphBuilder.shopNavGraph(
 
         composable(route = ShopRouteScreen.AddDiscountCode.route) {
             AddDiscountScreen(navController = rootNavController)
+        }
+
+        composable(route = ShopRouteScreen.Charts.route){
+            AnalysisScreen(navController = rootNavController)
         }
     }
 

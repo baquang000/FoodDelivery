@@ -68,7 +68,7 @@ class SharedViewModel : ViewModel() {
     }
 
     fun notChooseDiscount(option: Int) {
-        if (option == -1) {
+        if (option == 3) {
             discountCode = null
             sumPrice()
         }
@@ -162,6 +162,7 @@ class SharedViewModel : ViewModel() {
         diningSubtances: Boolean,
     ) {
         if (ID != 0) {
+
             val newOrder = CreateOrder(
                 deliverytoDoor = deliverytoDoor,
                 diningSubtances = diningSubtances,
@@ -178,13 +179,13 @@ class SharedViewModel : ViewModel() {
                     val response = RetrofitClient.orderAPIService.createOrder(newOrder)
                     if (response.isSuccessful) {
                         SocketManager.emitOrder(isOrder = true)
+                        deleteListFood()
                     }
                 } catch (e: Exception) {
                     throw e
                     e.printStackTrace()
                 } finally {
                     _isUpdateOrder.value = !_isUpdateOrder.value
-                    deleteListFood()
                 }
             }
         }

@@ -1,5 +1,7 @@
 package com.example.fooddelivery.navigation.nav_graph
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -17,6 +19,7 @@ import com.example.fooddelivery.view.home.MainScreen
 
 const val timeAnimation = 1500
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RootNavGraph() {
     val rootNavController: NavHostController = rememberNavController()
@@ -32,28 +35,29 @@ fun RootNavGraph() {
                 animationSpec = tween(durationMillis = timeAnimation)
             )
         },
-        exitTransition = {
-            fadeOut(animationSpec = tween(durationMillis = timeAnimation)) + slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(durationMillis = timeAnimation)
-            )
-        },
-        popEnterTransition = {
-            fadeIn(animationSpec = tween(durationMillis = timeAnimation)) + slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(durationMillis = timeAnimation)
-            )
-        },
-        popExitTransition = {
-            fadeOut(animationSpec = tween(durationMillis = timeAnimation)) + slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(durationMillis = timeAnimation)
-            )
-        },
+//        exitTransition = {
+//            fadeOut(animationSpec = tween(durationMillis = timeAnimation)) + slideOutOfContainer(
+//                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+//                animationSpec = tween(durationMillis = timeAnimation)
+//            )
+//        },
     ) {
         authNavGraph(rootNavController = rootNavController)
-        composable(route = Graph.HOMEGRAPH,
-            ) {
+        composable(
+            route = Graph.HOMEGRAPH,
+            enterTransition = {
+                fadeIn(animationSpec = tween(durationMillis = timeAnimation)) + slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(durationMillis = timeAnimation)
+                )
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(durationMillis = timeAnimation)) + slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(durationMillis = timeAnimation)
+                )
+            },
+        ) {
             MainScreen(
                 rootNavHostController = rootNavController,
                 sharedViewModel = sharedViewModel,

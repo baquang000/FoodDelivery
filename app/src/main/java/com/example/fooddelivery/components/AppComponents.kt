@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -389,7 +390,9 @@ fun FoodItem(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 24.dp)
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -413,12 +416,12 @@ fun FoodItem(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
                             ) {
                                 NormalTextComponents(
                                     value = food.time.time + "p",
                                     nomalFontsize = 18.sp,
                                     nomalColor = Color.Black,
-                                    modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
                                 )
                                 Icon(
                                     painter = painterResource(id = R.drawable.time),
@@ -426,8 +429,7 @@ fun FoodItem(
                                         id = R.string.time
                                     ),
                                     modifier = Modifier
-                                        .scale(1.8f)
-                                        .padding(start = 8.dp, bottom = 8.dp),
+                                        .scale(1.8f),
                                     tint = Color.Red
                                 )
                             }
@@ -550,7 +552,7 @@ fun FoodItemInGird(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.Center
                         ) {
                             NormalTextComponents(
@@ -703,19 +705,22 @@ fun MyDropdownMenuWithTime(
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
                 },
                 singleLine = true,
-                modifier = Modifier.menuAnchor(
-                    type = MenuAnchorType.PrimaryNotEditable,
-                    enabled = true
-                ),
+                modifier = Modifier
+                    .menuAnchor(
+                        type = MenuAnchorType.PrimaryNotEditable,
+                        enabled = true
+                    )
+                    .wrapContentSize(),
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.time),
                         contentDescription = stringResource(
                             id = R.string.time
                         ),
-                        modifier = Modifier.scale(1.5f)
+                        modifier = Modifier.size(18.dp),
+                        tint = Color.Blue
                     )
-                }
+                },
             )
             ExposedDropdownMenu(
                 expanded = expand.value,
@@ -763,10 +768,12 @@ fun MyDropdownMenuWithPrice(
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expand.value)
                 },
-                modifier = Modifier.menuAnchor(
-                    type = MenuAnchorType.PrimaryNotEditable,
-                    enabled = true
-                ),
+                modifier = Modifier
+                    .menuAnchor(
+                        type = MenuAnchorType.PrimaryNotEditable,
+                        enabled = true
+                    )
+                    .wrapContentSize(),
                 singleLine = true,
                 leadingIcon = {
                     Icon(
@@ -774,7 +781,8 @@ fun MyDropdownMenuWithPrice(
                         contentDescription = stringResource(
                             id = R.string.price
                         ),
-                        modifier = Modifier.scale(1.5f),
+                        modifier = Modifier.size(20.dp),
+                        tint = Color.Green
                     )
                 }
             )
@@ -800,7 +808,6 @@ fun MyDropdownMenuWithPrice(
         }
     }
 }
-
 
 
 @Composable

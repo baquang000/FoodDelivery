@@ -55,8 +55,8 @@ import com.example.fooddelivery.R
 import com.example.fooddelivery.components.CustomSnackBar
 import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.Calender
-import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.FoodDetails
+import com.example.fooddelivery.data.model.FoodItem
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.FavoriteViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.ShopViewModel
@@ -122,7 +122,6 @@ fun ShopScreen(
                             imagepath = shop.imageUrl,
                             title = shop.titleShop,
                             modifier = Modifier.heightIn(max = 200.dp),
-                            iconColor = Color.Black
                         )
                     }
                     item {
@@ -268,7 +267,7 @@ fun TitleShop(
 
 @Composable
 fun FoodItemInShop(
-    food: Food,
+    food: FoodItem,
     sharedViewModel: SharedViewModel,
     navController: NavController
 ) {
@@ -324,12 +323,12 @@ fun FoodItemInShop(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "10k Đã bán", style = MaterialTheme.typography.titleSmall.copy(
+                    text = "${food.sold} Đã bán", style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
                 )
                 Text(
-                    text = "193 lượt thích", style = MaterialTheme.typography.titleSmall.copy(
+                    text = "${food.comment.size} lượt thích", style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
                 )

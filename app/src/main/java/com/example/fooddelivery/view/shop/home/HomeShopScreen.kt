@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.credentials.ClearCredentialStateRequest
@@ -93,6 +94,13 @@ fun HomeShopScreen(
                 nomalFontsize = 40.sp,
             )
         }
+        Text(
+            text = "Thống kê theo ngày",
+            color = Color.Black,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(start = 120.dp)
+        )
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -254,6 +262,26 @@ fun HomeShopScreen(
                     )
                     NormalTextComponents(
                         value = "${decimalFormat.format(totalPrice)}đ",
+                        nomalColor = Color.Black,
+                        nomalFontsize = 20.sp
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .clickable {
+                            navController.navigate(route = ShopRouteScreen.Charts.route)
+                        },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.analysis),
+                        contentDescription = "Thống kê",
+                        modifier = Modifier.size(width = 24.dp, height = 24.dp)
+                    )
+                    NormalTextComponents(
+                        value = stringResource(R.string.statistical),
                         nomalColor = Color.Black,
                         nomalFontsize = 20.sp
                     )

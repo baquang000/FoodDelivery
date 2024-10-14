@@ -1,6 +1,7 @@
 package com.example.fooddelivery.view.shop.home.order
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,15 +16,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -36,13 +41,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.fooddelivery.data.viewmodel.shop.HomeViewModel
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.shop.NormalTextComponents
 import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
-import java.text.DecimalFormat
+import com.example.fooddelivery.data.viewmodel.shop.HomeViewModel
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeliveredOrderScreen(
     navController: NavController,
@@ -50,25 +56,55 @@ fun DeliveredOrderScreen(
 ) {
     val order by homeViewModel.orderStateFlow.collectAsStateWithLifecycle()
     val isLoading by homeViewModel.isLoadingOrder.collectAsStateWithLifecycle()
-    Box {
-        if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = colorResource(id = R.color.gray_background)),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    HeadingDelivered(navController = navController)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(id = R.string.delivered_order),
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 45.dp)
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Green
+                ),
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow),
+                        contentDescription = stringResource(
+                            id = R.string.arrow
+                        ),
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(24.dp)
+                            .clickable {
+                                navController.navigateUp()
+                            }
+                    )
                 }
-                items(order) { order ->
-                    if (order.orderStatus == OrderStatus.SUCCESS.toString() || order.orderStatus == OrderStatus.FOODBACK.toString()) {
-                        DeliveredOrderFood(
-                            order = order
-                        )
+            )
+        }
+    ) { paddingValues ->
+        Box {
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(color = colorResource(id = R.color.gray_background)),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(order) { order ->
+                        if (order.orderStatus == OrderStatus.SUCCESS.toString() || order.orderStatus == OrderStatus.FOODBACK.toString()) {
+                            DeliveredOrderFood(
+                                order = order
+                            )
+                        }
                     }
                 }
             }
@@ -76,46 +112,9 @@ fun DeliveredOrderScreen(
     }
 }
 
-@Composable
-fun HeadingDelivered(
-    navController: NavController
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, start = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        IconButton(onClick = {
-            navController.navigateUp()
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.arrow),
-                contentDescription = stringResource(
-                    id = R.string.arrow_icon
-                ),
-                modifier = Modifier.size(width = 24.dp, height = 24.dp)
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            NormalTextComponents(
-                value = stringResource(id = R.string.complete_order),
-                nomalColor = colorResource(id = R.color.black),
-                nomalFontsize = 28.sp,
-                modifier = Modifier.padding(end = 24.dp)
-            )
-        }
-    }
-}
 
 @Composable
 fun DeliveredOrderFood(order: GetOrderItem) {
-    val decimalFormat = DecimalFormat("#,###.##")
     Column(
         modifier = Modifier
             .background(color = colorResource(id = R.color.white)),
@@ -186,7 +185,7 @@ fun DeliveredOrderFood(order: GetOrderItem) {
         ) {
             Text(text = order.updatedAt.toString(), style = MaterialTheme.typography.titleMedium)
             NormalTextComponents(
-                value = "Tổng: ${decimalFormat.format(order.totalMoney)}đ",
+                value = "Tổng: ${order.totalMoney}đ",
                 nomalColor = colorResource(id = R.color.black),
                 nomalFontsize = 14.sp
             )

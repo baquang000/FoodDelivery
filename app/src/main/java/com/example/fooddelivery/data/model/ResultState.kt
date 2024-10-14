@@ -11,3 +11,9 @@ data class TResult(
     val message: String,
     val data: Any
 )
+
+data class TDiscountSingle(
+    val statusCode: Int,
+    val message: String,
+    val data: GetDiscountItem
+)

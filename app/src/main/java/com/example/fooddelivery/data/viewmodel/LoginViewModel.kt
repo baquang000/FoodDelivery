@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Auth
 import com.example.fooddelivery.data.model.LoginUIEvent
@@ -14,10 +13,13 @@ import com.example.fooddelivery.data.model.LoginUIState
 import com.example.fooddelivery.data.rules.Validator
 import com.example.fooddelivery.untils.MoshiGlobal
 import com.example.fooddelivery.untils.TokenManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import java.io.File
 import java.io.FileOutputStream
 
@@ -49,17 +51,20 @@ class LoginViewModel : ViewModel() {
     }
 
     private suspend fun login(context: Context) {
+        val timeoutMillis = 8000L // 8 seconds in milliseconds
         loginInProgress.value = true
         val email = loginUIState.value.email
         val password = loginUIState.value.password
+
         try {
-            viewModelScope.launch(Dispatchers.IO) {
-                val respon = RetrofitClient.authAPIService.login(Auth(email, password))
+            withTimeout(timeoutMillis) {
+                val respon = withContext(Dispatchers.IO) {
+                    RetrofitClient.authAPIService.login(Auth(email, password))
+                }
                 if (respon.isSuccessful) {
-                    val token = respon.body()?.data?.accessToken
-                        ?: return@launch
+                    val token = respon.body()?.data?.accessToken ?: return@withTimeout
                     val id = respon.body()?.data?.rest?.id
-                        ?: return@launch // Handle missing token gracefully (e.g., show error)
+                        ?: return@withTimeout // Handle missing token gracefully (e.g., show error)
                     ID = id.toInt()
                     val cryptoManager = TokenManager()
                     val bytes = token.encodeToByteArray()
@@ -84,13 +89,20 @@ class LoginViewModel : ViewModel() {
                     // Optionally: Show a toast or update UI with the error message
                 }
             }
+        } catch (e: TimeoutCancellationException) {
+            // Handle timeout specifically
+            loginInProgress.value = false
+            isFailer = true
+            errormessage = "Login timed out. Please try again."
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(tag, "${e.message}")
             isFailer = true
             errormessage = e.localizedMessage ?: "An error occurred."
             loginInProgress.value = false
         }
     }
+
 
     private fun validateLoginUIDataWithRules() {
         val emailResult = Validator.validateEmail(
@@ -101,8 +113,7 @@ class LoginViewModel : ViewModel() {
         )
 
         loginUIState.value = loginUIState.value.copy(
-            emailError = emailResult.status,
-            passwordError = passwordResult.status
+            emailError = emailResult.status, passwordError = passwordResult.status
         )
         allValicationPass.value = emailResult.status && passwordResult.status
 
@@ -111,6 +122,7 @@ class LoginViewModel : ViewModel() {
     fun googleLoginSuccess() {
         _navigationHome.value = true
     }
+
 }
 
 var ID = 0

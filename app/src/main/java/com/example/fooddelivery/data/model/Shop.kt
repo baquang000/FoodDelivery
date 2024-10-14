@@ -8,7 +8,7 @@ data class GetShopItem(
     val createdAt: String,
     val deletedAt: String?,
     val email: String,
-    val foods: List<Food>,
+    val foods: List<FoodItem>,
     val id: Int,
     val idAccount: Int,
     val imageUrl: String,
@@ -35,6 +35,26 @@ data class Order(
     val updatedAt: String?
 )
 
+data class FoodItem(
+    val bestFood: Boolean,
+    val createdAt: String,
+    val deletedAt: String?,
+    val description: String,
+    val id: Int,
+    val idCategory: Int,
+    val idPrice: Int,
+    val idShop: Int,
+    val idTime: Int,
+    val imagePath: String,
+    val price: Price,
+    val showFood: Boolean,
+    val sold: Int,
+    val star: String,
+    val time: Time,
+    val title: String,
+    val updatedAt: String?,
+    val comment: List<GetComment>
+)
 
 ////////////update
 data class UpdateShopInfor(

@@ -92,7 +92,6 @@ class HomeViewModel : ViewModel() {
 
                         )
                     if (response.isSuccessful) {
-                        updateOrderStateFlow(idOrder = idOrder, newStatus = orderStatus)
                         updateOrderCounts()
                         SocketManager.emitUpdateStatusOrder(true)
                     } else {
@@ -106,21 +105,6 @@ class HomeViewModel : ViewModel() {
                 Log.e(tag, e.message.toString())
             }
         }
-    }
-
-    private fun updateOrderStateFlow(idOrder: Int, newStatus: String) {
-        val updatedOrderList = _orderStateFlow.value.map { orderItem ->
-            if (orderItem.id == idOrder) {
-                // If the order matches the ID, return a copy with the updated status
-                orderItem.copy(orderStatus = newStatus)
-            } else {
-                // Otherwise, return the order as-is
-                orderItem
-            }
-        }
-
-        // Update the state flow with the new list of orders
-        _orderStateFlow.value = updatedOrderList
     }
 
     fun updateOrderCounts() {

@@ -186,10 +186,9 @@ fun CartScreen(
     val focusManager = LocalFocusManager.current
     //val discountUsage by discountUserViewModel.discountUsage.collectAsStateWithLifecycle()
     val discountActive =
-        discountCode.filter { it.isActive && totalPrice >= it.minOrderAmount.toFloat() }
-    //val lengthDiscount = discountUsage.filter { it.idUser == ID && it.idDiscount == discountActive.forEach( }
+        discountCode.filter { it.isActive && totalPrice >= it.minOrderAmount.toFloat() && it.id != 3 }
     var selectedOption by remember {
-        mutableIntStateOf(-1)
+        mutableIntStateOf(3)
     }
     val selectedDiscount = discountActive.find { it.id == selectedOption }
     Box(
@@ -977,7 +976,7 @@ fun CartScreen(
                                             .padding(start = 120.dp)
                                             .clickable {
                                                 openDiscount = false
-                                                selectedOption = -1
+                                                selectedOption = 3
                                                 sharedViewModel.notChooseDiscount(selectedOption)
                                             }
                                     )

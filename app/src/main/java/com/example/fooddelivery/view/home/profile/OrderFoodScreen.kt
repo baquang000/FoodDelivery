@@ -87,7 +87,7 @@ fun OrderFoodScreen(
                         stringResource(id = R.string.order_screen),
                         color = Color.White,
                         modifier = Modifier
-                            .padding(start = 150.dp)
+                            .padding(start = 130.dp)
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

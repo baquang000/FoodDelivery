@@ -1,7 +1,7 @@
 package com.example.fooddelivery.data.model
 //get
 data class GetDiscountItem(
-    val createdAt: String,
+    val createdAt: String?,
     val deletedAt: String?,
     val description: String,
     val endDate: String,

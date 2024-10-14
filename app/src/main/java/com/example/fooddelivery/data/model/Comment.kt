@@ -14,13 +14,16 @@ data class CreateComment(
 
 data class GetComment(
     val content: String,
-    val id: String,
-    val idFood: Int?,
+    val createdAt: String,
+    val deletedAt: String?,
+    val id: Int,
+    val idFood: Int,
     val idOrder: Int,
     val idShop: Int,
     val idUser: Int,
     val imagePath: String?,
     val rating: String,
-    val time: String,
+    val updatedAt: String,
     val user: UserInfor
 )
+

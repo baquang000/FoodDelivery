@@ -71,18 +71,6 @@ fun HomeNavGraph(
                 animationSpec = tween(durationMillis = timeAnimation)
             )
         },
-        popEnterTransition = {
-            fadeIn(animationSpec = tween(durationMillis = timeAnimation)) + slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(durationMillis = timeAnimation)
-            )
-        },
-        popExitTransition = {
-            fadeOut(animationSpec = tween(durationMillis = timeAnimation)) + slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(durationMillis = timeAnimation)
-            )
-        },
     ) {
         composable(
             route = HomeRouteScreen.Home.route,

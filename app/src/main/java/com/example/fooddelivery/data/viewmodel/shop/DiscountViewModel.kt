@@ -61,7 +61,10 @@ class DiscountViewModel : ViewModel() {
     suspend fun getDiscountDetails(id: Int) {
         _isLoadDiscountDetails.value = true
         try {
-            _discountDetails.value = RetrofitClient.discountAPIService.getSingle(id)
+            val response = RetrofitClient.discountAPIService.getSingle(id)
+            if (response.isSuccessful){
+                _discountDetails.value = response.body()?.data
+            }
         } catch (e: Exception) {
             throw e
             e.printStackTrace()

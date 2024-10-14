@@ -313,7 +313,7 @@ fun FoodDetailsScreen(
                             contentScale = ContentScale.FillWidth
                         )
                         Text(
-                            text = comment.time, style = MaterialTheme.typography.titleMedium.copy(
+                            text = comment.createdAt, style = MaterialTheme.typography.titleMedium.copy(
                                 color = Color.Gray
                             )
                         )
@@ -344,7 +344,6 @@ fun HeadingWithBackgroudFood(
     navController: NavController,
     modifier: Modifier = Modifier,
     imagepath: String?, title: String?,
-    iconColor: Color = Color.White,
 ) {
     Box {
         AsyncImage(
@@ -365,7 +364,7 @@ fun HeadingWithBackgroudFood(
                     .scale(2.5f)
                     .align(alignment = Alignment.TopStart)
                     .padding(16.dp),
-                tint = iconColor
+                tint = Color.White
             )
         }
     }

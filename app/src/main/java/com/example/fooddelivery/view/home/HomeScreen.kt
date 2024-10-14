@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -250,15 +251,17 @@ fun HomeScreen(
                                         homeViewModel = homeViewModel,
                                         navController = homeNavController,
                                         modifier = Modifier
-                                            .widthIn(max = 200.dp)
-                                            .padding(horizontal = 8.dp)
+                                            .padding(horizontal = 4.dp)
+                                            .widthIn(max = 150.dp)
+                                            .wrapContentSize()
                                     )
                                     SetPriceItems(
                                         homeViewModel = homeViewModel,
                                         navController = homeNavController,
                                         modifier = Modifier
-                                            .widthIn(max = 200.dp)
-                                            .padding(horizontal = 8.dp)
+                                            .padding(horizontal = 4.dp)
+                                            .widthIn(max = 180.dp)
+                                            .wrapContentSize()
                                     )
                                 }
                             }
@@ -408,7 +411,7 @@ fun SetTimeItems(
             MyDropdownMenuWithTime(
                 time = time,
                 navController = navController,
-                modifier = modifier
+                modifier = modifier.wrapContentSize()
             )
         }
     }

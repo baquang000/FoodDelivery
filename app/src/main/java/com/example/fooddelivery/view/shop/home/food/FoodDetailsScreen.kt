@@ -433,7 +433,7 @@ fun FoodDetailsScreen(
                                 contentScale = ContentScale.FillWidth
                             )
                             Text(
-                                text = comment.time, style = TextStyle(
+                                text = comment.createdAt, style = TextStyle(
                                     color = Color.Gray,
                                     fontSize = 16.sp
                                 )
