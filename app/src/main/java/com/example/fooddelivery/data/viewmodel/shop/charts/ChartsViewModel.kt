@@ -1,4 +1,4 @@
-package com.example.fooddelivery.data.viewmodel.shop
+package com.example.fooddelivery.data.viewmodel.shop.charts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

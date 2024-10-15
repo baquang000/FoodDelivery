@@ -3,6 +3,7 @@ package com.example.fooddelivery.api
 import com.example.fooddelivery.data.model.CreateFood
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.ResultState
+import com.example.fooddelivery.data.model.TResult
 import com.example.fooddelivery.data.model.UpdateBestFood
 import com.example.fooddelivery.data.model.UpdateDescriptionFood
 import com.example.fooddelivery.data.model.UpdateImageFood

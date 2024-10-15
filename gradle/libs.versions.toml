@@ -34,6 +34,7 @@ twitter = "3.3.0"
 uiTextGoogleFonts = "1.7.3"
 firebaseStorageKtx = "21.0.1"
 googleGmsGoogleServices = "4.4.2"
+ycharts = "2.1.0"
 
 [libraries]
 
@@ -78,6 +79,7 @@ moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "mosh
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
 twitter = { module = "com.twitter.sdk.android:twitter", version.ref = "twitter" }
+ycharts = { module = "co.yml:ycharts", version.ref = "ycharts" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

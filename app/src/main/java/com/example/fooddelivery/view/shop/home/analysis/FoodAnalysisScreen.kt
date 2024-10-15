@@ -1,6 +1,5 @@
 package com.example.fooddelivery.view.shop.home.analysis
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,25 +30,28 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.NormalTextComponents
-import com.example.fooddelivery.components.charts.PieChart
-import com.example.fooddelivery.data.viewmodel.shop.charts.ChartsViewModel
-import com.example.fooddelivery.navigation.ShopRouteScreen
+import com.example.fooddelivery.data.model.Food
+import com.example.fooddelivery.data.viewmodel.shop.charts.ChartsFoodViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnalysisScreen(
+fun FoodAnalysisScreen(
     navController: NavController,
-    chartsViewModel: ChartsViewModel = viewModel()
+    chartsFoodViewModel: ChartsFoodViewModel = viewModel()
 ) {
-    val loading by chartsViewModel.loadingChartsCount.collectAsStateWithLifecycle()
+    val loading by chartsFoodViewModel.isLoadAllFood.collectAsStateWithLifecycle()
+    val allFood by chartsFoodViewModel.allFood.collectAsStateWithLifecycle()
+    val bestFood = allFood.maxByOrNull { it.sold }
+    val allBestFood = allFood.filter { it.bestFood }
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        stringResource(id = R.string.statistical),
+                        text = stringResource(R.string.analysis_food),
                         color = Color.White,
                         modifier = Modifier.padding(start = 45.dp)
                     )
@@ -77,27 +79,20 @@ fun AnalysisScreen(
     ) { paddingValues ->
         Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(paddingValues)
+                .fillMaxSize()
         ) {
             if (loading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
                 LazyColumn {
                     item {
-                        HeadingAnalysis(navController = navController)
+                        if (bestFood != null) {
+                            AnalysisBestFood(bestFood = bestFood)
+                        }
                     }
                     item {
-                        NormalTextComponents(
-                            value = "Thống kê tổng các phần",
-                            nomalColor = Color.Black,
-                            nomalFontsize = 16.sp,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                            nomalFontWeight = FontWeight.Bold
-                        )
-                    }
-                    item {
-                        AnalysisItem(chartsViewModel = chartsViewModel)
+                        AnalysisDetailFood(allBestFood = allBestFood)
                     }
                 }
             }
@@ -106,84 +101,72 @@ fun AnalysisScreen(
 }
 
 @Composable
-fun HeadingAnalysis(navController: NavController) {
-    Row(
+fun AnalysisBestFood(bestFood: Food) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .background(color = Color.LightGray.copy(alpha = 0.3f)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
+            .padding(vertical = 12.dp, horizontal = 12.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
     ) {
+        NormalTextComponents(
+            value = "Đồ ăn đươc bán nhiều nhất", nomalColor = Color.Black,
+            nomalFontsize = 20.sp,
+            nomalFontWeight = FontWeight.Bold
+        )
+        FoodDetailInfo(food = bestFood)
+        NormalTextComponents(
+            value = "Đã bán được : ${bestFood.sold}",
+            nomalColor = Color.Black,
+            nomalFontsize = 20.sp
+        )
+    }
+}
+
+@Composable
+fun FoodDetailInfo(food: Food) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        AsyncImage(
+            model = food.imagePath, contentDescription = food.title,
+            modifier = Modifier.size(100.dp)
+        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable {
-                navController.navigate(route = ShopRouteScreen.ChartsFood.route)
-            }
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.menu), contentDescription = null,
-                tint = Color.Unspecified, modifier = Modifier.size(56.dp)
+            NormalTextComponents(
+                value = food.title,
+                nomalColor = Color.Black,
+                nomalFontsize = 16.sp
             )
-            Text(text = stringResource(R.string.food), color = Color.Black, fontSize = 14.sp)
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable {
-                navController.navigate(route = ShopRouteScreen.ChartsOrder.route)
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.basket), contentDescription = null,
-                tint = Color.Unspecified, modifier = Modifier.size(56.dp)
-            )
-            Text(
-                text = stringResource(id = R.string.order_screen),
-                color = Color.Black,
-                fontSize = 14.sp
-            )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable {
-                navController.navigate(route = ShopRouteScreen.ChartsRevenue.route)
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.price), contentDescription = null,
-                tint = Color.Magenta, modifier = Modifier.size(56.dp)
-            )
-            Text(
-                text = stringResource(R.string.reve),
-                color = Color.Black,
-                fontSize = 14.sp
+            NormalTextComponents(
+                value = "${food.price.price}đ",
+                nomalColor = Color.Black,
+                nomalFontsize = 16.sp
             )
         }
     }
 }
 
 @Composable
-fun AnalysisItem(chartsViewModel: ChartsViewModel) {
-    val chartCount by chartsViewModel.chartCount.collectAsStateWithLifecycle()
+fun AnalysisDetailFood(allBestFood: List<Food>) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 12.dp),
-        verticalArrangement = Arrangement.Center
+            .fillMaxWidth()
+            .padding(vertical = 12.dp, horizontal = 12.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
     ) {
-        // Preview with sample data
-        if (chartCount != null) {
-            PieChart(
-                data = chartCount!!
-            )
+        NormalTextComponents(
+            value = "Đồ ăn tốt nhất của cửa hàng", nomalColor = Color.Black,
+            nomalFontsize = 20.sp,
+            nomalFontWeight = FontWeight.Bold
+        )
+        allBestFood.forEach { food ->
+            FoodDetailInfo(food)
         }
     }
 }
-
-//@Preview(
-//    showSystemUi = true
-//)
-//@Composable
-//fun AnalysisScreenPreview() {
-//    AnalysisScreen()
-//}

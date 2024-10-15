@@ -91,7 +91,7 @@ fun OrderFoodScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Red.copy(alpha = 0.8f)
+                    containerColor = colorResource(id = R.color.gray_background)
                 ),
                 navigationIcon = {
                     Icon(

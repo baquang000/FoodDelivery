@@ -26,13 +26,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -46,9 +50,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,6 +69,7 @@ import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.profileviewmodel.OrderFoodViewModel
 import com.google.firebase.storage.FirebaseStorage
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentScreen(
     navController: NavController,
@@ -72,19 +77,51 @@ fun CommentScreen(
 ) {
     val orderList by orderViewModel.orderFoodStateFlow.collectAsStateWithLifecycle()
     val idOrder by orderViewModel.idOrder.collectAsStateWithLifecycle()
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        item {
-            CommentHeading(navController = navController)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(id = R.string.write_comment),
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 130.dp)
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colorResource(id = R.color.gray_background)
+                ),
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow),
+                        contentDescription = stringResource(
+                            id = R.string.arrow
+                        ),
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(24.dp)
+                            .clickable {
+                                navController.navigateUp()
+                            }
+                    )
+                },
+            )
         }
-        items(orderList) { order ->
-            if (idOrder == order.id) {
-                CommentList(
-                    order = order,
-                    orderViewModel = orderViewModel,
-                    navController = navController,
-                )
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            items(orderList) { order ->
+                if (idOrder == order.id) {
+                    CommentList(
+                        order = order,
+                        orderViewModel = orderViewModel,
+                        navController = navController,
+                    )
+                }
             }
         }
     }
@@ -125,14 +162,17 @@ fun CommentList(
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+
     Column(
-        modifier = Modifier.fillMaxSize().clickable(
-            indication = null, // Remove the grey ripple effect
-            interactionSource = MutableInteractionSource() // Required when setting indication to null
-        ) {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null, // Remove the grey ripple effect
+                interactionSource = MutableInteractionSource() // Required when setting indication to null
+            ) {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            }
     ) {
         Column(
             modifier = Modifier
@@ -317,35 +357,6 @@ fun CommentList(
     }
 }
 
-@Composable
-fun CommentHeading(navController: NavController) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow),
-                    contentDescription = stringResource(
-                        id = R.string.arrow
-                    ),
-                    modifier = Modifier.size(width = 24.dp, height = 24.dp)
-                )
-            }
-            Text(
-                text = stringResource(R.string.write_comment),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(start = 68.dp)
-            )
-        }
-        HorizontalDivider(modifier = Modifier.fillMaxWidth())
-    }
-}
 
 fun uploadImageToFirebase(uri: Uri?, onUri: (String) -> Unit) {
     val storage = FirebaseStorage.getInstance()

@@ -66,7 +66,7 @@ fun CancelOrderScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Green
+                    containerColor = colorResource(id = R.color.gray_background)
                 ),
                 navigationIcon = {
                     Icon(

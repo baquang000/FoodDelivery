@@ -133,6 +133,12 @@ sealed class ShopRouteScreen(val route: String) {
     data object ChangePass : ShopRouteScreen(route = "ChangePass_Screen")
 
     data object Charts: ShopRouteScreen(route = "Charts_Screen")
+
+    data object ChartsOrder: ShopRouteScreen(route = "Charts_Order_Screen")
+
+    data object ChartsRevenue: ShopRouteScreen(route = "Charts_Revenue_Screen")
+
+    data object ChartsFood: ShopRouteScreen(route = "Charts_Food_Screen")
 }
 
 

@@ -39,14 +39,16 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,6 +69,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -191,231 +194,153 @@ fun CartScreen(
         mutableIntStateOf(3)
     }
     val selectedDiscount = discountActive.find { it.id == selectedOption }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .clickable(
-                indication = null, // Remove the grey ripple effect
-                interactionSource = MutableInteractionSource() // Required when setting indication to null
-            ) {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-            }
-    ) {
-        LazyColumn(
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(R.string.cart_title),
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 130.dp)
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colorResource(id = R.color.gray_background)
+                ),
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow),
+                        contentDescription = stringResource(
+                            id = R.string.arrow
+                        ),
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(24.dp)
+                            .clickable {
+                                navController.navigateUp()
+                            }
+                    )
+                },
+            )
+        }
+    ) { padding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.LightGray.copy(alpha = 0.2f))
-                .padding(innerPaddingValues)
-        ) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                        .background(color = MaterialTheme.colorScheme.onSecondary),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                .padding(padding)
+                .clickable(
+                    indication = null, // Remove the grey ripple effect
+                    interactionSource = MutableInteractionSource() // Required when setting indication to null
                 ) {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow),
-                            contentDescription = stringResource(
-                                id = R.string.arrow
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                }
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.LightGray.copy(alpha = 0.2f))
+                    .padding(innerPaddingValues)
+            ) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .background(color = MaterialTheme.colorScheme.onSecondary)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(start = 8.dp, end = 8.dp)
+                                .weight(1f),
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.location),
+                                contentDescription = stringResource(
+                                    id = R.string.location
+                                ),
+                                modifier = Modifier.size(width = 18.dp, height = 18.dp),
+                                tint = Color.Red
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(7f)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.location_order),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = "$name | $numberphone",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(text = address, style = MaterialTheme.typography.titleMedium)
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(end = 8.dp, start = 8.dp)
+                                .weight(1f),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.next_button),
+                                contentDescription = stringResource(
+                                    id = R.string.next_button
+                                ),
+                                modifier = Modifier.size(width = 24.dp, height = 24.dp)
+                            )
+                        }
+                    }
+                }
+                items(foodDetailStateFlow.value, key = {
+                    it.idFood!!
+                }) { food ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(bottom = 12.dp)
+                    ) {
+                        SwipeToDismissItem(
+                            foodDetails = food,
+                            sharedViewModel = sharedViewModel,
+                            onRemove = {
+                                sharedViewModel.deleteItemFoodInCart(food)
+                                if (isErrorDelete) {
+                                    Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            },
+                            modifier = Modifier.animateItem(
+                                fadeInSpec = null,
+                                fadeOutSpec = null,
+                                placementSpec = tween(200)
                             )
                         )
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        NormalTextComponents(
-                            value = stringResource(R.string.cart_title),
-                            nomalColor = Color.Black,
-                            nomalFontsize = 24.sp,
-                            nomalFontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(end = 24.dp)
-                        )
-                    }
                 }
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                        .background(color = MaterialTheme.colorScheme.onSecondary)
-                ) {
+                item {
                     Column(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(start = 8.dp, end = 8.dp)
-                            .weight(1f),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .background(color = MaterialTheme.colorScheme.onSecondary)
+                            .padding(bottom = 2.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.location),
-                            contentDescription = stringResource(
-                                id = R.string.location
-                            ),
-                            modifier = Modifier.size(width = 18.dp, height = 18.dp),
-                            tint = Color.Red
-                        )
-                    }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(7f)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.location_order),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = "$name | $numberphone",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(text = address, style = MaterialTheme.typography.titleMedium)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(end = 8.dp, start = 8.dp)
-                            .weight(1f),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.next_button),
-                            contentDescription = stringResource(
-                                id = R.string.next_button
-                            ),
-                            modifier = Modifier.size(width = 24.dp, height = 24.dp)
-                        )
-                    }
-                }
-            }
-            items(foodDetailStateFlow.value, key = {
-                it.idFood!!
-            }) { food ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(bottom = 12.dp)
-                ) {
-                    SwipeToDismissItem(
-                        foodDetails = food,
-                        sharedViewModel = sharedViewModel,
-                        onRemove = {
-                            sharedViewModel.deleteItemFoodInCart(food)
-                            if (isErrorDelete) {
-                                Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                        modifier = Modifier.animateItem(
-                            fadeInSpec = null,
-                            fadeOutSpec = null,
-                            placementSpec = tween(200)
-                        )
-                    )
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.onSecondary)
-                        .padding(bottom = 2.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, start = 8.dp, end = 8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp, start = 8.dp, end = 8.dp)
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                NormalTextComponents(
-                                    value = stringResource(R.string.sum_price_order),
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                                NormalTextComponents(
-                                    value = "${decimalFomat.format(sharedViewModel.caculatorPrice())}đ",
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                NormalTextComponents(
-                                    value = stringResource(R.string.price_ship),
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                                NormalTextComponents(
-                                    value = "${decimalFomat.format(15000)}đ",
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                NormalTextComponents(
-                                    value = stringResource(R.string.tax_order),
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                                NormalTextComponents(
-                                    value = if (switchDeliverytoDoor) "8,000" else "3,000",
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                NormalTextComponents(
-                                    value = stringResource(R.string.discount_code_order),
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                                NormalTextComponents(
-                                    value = priceDiscount.toString(),
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 16.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
-                            }
-                            if (valueTips == 5000 || valueTips == 10000 || valueTips == 15000) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -424,235 +349,150 @@ fun CartScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     NormalTextComponents(
-                                        value = stringResource(id = R.string.reward_for_driver),
+                                        value = stringResource(R.string.sum_price_order),
                                         nomalColor = Color.Black,
                                         nomalFontsize = 16.sp,
                                         nomalFontWeight = FontWeight.Normal
                                     )
                                     NormalTextComponents(
-                                        value = "${decimalFomat.format(valueTips)}đ",
+                                        value = "${decimalFomat.format(sharedViewModel.caculatorPrice())}đ",
                                         nomalColor = Color.Black,
                                         nomalFontsize = 16.sp,
                                         nomalFontWeight = FontWeight.Normal
                                     )
                                 }
-                            }
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
-                                thickness = 1.dp,
-                                color = Color.Blue
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                NormalTextComponents(
-                                    value = stringResource(id = R.string.sum_price_order),
-                                    nomalColor = Color.Black,
-                                    nomalFontsize = 20.sp,
-                                    nomalFontWeight = FontWeight.Bold
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    NormalTextComponents(
+                                        value = stringResource(R.string.price_ship),
+                                        nomalColor = Color.Black,
+                                        nomalFontsize = 16.sp,
+                                        nomalFontWeight = FontWeight.Normal
+                                    )
+                                    NormalTextComponents(
+                                        value = "${decimalFomat.format(15000)}đ",
+                                        nomalColor = Color.Black,
+                                        nomalFontsize = 16.sp,
+                                        nomalFontWeight = FontWeight.Normal
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    NormalTextComponents(
+                                        value = stringResource(R.string.tax_order),
+                                        nomalColor = Color.Black,
+                                        nomalFontsize = 16.sp,
+                                        nomalFontWeight = FontWeight.Normal
+                                    )
+                                    NormalTextComponents(
+                                        value = if (switchDeliverytoDoor) "8,000" else "3,000",
+                                        nomalColor = Color.Black,
+                                        nomalFontsize = 16.sp,
+                                        nomalFontWeight = FontWeight.Normal
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    NormalTextComponents(
+                                        value = stringResource(R.string.discount_code_order),
+                                        nomalColor = Color.Black,
+                                        nomalFontsize = 16.sp,
+                                        nomalFontWeight = FontWeight.Normal
+                                    )
+                                    NormalTextComponents(
+                                        value = priceDiscount.toString(),
+                                        nomalColor = Color.Black,
+                                        nomalFontsize = 16.sp,
+                                        nomalFontWeight = FontWeight.Normal
+                                    )
+                                }
+                                if (valueTips == 5000 || valueTips == 10000 || valueTips == 15000) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        NormalTextComponents(
+                                            value = stringResource(id = R.string.reward_for_driver),
+                                            nomalColor = Color.Black,
+                                            nomalFontsize = 16.sp,
+                                            nomalFontWeight = FontWeight.Normal
+                                        )
+                                        NormalTextComponents(
+                                            value = "${decimalFomat.format(valueTips)}đ",
+                                            nomalColor = Color.Black,
+                                            nomalFontsize = 16.sp,
+                                            nomalFontWeight = FontWeight.Normal
+                                        )
+                                    }
+                                }
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    thickness = 1.dp,
+                                    color = Color.Blue
                                 )
-                                NormalTextComponents(
-                                    value = "${decimalFomat.format(sumPrice.value)}đ",
-                                    nomalColor = Color.Red,
-                                    nomalFontsize = 20.sp,
-                                    nomalFontWeight = FontWeight.Bold
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                NormalTextComponents(
-                                    value = "Đã bao gồm thuế",
-                                    nomalColor = Color.Gray,
-                                    nomalFontsize = 18.sp,
-                                    nomalFontWeight = FontWeight.Normal
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    NormalTextComponents(
+                                        value = stringResource(id = R.string.sum_price_order),
+                                        nomalColor = Color.Black,
+                                        nomalFontsize = 20.sp,
+                                        nomalFontWeight = FontWeight.Bold
+                                    )
+                                    NormalTextComponents(
+                                        value = "${decimalFomat.format(sumPrice.value)}đ",
+                                        nomalColor = Color.Red,
+                                        nomalFontsize = 20.sp,
+                                        nomalFontWeight = FontWeight.Bold
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    NormalTextComponents(
+                                        value = "Đã bao gồm thuế",
+                                        nomalColor = Color.Gray,
+                                        nomalFontsize = 18.sp,
+                                        nomalFontWeight = FontWeight.Normal
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Discount,
-                            contentDescription = stringResource(
-                                R.string.discount_code
-                            ),
-                            tint = Color.Magenta,
-                            modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.discount_code),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.clickable {
-                            openDiscount = !openDiscount
-                        }
-                    ) {
-                        Text(
-                            text = if (selectedDiscount != null) {
-                                if (selectedDiscount.name.length > 10) selectedDiscount.name.take(
-                                    10
-                                ) + "..."
-                                else selectedDiscount.name
-                            } else "",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.Red,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.next_button),
-                            contentDescription = stringResource(
-                                R.string.next_button
-                            ),
-                            tint = Color.Black,
-                            modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                        )
-                    }
-                }
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = MaterialTheme.colorScheme.onSecondary)
-                        .padding(vertical = 8.dp, horizontal = 8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.money),
-                            contentDescription = stringResource(
-                                R.string.tips_icon
-                            ),
-                            tint = Color.Yellow,
-                            modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.reward_for_driver),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-
+                item {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 12.dp)
-                    ) {
-                        OptionButton(
-                            "Chưa có",
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 4.dp, horizontal = 4.dp)
-                                .clickable {
-                                    textOption = "Chưa có"
-                                    valueTips = 0
-                                }
-                                .border(
-                                    width = 2.dp,
-                                    color = if (textOption == "Chưa có") Color.Red else Color.Transparent
-                                )
-                        )
-                        OptionButton(
-                            "5k",
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 4.dp, horizontal = 4.dp)
-                                .clickable {
-                                    textOption = "5k"
-                                    valueTips = 5000
-                                }
-                                .border(
-                                    width = 2.dp,
-                                    color = if (textOption == "5k") Color.Red else Color.Transparent
-                                )
-                        )
-                        OptionButton(
-                            "10k",
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 4.dp, horizontal = 4.dp)
-                                .clickable {
-                                    textOption = "10k"
-                                    valueTips = 10000
-                                }
-                                .border(
-                                    width = 2.dp,
-                                    color = if (textOption == "10k") Color.Red else Color.Transparent
-                                )
-                        )
-                        OptionButton(
-                            "15k",
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 4.dp, horizontal = 4.dp)
-                                .clickable {
-                                    textOption = "15k"
-                                    valueTips = 15000
-                                }
-                                .border(
-                                    width = 2.dp,
-                                    color = if (textOption == "15k") Color.Red else Color.Transparent
-                                )
-                        )
-                        OptionButton(
-                            "Khác",
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 4.dp, horizontal = 8.dp)
-                                .clickable {
-                                    textOption = "Khác"
-                                    valueTips = 0
-                                }
-                                .border(
-                                    width = 2.dp,
-                                    color = if (textOption == "Khác") Color.Red else Color.Transparent
-                                )
-                        )
-                    }
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp, horizontal = 8.dp),
+                            .padding(vertical = 8.dp, horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -661,15 +501,15 @@ fun CartScreen(
                             horizontalArrangement = Arrangement.Start
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.door_to_door),
+                                imageVector = Icons.Filled.Discount,
                                 contentDescription = stringResource(
-                                    R.string.delivery_to_door
+                                    R.string.discount_code
                                 ),
-                                tint = Color.Red,
+                                tint = Color.Magenta,
                                 modifier = Modifier.size(width = 30.dp, height = 30.dp)
                             )
                             Text(
-                                text = stringResource(R.string.delivery_to_door),
+                                text = stringResource(R.string.discount_code),
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 ),
@@ -679,40 +519,142 @@ fun CartScreen(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.End,
-                            modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.clickable {
+                                openDiscount = !openDiscount
+                            }
                         ) {
                             Text(
-                                text = "[5,000đ]",
+                                text = if (selectedDiscount != null) {
+                                    if (selectedDiscount.name.length > 10) selectedDiscount.name.take(
+                                        10
+                                    ) + "..."
+                                    else selectedDiscount.name
+                                } else "",
                                 style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier.padding(end = 16.dp)
+                                color = Color.Red,
+                                modifier = Modifier.padding(end = 8.dp)
                             )
-                            Switch(
-                                checked = switchDeliverytoDoor, onCheckedChange = {
-                                    switchDeliverytoDoor = it
-                                },
-                                modifier = Modifier.size(24.dp, 24.dp),
-                                colors = SwitchDefaults.colors(
-                                    checkedThumbColor = MaterialTheme.colorScheme.onSecondary,
-                                    uncheckedThumbColor = MaterialTheme.colorScheme.onSecondary,
-                                    checkedTrackColor = Color.Green,
-                                    uncheckedTrackColor = MaterialTheme.colorScheme.outline.copy(
-                                        alpha = 0.2f
-                                    ),
-                                    uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(
-                                        alpha = 0.2f
-                                    )
-                                )
+                            Icon(
+                                painter = painterResource(id = R.drawable.next_button),
+                                contentDescription = stringResource(
+                                    R.string.next_button
+                                ),
+                                tint = Color.Black,
+                                modifier = Modifier.size(width = 30.dp, height = 30.dp)
                             )
                         }
                     }
-                    HorizontalDivider(
+                }
+                item {
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                    )
-                    Column(
-                        modifier = Modifier.fillMaxHeight()
+                            .background(color = MaterialTheme.colorScheme.onSecondary)
+                            .padding(vertical = 8.dp, horizontal = 8.dp)
                     ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.money),
+                                contentDescription = stringResource(
+                                    R.string.tips_icon
+                                ),
+                                tint = Color.Yellow,
+                                modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                            )
+                            Text(
+                                text = stringResource(R.string.reward_for_driver),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp)
+                        ) {
+                            OptionButton(
+                                "Chưa có",
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 4.dp, horizontal = 4.dp)
+                                    .clickable {
+                                        textOption = "Chưa có"
+                                        valueTips = 0
+                                    }
+                                    .border(
+                                        width = 2.dp,
+                                        color = if (textOption == "Chưa có") Color.Red else Color.Transparent
+                                    )
+                            )
+                            OptionButton(
+                                "5k",
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 4.dp, horizontal = 4.dp)
+                                    .clickable {
+                                        textOption = "5k"
+                                        valueTips = 5000
+                                    }
+                                    .border(
+                                        width = 2.dp,
+                                        color = if (textOption == "5k") Color.Red else Color.Transparent
+                                    )
+                            )
+                            OptionButton(
+                                "10k",
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 4.dp, horizontal = 4.dp)
+                                    .clickable {
+                                        textOption = "10k"
+                                        valueTips = 10000
+                                    }
+                                    .border(
+                                        width = 2.dp,
+                                        color = if (textOption == "10k") Color.Red else Color.Transparent
+                                    )
+                            )
+                            OptionButton(
+                                "15k",
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 4.dp, horizontal = 4.dp)
+                                    .clickable {
+                                        textOption = "15k"
+                                        valueTips = 15000
+                                    }
+                                    .border(
+                                        width = 2.dp,
+                                        color = if (textOption == "15k") Color.Red else Color.Transparent
+                                    )
+                            )
+                            OptionButton(
+                                "Khác",
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                                    .clickable {
+                                        textOption = "Khác"
+                                        valueTips = 0
+                                    }
+                                    .border(
+                                        width = 2.dp,
+                                        color = if (textOption == "Khác") Color.Red else Color.Transparent
+                                    )
+                            )
+                        }
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
+                        )
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -725,15 +667,15 @@ fun CartScreen(
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.spoon_and_fork_crossed),
+                                    painter = painterResource(id = R.drawable.door_to_door),
                                     contentDescription = stringResource(
-                                        R.string.take_dining_subtances
+                                        R.string.delivery_to_door
                                     ),
                                     tint = Color.Red,
                                     modifier = Modifier.size(width = 30.dp, height = 30.dp)
                                 )
                                 Text(
-                                    text = stringResource(R.string.take_dining_subtances),
+                                    text = stringResource(R.string.delivery_to_door),
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.Bold
                                     ),
@@ -745,9 +687,14 @@ fun CartScreen(
                                 horizontalArrangement = Arrangement.End,
                                 modifier = Modifier.padding(end = 8.dp)
                             ) {
+                                Text(
+                                    text = "[5,000đ]",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(end = 16.dp)
+                                )
                                 Switch(
-                                    checked = switchDiningSubtances, onCheckedChange = {
-                                        switchDiningSubtances = it
+                                    checked = switchDeliverytoDoor, onCheckedChange = {
+                                        switchDeliverytoDoor = it
                                     },
                                     modifier = Modifier.size(24.dp, 24.dp),
                                     colors = SwitchDefaults.colors(
@@ -764,314 +711,380 @@ fun CartScreen(
                                 )
                             }
                         }
-                        Text(
-                            text = stringResource(R.string.desciption_dining_subtances),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                            textAlign = TextAlign.Justify
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
                         )
+                        Column(
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 12.dp, horizontal = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.spoon_and_fork_crossed),
+                                        contentDescription = stringResource(
+                                            R.string.take_dining_subtances
+                                        ),
+                                        tint = Color.Red,
+                                        modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.take_dining_subtances),
+                                        style = MaterialTheme.typography.titleMedium.copy(
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    )
+                                }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.End,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                ) {
+                                    Switch(
+                                        checked = switchDiningSubtances, onCheckedChange = {
+                                            switchDiningSubtances = it
+                                        },
+                                        modifier = Modifier.size(24.dp, 24.dp),
+                                        colors = SwitchDefaults.colors(
+                                            checkedThumbColor = MaterialTheme.colorScheme.onSecondary,
+                                            uncheckedThumbColor = MaterialTheme.colorScheme.onSecondary,
+                                            checkedTrackColor = Color.Green,
+                                            uncheckedTrackColor = MaterialTheme.colorScheme.outline.copy(
+                                                alpha = 0.2f
+                                            ),
+                                            uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(
+                                                alpha = 0.2f
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                            Text(
+                                text = stringResource(R.string.desciption_dining_subtances),
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                textAlign = TextAlign.Justify
+                            )
+                        }
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp, horizontal = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.note),
+                                    contentDescription = stringResource(
+                                        R.string.note_order
+                                    ),
+                                    tint = Color.Yellow,
+                                    modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.note_order),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End,
+                                modifier = Modifier.clickable {
+                                    openNoteOrder = !openNoteOrder
+                                }
+                            ) {
+                                Text(
+                                    text = if (cancelOrDoneOrder == true) {
+                                        if (textNoteOrder.length > 10) textNoteOrder.take(10) + "..."
+                                        else textNoteOrder
+                                    } else stringResource(
+                                        R.string.note_order
+                                    ),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Icon(
+                                    painter = painterResource(id = R.drawable.next_button),
+                                    contentDescription = stringResource(
+                                        R.string.next_button
+                                    ),
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                                )
+                            }
+                        }
                     }
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                    )
+                }
+                item {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                            .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.note),
-                                contentDescription = stringResource(
-                                    R.string.note_order
-                                ),
-                                tint = Color.Yellow,
-                                modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.note_order),
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End,
-                            modifier = Modifier.clickable {
-                                openNoteOrder = !openNoteOrder
-                            }
-                        ) {
-                            Text(
-                                text = if (cancelOrDoneOrder == true) {
-                                    if (textNoteOrder.length > 10) textNoteOrder.take(10) + "..."
-                                    else textNoteOrder
-                                } else stringResource(
-                                    R.string.note_order
-                                ),
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.next_button),
-                                contentDescription = stringResource(
-                                    R.string.next_button
-                                ),
-                                tint = Color.Black,
-                                modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                            )
-                        }
-                    }
-                }
-            }
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = {
-                            if (foodDetailsList.isEmpty() || sharedViewModel.caculatorPrice() == 0.0) {
-                                Toast.makeText(
-                                    context,
-                                    "Chưa có món ăn nào trong giỏ hàng",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                sharedViewModel.createOrderAndDetails(
-                                    noteOrder = textNoteOrder,
-                                    rewardForDriver = valueTips,
-                                    deliverytoDoor = switchDeliverytoDoor,
-                                    diningSubtances = switchDiningSubtances
-                                )
-                                Toast.makeText(context, "Đặt hàng thành công", Toast.LENGTH_SHORT)
-                                    .show()
-                                navController.navigate(route = HomeRouteScreen.Home.route) {
-                                    popUpTo(HomeRouteScreen.Home.route) {
-                                        inclusive = true
+                        Button(
+                            onClick = {
+                                if (foodDetailsList.isEmpty() || sharedViewModel.caculatorPrice() == 0.0) {
+                                    Toast.makeText(
+                                        context,
+                                        "Chưa có món ăn nào trong giỏ hàng",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    sharedViewModel.createOrderAndDetails(
+                                        noteOrder = textNoteOrder,
+                                        rewardForDriver = valueTips,
+                                        deliverytoDoor = switchDeliverytoDoor,
+                                        diningSubtances = switchDiningSubtances
+                                    )
+                                    Toast.makeText(
+                                        context,
+                                        "Đặt hàng thành công",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                    navController.navigate(route = HomeRouteScreen.Home.route) {
+                                        popUpTo(HomeRouteScreen.Home.route) {
+                                            inclusive = true
+                                        }
+                                        launchSingleTop = true
                                     }
-                                    launchSingleTop = true
                                 }
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red
-                        )
-                    ) {
-                        NormalTextComponents(
-                            value = stringResource(R.string.place_order),
-                            nomalFontWeight = FontWeight.Bold,
-                            nomalFontsize = 24.sp,
-                        )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Red
+                            )
+                        ) {
+                            NormalTextComponents(
+                                value = stringResource(R.string.place_order),
+                                nomalFontWeight = FontWeight.Bold,
+                                nomalFontsize = 24.sp,
+                            )
+                        }
                     }
                 }
             }
-        }
-        if (openNoteOrder) {
-            AnimatedContent(
-                targetState = true,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.Gray.copy(0.5f)),
-                content = { open ->
-                    if (open) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color = Color.Transparent)
-                        ) {
-                            Spacer(
-                                modifier = Modifier
-                                    .height(halfScreenHeight)
-                            )
-                            ExpandableTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(halfScreenHeight),
-                                onDone = {
-                                    openNoteOrder = it
-                                    cancelOrDoneOrder = true
-                                },
-                                onCancel = {
-                                    openNoteOrder = it
-                                    cancelOrDoneOrder = false
-                                },
-                                onTextChange = {
-                                    textNoteOrder = it
-                                },
-                                saveText = textNoteOrder
-                            )
-                        }
-                    }
-                },
-                transitionSpec = {
-                    slideInVertically(
-                        initialOffsetY = {
-                            if (openNoteOrder) it else -it
-                        }
-                    ) togetherWith slideOutVertically(
-                        targetOffsetY = {
-                            if (openNoteOrder) -it else it
-                        }
-                    )
-                }, label = "note_order"
-            )
-        }
-        if (openDiscount) {
-            AnimatedContent(
-                targetState = true,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.Gray.copy(0.5f)),
-                content = { open ->
-                    if (open) {
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
+            if (openNoteOrder) {
+                AnimatedContent(
+                    targetState = true,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.Gray.copy(0.5f)),
+                    content = { open ->
+                        if (open) {
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = halfScreenHeight)
+                                    .fillMaxSize()
                                     .background(color = Color.Transparent)
                             ) {
                                 Spacer(
                                     modifier = Modifier
-                                        .height(100.dp)
+                                        .height(halfScreenHeight)
                                 )
-                                Row(
+                                ExpandableTextField(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(
-                                            Color.White
-                                        )
-                                        .padding(vertical = 8.dp, horizontal = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.discount_code),
-                                        style = MaterialTheme.typography.titleMedium.copy(
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.cancel),
-                                        style = MaterialTheme.typography.titleMedium.copy(
-                                            fontWeight = FontWeight.Normal,
-                                            color = Color.Black
-                                        ),
-                                        modifier = Modifier
-                                            .padding(start = 120.dp)
-                                            .clickable {
-                                                openDiscount = false
-                                                selectedOption = 3
-                                                sharedViewModel.notChooseDiscount(selectedOption)
-                                            }
-                                    )
-                                }
-                                HorizontalDivider(
-                                    thickness = 1.dp,
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(
-                                        horizontal = 2.dp,
-                                        vertical = 4.dp
-                                    )
+                                        .height(halfScreenHeight),
+                                    onDone = {
+                                        openNoteOrder = it
+                                        cancelOrDoneOrder = true
+                                    },
+                                    onCancel = {
+                                        openNoteOrder = it
+                                        cancelOrDoneOrder = false
+                                    },
+                                    onTextChange = {
+                                        textNoteOrder = it
+                                    },
+                                    saveText = textNoteOrder
                                 )
-                                if (discountActive.isEmpty()) {
-                                    Column(
+                            }
+                        }
+                    },
+                    transitionSpec = {
+                        slideInVertically(
+                            initialOffsetY = {
+                                if (openNoteOrder) it else -it
+                            }
+                        ) togetherWith slideOutVertically(
+                            targetOffsetY = {
+                                if (openNoteOrder) -it else it
+                            }
+                        )
+                    }, label = "note_order"
+                )
+            }
+            if (openDiscount) {
+                AnimatedContent(
+                    targetState = true,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.Gray.copy(0.5f)),
+                    content = { open ->
+                        if (open) {
+                            Box(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(min = halfScreenHeight)
+                                        .background(color = Color.Transparent)
+                                ) {
+                                    Spacer(
                                         modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(color = Color.White),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
+                                            .height(100.dp)
+                                    )
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                Color.White
+                                            )
+                                            .padding(vertical = 8.dp, horizontal = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.End
                                     ) {
                                         Text(
-                                            text = "Hiện không có mã giảm giá",
-                                            color = Color.Black,
-                                            fontSize = 14.sp
+                                            text = stringResource(R.string.discount_code),
+                                            style = MaterialTheme.typography.titleMedium.copy(
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        )
+                                        Text(
+                                            text = stringResource(id = R.string.cancel),
+                                            style = MaterialTheme.typography.titleMedium.copy(
+                                                fontWeight = FontWeight.Normal,
+                                                color = Color.Black
+                                            ),
+                                            modifier = Modifier
+                                                .padding(start = 120.dp)
+                                                .clickable {
+                                                    openDiscount = false
+                                                    selectedOption = 3
+                                                    sharedViewModel.notChooseDiscount(selectedOption)
+                                                }
                                         )
                                     }
-                                } else {
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(color = Color.White)
-                                    ) {
-                                        items(discountActive) { discountCode ->
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                            ) {
-                                                BodyDiscountScreen(
-                                                    discount = discountCode,
-                                                    onClick = {},
-                                                    modifier = Modifier.weight(3f)
-                                                )
-                                                RadioButton(
-                                                    selected = selectedOption == discountCode.id,
-                                                    onClick = { selectedOption = discountCode.id },
-                                                    modifier = Modifier.weight(0.5f)
+                                    HorizontalDivider(
+                                        thickness = 1.dp,
+                                        color = Color.Gray,
+                                        modifier = Modifier.padding(
+                                            horizontal = 2.dp,
+                                            vertical = 4.dp
+                                        )
+                                    )
+                                    if (discountActive.isEmpty()) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(color = Color.White),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Text(
+                                                text = "Hiện không có mã giảm giá",
+                                                color = Color.Black,
+                                                fontSize = 14.sp
+                                            )
+                                        }
+                                    } else {
+                                        LazyColumn(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(color = Color.White)
+                                        ) {
+                                            items(discountActive) { discountCode ->
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                ) {
+                                                    BodyDiscountScreen(
+                                                        discount = discountCode,
+                                                        onClick = {},
+                                                        modifier = Modifier.weight(3f)
+                                                    )
+                                                    RadioButton(
+                                                        selected = selectedOption == discountCode.id,
+                                                        onClick = {
+                                                            selectedOption = discountCode.id
+                                                        },
+                                                        modifier = Modifier.weight(0.5f)
+                                                    )
+                                                }
+                                            }
+                                            item {
+                                                HorizontalDivider(
+                                                    thickness = 1.dp,
+                                                    color = Color.Gray,
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 2.dp,
+                                                        vertical = 4.dp
+                                                    )
                                                 )
                                             }
                                         }
-                                        item {
-                                            HorizontalDivider(
-                                                thickness = 1.dp,
-                                                color = Color.Gray,
-                                                modifier = Modifier.padding(
-                                                    horizontal = 2.dp,
-                                                    vertical = 4.dp
-                                                )
-                                            )
-                                        }
                                     }
                                 }
+                                Button(
+                                    onClick = {
+                                        openDiscount = false
+                                        if (selectedDiscount != null) {
+                                            sharedViewModel.sendDiscount(selectedDiscount)
+                                        }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Red,
+                                        contentColor = Color.White
+                                    ),
+                                    shape = RoundedCornerShape(4.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                                        .align(Alignment.BottomCenter)
+                                ) {
+                                    Text(text = "Xác nhận")
+                                }
                             }
-                            Button(
-                                onClick = {
-                                    openDiscount = false
-                                    if (selectedDiscount != null) {
-                                        sharedViewModel.sendDiscount(selectedDiscount)
-                                    }
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Red,
-                                    contentColor = Color.White
-                                ),
-                                shape = RoundedCornerShape(4.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                                    .align(Alignment.BottomCenter)
-                            ) {
-                                Text(text = "Xác nhận")
+                        }
+                    },
+                    transitionSpec = {
+                        slideInVertically(
+                            initialOffsetY = {
+                                if (openDiscount) it else -it
                             }
-                        }
-                    }
-                },
-                transitionSpec = {
-                    slideInVertically(
-                        initialOffsetY = {
-                            if (openDiscount) it else -it
-                        }
-                    ) togetherWith slideOutVertically(
-                        targetOffsetY = {
-                            if (openDiscount) -it else it
-                        }
-                    )
-                }, label = stringResource(id = R.string.discount_code)
-            )
+                        ) togetherWith slideOutVertically(
+                            targetOffsetY = {
+                                if (openDiscount) -it else it
+                            }
+                        )
+                    }, label = stringResource(id = R.string.discount_code)
+                )
+            }
         }
     }
 }
