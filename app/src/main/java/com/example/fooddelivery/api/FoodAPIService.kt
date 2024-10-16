@@ -3,7 +3,6 @@ package com.example.fooddelivery.api
 import com.example.fooddelivery.data.model.CreateFood
 import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.ResultState
-import com.example.fooddelivery.data.model.TResult
 import com.example.fooddelivery.data.model.UpdateBestFood
 import com.example.fooddelivery.data.model.UpdateDescriptionFood
 import com.example.fooddelivery.data.model.UpdateImageFood
@@ -13,16 +12,18 @@ import com.example.fooddelivery.data.model.UpdateTitleFood
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface FoodAPIService {
+    //@Header("Authorization") token: String
+    @GET("/api/v1/foods/topFood")
+    suspend fun getBestFood(): List<Food>
 
-    @GET("/api/v1/foods/getBest")
-    suspend fun getBestFood(@Header("Authorization") token: String): List<Food>
+    @GET("/api/v1/foods/soldFood")
+    suspend fun getSoldFood(): List<Food>
 
     @GET("/api/v1/foods")
     suspend fun getAllFood(): List<Food>

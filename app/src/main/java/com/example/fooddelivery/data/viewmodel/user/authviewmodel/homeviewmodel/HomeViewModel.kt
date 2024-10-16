@@ -8,7 +8,6 @@ import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.model.GetCategory
 import com.example.fooddelivery.data.model.Price
 import com.example.fooddelivery.data.model.Time
-import com.example.fooddelivery.view.auth.user.idToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +23,13 @@ class HomeViewModel : ViewModel() {
     val bestFood = _bestFood.asStateFlow()
     private val _isLoadBestFood = MutableStateFlow(false)
     val isLoadBestFood = _isLoadBestFood.asStateFlow()
+
+
+    ///sold Food
+    private val _soldFood = MutableStateFlow<List<Food>>(emptyList())
+    val soldFood = _soldFood.asStateFlow()
+    private val _isLoadSoldFood = MutableStateFlow(false)
+    val isLoadSoldFood = _isLoadSoldFood.asStateFlow()
 
     ///price
     private val _price = MutableStateFlow<List<Price>>(emptyList())
@@ -53,17 +59,29 @@ class HomeViewModel : ViewModel() {
             getTimeWithApi()
             getBestFoodWithApi()
             getCategoryWithApi()
+            getSoldFoodWithApi()
         }
     }
 
     private suspend fun getBestFoodWithApi() {
         _isLoadBestFood.value = true
         try {
-            _bestFood.value = RetrofitClient.foodAPIService.getBestFood(idToken)
+            _bestFood.value = RetrofitClient.foodAPIService.getBestFood()
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())
         } finally {
             _isLoadBestFood.value = false
+        }
+    }
+
+    private suspend fun getSoldFoodWithApi() {
+        _isLoadSoldFood.value = true
+        try {
+            _soldFood.value = RetrofitClient.foodAPIService.getSoldFood()
+        } catch (e: Exception) {
+            Log.e(tag, e.message.toString())
+        } finally {
+            _isLoadSoldFood.value = false
         }
     }
 

@@ -58,7 +58,7 @@ fun CategoryScreen(
                 title = {
                     Text(
                         "Đồ ăn",
-                        color = Color.White,
+                        color = Color.Black,
                         modifier = Modifier
                             .padding(start = 130.dp)
                     )
@@ -72,7 +72,7 @@ fun CategoryScreen(
                         contentDescription = stringResource(
                             id = R.string.arrow
                         ),
-                        tint = Color.White,
+                        tint = Color.Red,
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .size(24.dp)

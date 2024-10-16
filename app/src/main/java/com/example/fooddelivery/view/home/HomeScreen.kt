@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -64,6 +65,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.CustomSnackBarInHome
 import com.example.fooddelivery.components.FoodItem
@@ -71,6 +73,7 @@ import com.example.fooddelivery.components.IconButtonWithText
 import com.example.fooddelivery.components.MyDropdownMenuWithPrice
 import com.example.fooddelivery.components.MyDropdownMenuWithTime
 import com.example.fooddelivery.components.NormalTextComponents
+import com.example.fooddelivery.data.model.Food
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.HomeViewModel
 import com.example.fooddelivery.data.viewmodel.user.authviewmodel.homeviewmodel.SharedViewModel
 import com.example.fooddelivery.navigation.HomeRouteScreen
@@ -306,6 +309,24 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight()
+                                .padding(top = 8.dp)
+                                .heightIn(32.dp),
+                        ) {
+                            NormalTextComponents(
+                                value = "Món ăn được bán nhiều nhất",
+                                nomalFontWeight = FontWeight.Bold,
+                                nomalColor = Color.Black, nomalFontsize = 22.sp,
+                            )
+                            SetSoldFood(
+                                homeViewModel = homeViewModel,
+                                navController = homeNavController,
+                            )
+                        }
+                    }
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
                                 .padding(top = 8.dp, bottom = 8.dp)
                         ) {
                             NormalTextComponents(
@@ -437,6 +458,33 @@ fun SetBestFood(
     }
 }
 
+@Composable
+fun SetSoldFood(
+    homeViewModel: HomeViewModel,
+    navController: NavController,
+) {
+    val soldFood by homeViewModel.soldFood.collectAsStateWithLifecycle()
+    val loading by homeViewModel.isLoadSoldFood.collectAsStateWithLifecycle()
+    Box {
+        if (loading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else {
+            LazyRow(
+                modifier = Modifier
+                    .background(color = Color.White),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(soldFood) { food ->
+                    ItemFood(
+                        food = food,
+                        navController = navController,
+                    )
+                }
+            }
+        }
+    }
+}
+
 /*
 @Composable
 fun SetLocationItems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier) {
@@ -472,3 +520,31 @@ fun SetLocationItems(homeViewModel: HomeViewModel, modifier: Modifier = Modifier
         }
     }
 }*/
+
+@Composable
+fun ItemFood(food: Food, navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.LightGray.copy(0.3f))
+            .size(width = 100.dp, height = 140.dp)
+            .clickable {
+                navController.navigate(
+                    route = HomeRouteScreen.ShopRouteScreen.sendIdShop(
+                        food.idShop
+                    )
+                )
+            },
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            model = food.imagePath,
+            contentDescription = food.title,
+            modifier = Modifier.size(width = 100.dp, height = 80.dp),
+            contentScale = ContentScale.Fit
+        )
+        NormalTextComponents(value = food.title, nomalColor = Color.Black)
+        NormalTextComponents(value = food.price.price, nomalColor = Color.Red)
+    }
+}

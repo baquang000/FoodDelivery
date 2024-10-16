@@ -30,6 +30,7 @@ import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TYPE_ARGUMENT_KEY
 import com.example.fooddelivery.untils.TokenManager
+import com.example.fooddelivery.view.home.chat.ChatScreen
 import com.example.fooddelivery.view.home.CartScreen
 import com.example.fooddelivery.view.home.FoodDetailsScreen
 import com.example.fooddelivery.view.home.HomeScreen
@@ -58,7 +59,6 @@ fun HomeNavGraph(
         navController = homeNavController,
         startDestination = HomeRouteScreen.Home.route,
         route = Graph.HOMEGRAPH,
-
         enterTransition = {
             fadeIn(animationSpec = tween(durationMillis = timeAnimation)) + slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -183,6 +183,20 @@ fun HomeNavGraph(
                 shopViewModel = shopViewModel,
                 favoriteViewModel = favoriteViewModel
             )
+        }
+        composable(
+            route = HomeRouteScreen.ChatScreen.route,
+            arguments = listOf(
+                navArgument(ID_SHOP_ARGUMENT_KEY) {
+                    type = NavType.IntType
+                },
+                navArgument(TITLE_ARGUMENT_KEY) {
+                    type = NavType.StringType
+                }
+
+            )
+        ) { navBackStackEntry ->
+            ChatScreen(navController = homeNavController, navBackStackEntry = navBackStackEntry)
         }
     }
 }

@@ -39,6 +39,8 @@ sealed class ProfileRouteScreen(val route: String) {
     data object OrderFood : ProfileRouteScreen(route = "OrderFood_screen")
     data object ChangePass : ProfileRouteScreen(route = "ChangePass_screen")
     data object Comment : ProfileRouteScreen(route = "Comment_screen")
+    data object HistoryChatUser : ProfileRouteScreen(route = "HistoryChatUser_screen")
+
 }
 
 sealed class FavoriteRouteScreen(val route: String) {
@@ -90,6 +92,16 @@ sealed class HomeRouteScreen(val route: String) {
             return "Shop_Screen?idshop=$idShop"
         }
     }
+
+    data object ChatScreen :
+        HomeRouteScreen(route = "Chat_Screen?idShop={$ID_SHOP_ARGUMENT_KEY}&title={$TITLE_ARGUMENT_KEY}") {
+        fun sendId(
+            idShop: Int = 0,
+            title: String = ""
+        ): String {
+            return "Chat_Screen?idShop=$idShop&title=$title"
+        }
+    }
 }
 
 sealed class ShopRouteScreen(val route: String) {
@@ -132,13 +144,25 @@ sealed class ShopRouteScreen(val route: String) {
 
     data object ChangePass : ShopRouteScreen(route = "ChangePass_Screen")
 
-    data object Charts: ShopRouteScreen(route = "Charts_Screen")
+    data object Charts : ShopRouteScreen(route = "Charts_Screen")
 
-    data object ChartsOrder: ShopRouteScreen(route = "Charts_Order_Screen")
+    data object ChartsOrder : ShopRouteScreen(route = "Charts_Order_Screen")
 
-    data object ChartsRevenue: ShopRouteScreen(route = "Charts_Revenue_Screen")
+    data object ChartsRevenue : ShopRouteScreen(route = "Charts_Revenue_Screen")
 
-    data object ChartsFood: ShopRouteScreen(route = "Charts_Food_Screen")
+    data object ChartsFood : ShopRouteScreen(route = "Charts_Food_Screen")
+
+    data object HistoryChat : ShopRouteScreen(route = "History_Chat_Screen")
+
+    data object ChatByShop :
+        HomeRouteScreen(route = "ChatByShop_Screen?idUser={$ID_ARGUMENT_KEY}&title={$TITLE_ARGUMENT_KEY}") {
+        fun sendId(
+            idUser: Int = 0,
+            title: String = ""
+        ): String {
+            return "ChatByShop_Screen?idUser=$idUser&title=$title"
+        }
+    }
 }
 
 

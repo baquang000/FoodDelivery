@@ -15,6 +15,8 @@ import com.example.fooddelivery.navigation.STAR_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.ShopRouteScreen
 import com.example.fooddelivery.navigation.TIMEVALUE_ARGUMENT_KEY
 import com.example.fooddelivery.navigation.TITLE_ARGUMENT_KEY
+import com.example.fooddelivery.view.shop.home.chat.ChatScreenByShop
+import com.example.fooddelivery.view.shop.home.chat.HistoryChatScreen
 import com.example.fooddelivery.view.home.profile.ChangePassScreen
 import com.example.fooddelivery.view.shop.home.HomeShopScreen
 import com.example.fooddelivery.view.shop.home.analysis.AnalysisScreen
@@ -119,20 +121,41 @@ fun NavGraphBuilder.shopNavGraph(
             AddDiscountScreen(navController = rootNavController)
         }
 
-        composable(route = ShopRouteScreen.Charts.route){
+        composable(route = ShopRouteScreen.Charts.route) {
             AnalysisScreen(navController = rootNavController)
         }
 
-        composable(route = ShopRouteScreen.ChartsOrder.route){
+        composable(route = ShopRouteScreen.ChartsOrder.route) {
             OrderAnalysisScreen(navController = rootNavController)
         }
 
-        composable(route = ShopRouteScreen.ChartsRevenue.route){
+        composable(route = ShopRouteScreen.ChartsRevenue.route) {
             RevenueAnalysisScreen(navController = rootNavController)
         }
 
-        composable(route = ShopRouteScreen.ChartsFood.route){
+        composable(route = ShopRouteScreen.ChartsFood.route) {
             FoodAnalysisScreen(navController = rootNavController)
+        }
+
+        composable(route = ShopRouteScreen.HistoryChat.route) {
+            HistoryChatScreen(navController = rootNavController)
+        }
+        composable(
+            route = ShopRouteScreen.ChatByShop.route,
+            arguments = listOf(
+                navArgument(ID_ARGUMENT_KEY) {
+                    type = NavType.IntType
+                },
+                navArgument(TITLE_ARGUMENT_KEY) {
+                    type = NavType.StringType
+                }
+
+            )
+        ) { navBackStackEntry ->
+            ChatScreenByShop(
+                navController = rootNavController,
+                navBackStackEntry = navBackStackEntry
+            )
         }
     }
 

@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -53,6 +55,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fooddelivery.R
 import com.example.fooddelivery.components.CustomSnackBar
+import com.example.fooddelivery.components.NormalTextComponents
 import com.example.fooddelivery.components.RatingBar
 import com.example.fooddelivery.data.model.Calender
 import com.example.fooddelivery.data.model.FoodDetails
@@ -135,7 +138,15 @@ fun ShopScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     item {
-                        DeliveryTime()
+                        DeliveryTime(
+                            navController = navController,
+                            idShop = idShop,
+                            titleShop = shop.titleShop
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    item {
+                        BestFoodOfShop(foods = shop.foods)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     items(shop.foods) { food ->
@@ -170,6 +181,57 @@ fun ShopScreen(
         }
     }
 }
+
+@Composable
+fun BestFoodOfShop(foods: List<FoodItem>) {
+    val bestFood = foods.filter { it.bestFood }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    ) {
+        NormalTextComponents(
+            value = "Món ăn tốt nhất", nomalColor = Color.Black,
+            nomalFontsize = 18.sp,
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
+        )
+        LazyRow(
+            modifier = Modifier
+                .background(color = Color.White)
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(bestFood) { food ->
+                ItemFoodInShop(
+                    food = food,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ItemFoodInShop(food: FoodItem) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.LightGray.copy(0.2f))
+            .size(width = 100.dp, height = 140.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AsyncImage(
+            model = food.imagePath,
+            contentDescription = food.title,
+            modifier = Modifier.size(width = 100.dp, height = 80.dp),
+            contentScale = ContentScale.Fit
+        )
+        NormalTextComponents(value = food.title, nomalColor = Color.Black)
+        NormalTextComponents(value = food.price.price, nomalColor = Color.Red)
+    }
+}
+
 
 @Composable
 fun TitleShop(
@@ -260,7 +322,6 @@ fun TitleShop(
                         }
                     }
             )
-
         }
     }
 }
@@ -328,7 +389,8 @@ fun FoodItemInShop(
                     )
                 )
                 Text(
-                    text = "${food.comment.size} lượt thích", style = MaterialTheme.typography.titleSmall.copy(
+                    text = "${food.comment.size} lượt thích",
+                    style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
                 )
@@ -413,35 +475,58 @@ fun FoodItemInShop(
 }
 
 @Composable
-fun DeliveryTime() {
+fun DeliveryTime(navController: NavController, idShop: Int, titleShop: String) {
     val time = Calender().getTimePlusOneHour()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.White)
-            .padding(horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .background(color = Color.White),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.truck), contentDescription = "delivery",
+        Row(
             modifier = Modifier
-                .size(30.dp)
-                .background(shape = CircleShape, color = Color.LightGray)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Text(
-                text = "Giao hàng tiêu chuẩn", style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Normal
-                )
+                .wrapContentWidth()
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.truck), contentDescription = "delivery",
+                modifier = Modifier
+                    .size(30.dp)
+                    .background(shape = CircleShape, color = Color.LightGray)
             )
-            Text(
-                text = "Dự kiến giao hàng lúc $time",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Normal
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Text(
+                    text = "Giao hàng tiêu chuẩn",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal
+                    )
                 )
-            )
+                Text(
+                    text = "Dự kiến giao hàng lúc $time",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+            }
         }
+        Icon(
+            painter = painterResource(id = R.drawable.chat), contentDescription = "Chat",
+            modifier = Modifier
+                .size(48.dp)
+                .padding(horizontal = 8.dp)
+                .clickable {
+                    navController.navigate(
+                        route = HomeRouteScreen.ChatScreen.sendId(
+                            idShop = idShop,
+                            title = titleShop
+                        )
+                    )
+                },
+            tint = Color.Unspecified
+        )
     }
 }
 

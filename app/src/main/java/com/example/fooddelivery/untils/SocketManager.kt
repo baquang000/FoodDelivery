@@ -41,7 +41,7 @@ object SocketManager {
         }
     }
 
-    fun emitUpdateStatusOrder(isStatus : Boolean){
+    fun emitUpdateStatusOrder(isStatus: Boolean) {
         if (isStatus) {
             socket.emit("isStatus", true)
         }
@@ -53,6 +53,22 @@ object SocketManager {
                 val isOrder = args[0] as Boolean
                 // Call the listener to update the StateFlow
                 listener(isOrder)
+            }
+        }
+    }
+
+    fun emitMessage(isStatus: Boolean) {
+        if (isStatus) {
+            socket.emit("Message", true)
+        }
+    }
+
+    fun onMessage(listener: (Boolean) -> Unit) {
+        socket.on("Message") { args ->
+            if (args != null && args.isNotEmpty()) {
+                val message = args[0] as Boolean
+                // Call the listener to update the StateFlow
+                listener(message)
             }
         }
     }

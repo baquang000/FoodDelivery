@@ -79,7 +79,7 @@ fun SearchScreen(
                         "price" -> {
                             items(allFood.filter {
                                 text?.let { searchText ->
-                                    it.price.toString().contains(searchText)
+                                    it.price.price.contains(searchText)
                                 } ?: true
                             }) { food ->
                                 FoodItemInGird(
@@ -94,7 +94,7 @@ fun SearchScreen(
                         "time" -> {
                             items(allFood.filter {
                                 text?.let { searchText ->
-                                    it.time.toString().contains(searchText)
+                                    it.time.time.contains(searchText)
                                 } ?: true
                             }) { food ->
                                 FoodItemInGird(

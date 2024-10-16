@@ -88,4 +88,10 @@ object RetrofitClient {
                 okHttpClient
             ).build().create(ChartsAPIService::class.java)
     }
+    val chatAPIService: ChatAPIService by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(
+                okHttpClient
+            ).build().create(ChatAPIService::class.java)
+    }
 }

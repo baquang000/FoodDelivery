@@ -71,7 +71,7 @@ fun PendingOrderScreen(
                 title = {
                     Text(
                         stringResource(id = R.string.pending_order),
-                        color = Color.White,
+                        color = Color.Black,
                         modifier = Modifier.padding(start = 45.dp)
                     )
                 },
@@ -84,7 +84,7 @@ fun PendingOrderScreen(
                         contentDescription = stringResource(
                             id = R.string.arrow
                         ),
-                        tint = Color.White,
+                        tint = Color.Red,
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .size(24.dp)

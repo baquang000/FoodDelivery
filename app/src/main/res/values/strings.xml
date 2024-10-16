@@ -152,4 +152,5 @@
     <string name="analysis_food">Thống kê đồ ăn</string>
     <string name="analysis_order">"Thống kê đơn hàng "</string>
     <string name="revenue_analysis">Thống kê doanh thu</string>
+    <string name="chat">Tin nhắn</string>
 </resources>

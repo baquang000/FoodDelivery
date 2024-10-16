@@ -61,7 +61,7 @@ fun CancelOrderScreen(
                 title = {
                     Text(
                         stringResource(id = R.string.cancel_order),
-                        color = Color.White,
+                        color = Color.Black,
                         modifier = Modifier.padding(start = 45.dp)
                     )
                 },
@@ -74,7 +74,7 @@ fun CancelOrderScreen(
                         contentDescription = stringResource(
                             id = R.string.arrow
                         ),
-                        tint = Color.White,
+                        tint = Color.Red,
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .size(24.dp)

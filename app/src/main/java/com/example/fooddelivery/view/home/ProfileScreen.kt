@@ -142,6 +142,13 @@ fun ProfileScreen(
                         .background(Color.LightGray.copy(alpha = 0.3f))
                 ) {
                     ItemProfileWithPainter(
+                        leadIcon = R.drawable.chat,
+                        label = R.string.chat,
+                        tintColor = Color.Unspecified
+                    ) {
+                        navController.navigate(route = ProfileRouteScreen.HistoryChatUser.route)
+                    }
+                    ItemProfileWithPainter(
                         leadIcon = R.drawable.help,
                         label = R.string.faqs,
                         tintColor = Color(0xFFEE0000)
