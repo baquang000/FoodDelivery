@@ -1,5 +1,6 @@
 package com.example.fooddelivery.view.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -92,8 +93,6 @@ fun ShopScreen(
     val shopProfileFlow by shopViewModel.shopProfileStateFlow.collectAsStateWithLifecycle()
     val loadingShopProfile by shopViewModel.isLoadShop.collectAsStateWithLifecycle()
     val countStateFlow by sharedViewModel.countFoodInCart.collectAsStateWithLifecycle()
-    //count comment
-    val countComment by shopViewModel.countComent.collectAsStateWithLifecycle()
     val isLoadComment by shopViewModel.isLoadComment.collectAsStateWithLifecycle()
     LaunchedEffect(countStateFlow) {
         if (countStateFlow > 0) {
@@ -104,6 +103,11 @@ fun ShopScreen(
             snackState.currentSnackbarData?.dismiss()
         }
     }
+    val commentValue by shopViewModel.commentStateFlow.collectAsStateWithLifecycle()
+    val countComment by remember {
+        mutableIntStateOf(commentValue.size)
+    }
+    Log.d("CommentValue", "$commentValue")
     Box(
         modifier = Modifier.fillMaxSize()
     ) {

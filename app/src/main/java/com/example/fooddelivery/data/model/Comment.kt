@@ -17,7 +17,7 @@ data class GetComment(
     val createdAt: String,
     val deletedAt: String?,
     val id: Int,
-    val idFood: Int,
+    val idFood: Int?,
     val idOrder: Int,
     val idShop: Int,
     val idUser: Int,

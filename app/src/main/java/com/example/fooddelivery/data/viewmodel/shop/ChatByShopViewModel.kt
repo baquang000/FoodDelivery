@@ -7,6 +7,7 @@ import com.example.fooddelivery.data.model.CreateMessage
 import com.example.fooddelivery.data.model.GetUser
 import com.example.fooddelivery.data.model.Message
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import com.example.fooddelivery.untils.SocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,7 +82,7 @@ class ChatByShopViewModel : ViewModel() {
             fromMe = false
         )
         try {
-            RetrofitClient.chatAPIService.sendMessage(message)
+            RetrofitClient.chatAPIService.sendMessage(Token,message)
         } catch (e: Exception) {
             throw e
             e.printStackTrace()

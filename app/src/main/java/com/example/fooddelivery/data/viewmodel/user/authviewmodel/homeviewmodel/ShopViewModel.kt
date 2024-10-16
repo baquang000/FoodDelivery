@@ -25,8 +25,6 @@ class ShopViewModel : ViewModel() {
 
     private val _isLoadComment = MutableStateFlow(false)
     val isLoadComment = _isLoadComment.asStateFlow()
-    private val _countComent = MutableStateFlow(0)
-    val countComent = _countComent.asStateFlow()
 
 
     private val _idShopStateFlow = MutableStateFlow(0)
@@ -39,7 +37,6 @@ class ShopViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             getShopProfile(idShop = _idShopStateFlow.value)
             getComment(idShop = _idShopStateFlow.value)
-            countCommentOfShop(idShop = _idShopStateFlow.value)
         }
     }
 
@@ -66,9 +63,5 @@ class ShopViewModel : ViewModel() {
         } finally {
             _isLoadComment.value = false
         }
-    }
-
-    private fun countCommentOfShop(idShop: Int) {
-        _countComent.value = _commentStateFlow.value.count { it.idShop == idShop }
     }
 }

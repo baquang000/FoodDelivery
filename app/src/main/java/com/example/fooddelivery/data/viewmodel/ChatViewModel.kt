@@ -82,7 +82,7 @@ class ChatViewModel : ViewModel() {
             fromMe = true
         )
         try {
-            RetrofitClient.chatAPIService.sendMessage(message)
+            RetrofitClient.chatAPIService.sendMessage(Token,message)
         } catch (e: Exception) {
             throw e
             e.printStackTrace()

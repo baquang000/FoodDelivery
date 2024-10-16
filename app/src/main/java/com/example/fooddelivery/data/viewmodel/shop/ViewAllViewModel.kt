@@ -16,6 +16,7 @@ import com.example.fooddelivery.data.model.UpdatePriceFood
 import com.example.fooddelivery.data.model.UpdateShowFood
 import com.example.fooddelivery.data.model.UpdateTitleFood
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,9 +64,9 @@ class ViewAllViewModel : ViewModel() {
 
     suspend fun updateIsBestFood(idFood: Int, isBestFood: Boolean) {
         if (ID != 0) {
-            val update = UpdateBestFood(id = idFood, bestFood = isBestFood)
+            val update = UpdateBestFood(idFood = idFood, bestFood = isBestFood)
             try {
-                RetrofitClient.foodAPIService.updateBestFood(ID, update)
+                RetrofitClient.foodAPIService.updateBestFood(Token,ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -74,9 +75,9 @@ class ViewAllViewModel : ViewModel() {
 
     suspend fun updateIsShowFood(showFood: Boolean, id: Int) {
         if (ID != 0) {
-            val update = UpdateShowFood(id = id, showFood = showFood)
+            val update = UpdateShowFood(idFood = id, showFood = showFood)
             try {
-                RetrofitClient.foodAPIService.updateShowFood(ID, update)
+                RetrofitClient.foodAPIService.updateShowFood(Token,ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }
@@ -91,7 +92,7 @@ class ViewAllViewModel : ViewModel() {
         if (ID != 0) {
             val update = UpdateTitleFood(
                 title = title,
-                id = id
+                idFood = id
             )
             try {
                 RetrofitClient.foodAPIService.updateTitleFood(ID, update)
@@ -109,7 +110,7 @@ class ViewAllViewModel : ViewModel() {
         if (ID != 0) {
             val update = UpdatePriceFood(
                 price = price,
-                id = id
+                idFood = id
             )
             try {
                 RetrofitClient.foodAPIService.updatePriceFood(ID, update)
@@ -123,7 +124,7 @@ class ViewAllViewModel : ViewModel() {
         if (ID != 0) {
             val update = UpdateImageFood(
                 imagePath = imagePath,
-                id = id
+                idFood = id
             )
             try {
                 RetrofitClient.foodAPIService.updateImageFood(ID, update)
@@ -142,7 +143,7 @@ class ViewAllViewModel : ViewModel() {
         if (ID != 0) {
             val update = UpdateDescriptionFood(
                 description = description,
-                id = id
+                idFood = id
             )
             try {
                 RetrofitClient.foodAPIService.updateDescriptionFood(ID, update)

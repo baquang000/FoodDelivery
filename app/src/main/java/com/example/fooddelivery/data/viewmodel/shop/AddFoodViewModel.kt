@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.CreateFood
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +24,8 @@ class AddFoodViewModel : ViewModel() {
     private val tag = ViewModel::class.java.simpleName
     private val _isLoadingAddFood = MutableStateFlow(false)
     val isLoadingAddFood = _isLoadingAddFood.asStateFlow()
+    private val _isSuccess = MutableStateFlow(false)
+    val isSuccess = _isSuccess.asStateFlow()
     suspend fun addNewFood(
         title: String,
         description: String,
@@ -61,7 +64,7 @@ class AddFoodViewModel : ViewModel() {
             }
             val newFood = CreateFood(
                 bestFood = bestFood,
-                categoryId = category,
+                idCategory = category,
                 description = description,
                 imagePath = imageUrl,
                 price = price.toString(),
@@ -73,7 +76,10 @@ class AddFoodViewModel : ViewModel() {
             )
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    RetrofitClient.foodAPIService.createFood(newFood)
+                    val reponse = RetrofitClient.foodAPIService.createFood(Token, newFood)
+                    if (reponse.isSuccessful) {
+                        _isSuccess.value = true
+                    }
                 } catch (e: Exception) {
                     Log.d(tag, "error addNewFood: ${e.message}")
                 } finally {

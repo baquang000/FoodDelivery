@@ -6,6 +6,7 @@ import com.example.fooddelivery.data.model.UserInfor
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -19,8 +20,9 @@ interface UserAPIService {
 
     @PUT("/api/v1/userinfor/{idUser}")
     suspend fun updateUser(
+        @Header("Authorization") token:String,
         @Path("idUser") idUser: Int,
-        @Body userInfor: UserInfor
-    ): Response<UserInfor>
+        @Body userInfor: CreateUserInfor
+    ): Response<CreateUserInfor>
 
 }

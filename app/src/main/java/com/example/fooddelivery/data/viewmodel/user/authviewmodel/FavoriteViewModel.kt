@@ -7,6 +7,7 @@ import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.CreateFavorite
 import com.example.fooddelivery.data.model.GetFavorite
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,7 +49,7 @@ class FavoriteViewModel : ViewModel() {
                 idUser = ID
             )
             try {
-                RetrofitClient.userFavoriteAPIService.createUserFavorite(favorite)
+                RetrofitClient.userFavoriteAPIService.createUserFavorite(Token,favorite)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {
@@ -62,7 +63,7 @@ class FavoriteViewModel : ViewModel() {
         if (ID != 0) {
             _isLoadFavorite.value = true
             try {
-                RetrofitClient.userFavoriteAPIService.deleteUserFavorite(ID, idShop)
+                RetrofitClient.userFavoriteAPIService.deleteUserFavorite(Token,ID, idShop)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             } finally {

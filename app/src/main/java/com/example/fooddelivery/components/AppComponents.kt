@@ -710,7 +710,21 @@ fun MyDropdownMenuWithTime(
                         type = MenuAnchorType.PrimaryNotEditable,
                         enabled = true
                     )
-                    .wrapContentSize(),
+                    .wrapContentSize()
+                    .border(
+                        width = 1.dp,
+                        color = Color.White,
+                        shape = RoundedCornerShape(50)
+                    )
+                    .clip(RoundedCornerShape(50))
+                    .background(Color.Transparent),
+                shape = RoundedCornerShape(50),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.White,
+                    unfocusedIndicatorColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedTextColor = Color.Blue
+                ),
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.time),
@@ -773,8 +787,23 @@ fun MyDropdownMenuWithPrice(
                         type = MenuAnchorType.PrimaryNotEditable,
                         enabled = true
                     )
-                    .wrapContentSize(),
+                    .wrapContentSize()
+                    .border(
+                        width = 1.dp, // Độ dày của viền
+                        color = Color.White, // Màu của viền
+                        shape = RoundedCornerShape(50) // Hình dạng viền tròn
+                    )
+                    .clip(RoundedCornerShape(50)) // Tạo bo góc tròn cho `OutlinedTextField`
+                    .background(Color.Transparent) // Đảm bảo nền không làm mờ viền
+                    .padding(4.dp),
                 singleLine = true,
+                shape = RoundedCornerShape(50),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.White, // Viền trắng khi được chọn
+                    unfocusedIndicatorColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedTextColor = Color.Blue// Viền trắng khi không được chọn
+                ),
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.dollar),

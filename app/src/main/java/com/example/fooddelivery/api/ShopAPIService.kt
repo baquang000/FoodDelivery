@@ -8,6 +8,7 @@ import com.example.fooddelivery.data.model.UpdateShopInfor
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -21,6 +22,7 @@ interface ShopAPIService {
 
     @PUT("/api/v1/shop/{id}")
     suspend fun updateInforShop(
+        @Header("Authorization") token:String,
         @Path("id") id: Int,
         @Body updateShopInfor: UpdateShopInfor
     ): Response<ResultState>

@@ -120,28 +120,6 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    /*
-        ///////////
-        private fun fetchLocationFromFirebase() {
-            val emptyList = mutableListOf<Location>()
-            location.value = LocationState.Loading
-            FirebaseDatabase.getInstance().getReference("Location")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        for (dataSnap in snapshot.children) {
-                            val locList = dataSnap.getValue(Location::class.java)
-                            if (locList != null) {
-                                emptyList.add(locList)
-                            }
-                        }
-                        location.value = LocationState.Success(emptyList)
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        location.value = LocationState.Failure(error.message)
-                    }
-                })
-        }*/
 }
 
 

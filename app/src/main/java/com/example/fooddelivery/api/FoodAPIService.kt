@@ -12,6 +12,7 @@ import com.example.fooddelivery.data.model.UpdateTitleFood
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -35,17 +36,20 @@ interface FoodAPIService {
 
     @POST("/api/v1/foods")
     suspend fun createFood(
+        @Header("Authorization") token:String,
         @Body createFood: CreateFood
     ): Response<ResultState>
 
     @PUT("/api/v1/foods/showFood/{idShop}")
     suspend fun updateShowFood(
+        @Header("Authorization") token:String,
         @Path("idShop") idShop: Int,
         @Body showFood: UpdateShowFood
     ): Response<ResultState>
 
     @PUT("/api/v1/foods/bestFood/{idShop}")
     suspend fun updateBestFood(
+        @Header("Authorization") token:String,
         @Path("idShop") idShop: Int,
         @Body bestFood: UpdateBestFood
     ): Response<ResultState>

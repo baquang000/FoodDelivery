@@ -108,6 +108,7 @@ fun CartScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val foodDetailStateFlow = sharedViewModel.foodDetailStateFlow.collectAsStateWithLifecycle()
+    val idShop by sharedViewModel.idShopStateFlow.collectAsStateWithLifecycle()
     val foodDetailsList = foodDetailStateFlow.value
     val sumPrice = sharedViewModel.sumPrice.collectAsState()
     val isErrorDelete by sharedViewModel::isErrorDelete
@@ -145,6 +146,7 @@ fun CartScreen(
     }
     // discount
     val discountCode by discountUserViewModel.discountUser.collectAsStateWithLifecycle()
+
     //switch giao hang tan cua
     var switchDeliverytoDoor by remember {
         mutableStateOf(false)
@@ -189,10 +191,15 @@ fun CartScreen(
     val focusManager = LocalFocusManager.current
     //val discountUsage by discountUserViewModel.discountUsage.collectAsStateWithLifecycle()
     val discountActive =
-        discountCode.filter { it.isActive && totalPrice >= it.minOrderAmount.toFloat() && it.id != 3 }
+        discountCode.filter {
+            it.isActive && totalPrice >= it.minOrderAmount.toFloat() && (it.idShop ==
+                    idShop || it.idShop == 1)
+        }
+
     var selectedOption by remember {
         mutableIntStateOf(3)
     }
+
     val selectedDiscount = discountActive.find { it.id == selectedOption }
     Scaffold(
         topBar = {
@@ -200,7 +207,7 @@ fun CartScreen(
                 title = {
                     Text(
                         stringResource(R.string.cart_title),
-                        color = Color.White,
+                        color = Color.Black,
                         modifier = Modifier
                             .padding(start = 130.dp)
                     )
@@ -214,7 +221,7 @@ fun CartScreen(
                         contentDescription = stringResource(
                             id = R.string.arrow
                         ),
-                        tint = Color.White,
+                        tint = Color.Red,
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .size(24.dp)
@@ -395,7 +402,7 @@ fun CartScreen(
                                         nomalFontWeight = FontWeight.Normal
                                     )
                                     NormalTextComponents(
-                                        value = if (switchDeliverytoDoor) "8,000" else "3,000",
+                                        value = if (switchDeliverytoDoor) "8,000đ" else "3,000đ",
                                         nomalColor = Color.Black,
                                         nomalFontsize = 16.sp,
                                         nomalFontWeight = FontWeight.Normal
@@ -415,7 +422,7 @@ fun CartScreen(
                                         nomalFontWeight = FontWeight.Normal
                                     )
                                     NormalTextComponents(
-                                        value = priceDiscount.toString(),
+                                        value = priceDiscount.toString()+"đ",
                                         nomalColor = Color.Black,
                                         nomalFontsize = 16.sp,
                                         nomalFontWeight = FontWeight.Normal
@@ -873,6 +880,7 @@ fun CartScreen(
                                         }
                                         launchSingleTop = true
                                     }
+                                    selectedOption = 3
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
@@ -987,7 +995,7 @@ fun CartScreen(
                                                 .clickable {
                                                     openDiscount = false
                                                     selectedOption = 3
-                                                    sharedViewModel.notChooseDiscount(selectedOption)
+                                                    sharedViewModel.notChooseDiscount(selectedOption,selectedDiscount!!)
                                                 }
                                         )
                                     }
@@ -1178,6 +1186,9 @@ fun CardFoodIemWithCart(
                                         newQuantity = quantity
                                     )
                                 }
+                                if (quantity == 0) {
+                                    sharedViewModel.deleteItemFoodInCart(foodDetails)
+                                }
                             }
                     )
                     NormalTextComponents(
@@ -1245,7 +1256,7 @@ fun SwipeToDismissItem(
             val backgroundColor by animateColorAsState(
                 targetValue = when (swipeToDismissState.currentValue) {
                     SwipeToDismissBoxValue.StartToEnd -> Color.Green
-                    SwipeToDismissBoxValue.EndToStart -> Color.Red
+                    SwipeToDismissBoxValue.EndToStart -> Color.Red.copy(alpha = 0.3f)
                     SwipeToDismissBoxValue.Settled -> Color.Transparent
                 }, label = "Animate bg color"
             )

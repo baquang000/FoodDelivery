@@ -66,6 +66,7 @@ class LoginViewModel : ViewModel() {
                     val id = respon.body()?.data?.rest?.id
                         ?: return@withTimeout // Handle missing token gracefully (e.g., show error)
                     ID = id.toInt()
+                    Token += token
                     val cryptoManager = TokenManager()
                     val bytes = token.encodeToByteArray()
                     val file = File(context.filesDir, "token.txt")
@@ -126,3 +127,4 @@ class LoginViewModel : ViewModel() {
 }
 
 var ID = 0
+var Token = "Bearer "

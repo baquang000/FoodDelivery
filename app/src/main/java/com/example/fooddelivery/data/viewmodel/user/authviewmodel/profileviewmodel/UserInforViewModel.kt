@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fooddelivery.api.RetrofitClient
+import com.example.fooddelivery.data.model.CreateUserInfor
 import com.example.fooddelivery.data.model.UserInfor
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,18 +48,17 @@ class UserInforViewModel : ViewModel() {
         dateOfBirth: String,
         id: Int,
     ) {
-        val user = UserInfor(
+        val user = CreateUserInfor(
             name = name,
             numberPhone = numberPhone,
             address = address,
             email = email,
             dateOfBirth = dateOfBirth,
             idAccount = id,
-            id = id
         )
         try {
             viewModelScope.launch(Dispatchers.IO) {
-                RetrofitClient.userAPIService.updateUser(id, user)
+                RetrofitClient.userAPIService.updateUser(Token,id, user)
             }
         } catch (e: Exception) {
             Log.e(tag, e.message.toString())

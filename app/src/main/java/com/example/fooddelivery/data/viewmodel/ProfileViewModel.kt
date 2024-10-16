@@ -7,5 +7,6 @@ class ProfileViewModel:ViewModel() {
     fun logout(){
         FirebaseAuth.getInstance().signOut()
         ID = 0
+        Token = "Bearer "
     }
 }

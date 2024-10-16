@@ -8,6 +8,7 @@ import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.model.UpdateOrder
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import com.example.fooddelivery.untils.SocketManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +86,7 @@ class HomeViewModel : ViewModel() {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
                     val response = RetrofitClient.orderAPIService.updateOrder(
+                        Token,
                         id = idOrder,
                         statusOrder = UpdateOrder(
                             orderStatus = orderStatus,
@@ -148,5 +150,6 @@ class HomeViewModel : ViewModel() {
     fun logout() {
         FirebaseAuth.getInstance().signOut()
         ID = 0
+        Token = "Bearer "
     }
 }

@@ -28,7 +28,7 @@ data class Food(
 //////////////create
 data class CreateFood(
     val bestFood: Boolean,
-    val categoryId: Int,
+    val idCategory: Int,
     val description: String,
     val idShop: Int,
     val imagePath: String,
@@ -41,31 +41,31 @@ data class CreateFood(
 
 //////////update
 data class UpdateShowFood(
-    val id: Int,
+    val idFood: Int,
     val showFood: Boolean
 )
 
 data class UpdateBestFood(
-    val id: Int,
+    val idFood: Int,
     val bestFood: Boolean
 )
 
 data class UpdateTitleFood(
-    val id: Int,
+    val idFood: Int,
     val title: String
 )
 
 data class UpdatePriceFood(
-    val id: Int,
+    val idFood: Int,
     val price: Double
 )
 
 data class UpdateDescriptionFood(
-    val id: Int,
+    val idFood: Int,
     val description: String
 )
 
 data class UpdateImageFood(
-    val id: Int,
+    val idFood: Int,
     val imagePath: String
 )

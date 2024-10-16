@@ -83,7 +83,7 @@ fun CommentScreen(
                 title = {
                     Text(
                         stringResource(id = R.string.write_comment),
-                        color = Color.White,
+                        color = Color.Black,
                         modifier = Modifier
                             .padding(start = 130.dp)
                     )
@@ -97,7 +97,7 @@ fun CommentScreen(
                         contentDescription = stringResource(
                             id = R.string.arrow
                         ),
-                        tint = Color.White,
+                        tint = Color.Red,
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .size(24.dp)
@@ -318,6 +318,14 @@ fun CommentList(
                             time = time
                         )
                         orderViewModel.commentFood(comment = comment)
+                        if (commentSuccess == false) {
+                            Toast.makeText(context, "Gửi comment thành công", Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            Toast.makeText(context, "Gửi comment thành công", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        navController.navigateUp()
                     })
                 } else {
                     val comment = CreateComment(

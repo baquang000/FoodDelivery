@@ -3,6 +3,7 @@ package com.example.fooddelivery.view.shop.home.food
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -69,6 +72,7 @@ fun AddFoodScreen(
     navController: NavController = rememberNavController(),
     addFoodViewModel: AddFoodViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val isLoading by addFoodViewModel.isLoadingAddFood.collectAsStateWithLifecycle()
     val isTitleEmpty by addFoodViewModel::isTitleEmpty
@@ -76,6 +80,7 @@ fun AddFoodScreen(
     val isPriceInvalid by addFoodViewModel::isPriceInvalid
     val isImageUrlEmpty by addFoodViewModel::isImageUrlEmpty
     val isTimeInvalid by addFoodViewModel::isTimeInvalid
+    val isSuccess by addFoodViewModel.isSuccess.collectAsStateWithLifecycle()
     val listLoc = listOf("Bắc Từ Liêm", "Nam Từ Liêm")
     val bestfood = listOf(true, false)
     val listCategory =
@@ -96,7 +101,7 @@ fun AddFoodScreen(
         mutableStateOf(true)
     }
     var categoryIndex by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(1)
     }
     var locIndex by remember {
         mutableIntStateOf(0)
@@ -117,6 +122,17 @@ fun AddFoodScreen(
     }
     val localFocusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            titleText = ""
+            priceText = ""
+            descriptionText = ""
+            selectedImageUri = null
+            timeText = 0
+            Toast.makeText(context, "Add success", Toast.LENGTH_SHORT).show()
+            navController.navigateUp()
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -435,13 +451,9 @@ fun AddFoodScreen(
                                         category = categoryIndex,
                                         time = timeText
                                     )
-                                    titleText = ""
-                                    priceText = ""
-                                    descriptionText = ""
-                                    titleText = ""
-                                    selectedImageUri = null
                                 }
                             }
+
                         }
                     }) {
                         NormalTextComponents(

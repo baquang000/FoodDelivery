@@ -8,6 +8,7 @@ import com.example.fooddelivery.data.model.Shop
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -16,7 +17,10 @@ interface ChatAPIService {
     suspend fun getMessages(@Path("idUser") idUser: Int, @Path("idShop") idShop: Int): List<Message>
 
     @POST("/api/v1/chat")
-    suspend fun sendMessage(@Body message: CreateMessage): Response<ResultState>
+    suspend fun sendMessage(
+        @Header("Authorization") token: String,
+        @Body message: CreateMessage
+    ): Response<ResultState>
 
     @GET("/api/v1/chat/shop/history/{idShop}")
     suspend fun getHistoryByShop(@Path("idShop") idShop: Int): List<GetUser>

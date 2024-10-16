@@ -12,6 +12,7 @@ import com.example.fooddelivery.data.model.GetOrderItem
 import com.example.fooddelivery.data.model.OrderStatus
 import com.example.fooddelivery.data.model.UpdateOrder
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import com.example.fooddelivery.untils.SocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,6 +73,7 @@ class OrderFoodViewModel : ViewModel() {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
                     val response = RetrofitClient.orderAPIService.updateOrder(
+                        Token,
                         id = idOrder,
                         statusOrder = UpdateOrder(
                             orderStatus = orderStatus,
@@ -116,7 +118,7 @@ class OrderFoodViewModel : ViewModel() {
     fun commentFood(comment: CreateComment) {
         try {
             viewModelScope.launch(Dispatchers.IO) {
-                val response = RetrofitClient.commentAPIService.createComment(comment)
+                val response = RetrofitClient.commentAPIService.createComment(Token,comment)
                 if (response.isSuccessful) {
                     updateStatusWithApi(
                         idOrder = comment.idOrder,

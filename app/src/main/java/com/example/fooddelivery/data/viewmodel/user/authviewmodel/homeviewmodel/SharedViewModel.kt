@@ -12,6 +12,7 @@ import com.example.fooddelivery.data.model.FoodDetails
 import com.example.fooddelivery.data.model.GetDiscountItem
 import com.example.fooddelivery.data.model.TypeDiscount
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import com.example.fooddelivery.untils.SocketManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,9 +68,9 @@ class SharedViewModel : ViewModel() {
         sumPrice()
     }
 
-    fun notChooseDiscount(option: Int) {
+    fun notChooseDiscount(option: Int, discount: GetDiscountItem) {
         if (option == 3) {
-            discountCode = null
+            discountCode = discount
             sumPrice()
         }
     }
@@ -84,7 +85,7 @@ class SharedViewModel : ViewModel() {
                 ) {
                     discountCode!!.maxDiscountAmount.toFloat()
                 } else {
-                    _totalPrice.value * (discountCode!!.percentage.toFloat() / 100)
+                    (_totalPrice.value + priceTaxandDelivery.value + rewardForDriver.value + 15000) * (discountCode!!.percentage.toFloat() / 100)
                 }
                 _sumPrice.value =
                     _totalPrice.value - _priceDiscount.value + priceTaxandDelivery.value + rewardForDriver.value + 15000
@@ -172,11 +173,11 @@ class SharedViewModel : ViewModel() {
                 rewardForDriver = rewardForDriver,
                 totalMoney = _sumPrice.value.toString(),
                 orderDetails = _foodDetailStateFlow.value,
-                idDiscount = discountCode?.id ?: 0
+                idDiscount = discountCode?.id ?: 3
             )
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    val response = RetrofitClient.orderAPIService.createOrder(newOrder)
+                    val response = RetrofitClient.orderAPIService.createOrder(Token, newOrder)
                     if (response.isSuccessful) {
                         SocketManager.emitOrder(isOrder = true)
                         deleteListFood()
@@ -203,6 +204,7 @@ class SharedViewModel : ViewModel() {
             }
             updatelist
         }
+        _countFoodInCart.value = _foodDetailStateFlow.value.size
     }
 
     fun getIdShop(id: Int) {

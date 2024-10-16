@@ -7,6 +7,7 @@ import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.Shop
 import com.example.fooddelivery.data.model.UpdateShopInfor
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,7 +49,7 @@ class ProfileAdminViewModel : ViewModel() {
                 imageUrl = imageUrl
             )
             try {
-                RetrofitClient.shopAPIService.updateInforShop(ID, update)
+                RetrofitClient.shopAPIService.updateInforShop(Token,ID, update)
             } catch (e: Exception) {
                 Log.e(tag, e.message.toString())
             }

@@ -7,6 +7,7 @@ import com.example.fooddelivery.data.model.TDiscountSingle
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -18,7 +19,7 @@ interface DiscountAPIService {
     suspend fun getSingle(@Path("id") id: Int): Response<TDiscountSingle>
 
     @POST("/api/v1/discount")
-    suspend fun createDiscount(@Body discount: CreateDiscount): Response<ResultState>
+    suspend fun createDiscount(@Header("Authorization") token:String, @Body discount: CreateDiscount): Response<ResultState>
 
     @GET("/api/v1/discount/user/{id}")
     suspend fun getByUser(@Path("id") id: Int): List<GetDiscountItem>

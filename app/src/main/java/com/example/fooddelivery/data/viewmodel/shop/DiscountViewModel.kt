@@ -1,6 +1,5 @@
 package com.example.fooddelivery.data.viewmodel.shop
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +9,7 @@ import com.example.fooddelivery.api.RetrofitClient
 import com.example.fooddelivery.data.model.CreateDiscount
 import com.example.fooddelivery.data.model.GetDiscountItem
 import com.example.fooddelivery.data.viewmodel.ID
+import com.example.fooddelivery.data.viewmodel.Token
 import com.example.fooddelivery.untils.MoshiGlobal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -76,9 +76,8 @@ class DiscountViewModel : ViewModel() {
     suspend fun createDiscount(discount: CreateDiscount) {
         _isLoadAdd.value = true
         try {
-            val response = RetrofitClient.discountAPIService.createDiscount(discount)
+            val response = RetrofitClient.discountAPIService.createDiscount(Token,discount)
             if (response.isSuccessful) {
-                Log.d("DiscountViewModel", "createDiscount: Success")
                 isSuccess = true
             } else {
                 val errorBody = response.errorBody()?.string()

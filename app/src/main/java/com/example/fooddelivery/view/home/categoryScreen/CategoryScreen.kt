@@ -50,7 +50,7 @@ fun CategoryScreen(
     LaunchedEffect(key1 = Unit) {
         categoryViewModel.initCategory(id)
     }
-    val chicken by categoryViewModel.categoryFood.collectAsStateWithLifecycle()
+    val food by categoryViewModel.categoryFood.collectAsStateWithLifecycle()
     val isLoad by categoryViewModel.isLoadCategory.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
@@ -97,9 +97,9 @@ fun CategoryScreen(
                         .fillMaxSize()
                         .padding(innerPaddingValues)
                 ) {
-                    items(chicken) { chicken ->
+                    items(food) { food ->
                         FoodItemInGird(
-                            food = chicken,
+                            food = food,
                             navController = navController,
                             buttonSize = 16.sp,
                             sharedViewModel = sharedViewModel
